@@ -178,11 +178,6 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        /*
-         * Aws Service Provider
-         */
-        \App\Providers\Aws2ServiceProvider::class
-
     ],
 
     /*
