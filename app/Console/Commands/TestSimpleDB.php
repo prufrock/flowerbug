@@ -4,39 +4,38 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class TestSimpleDB extends Command
-{
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'aws:sdb';
+class TestSimpleDB extends Command {
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'A command to play around with AWS SDB.';
+  /**
+   * The name and signature of the console command.
+   *
+   * @var string
+   */
+  protected $signature = 'aws:sdb';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
+  /**
+   * The console command description.
+   *
+   * @var string
+   */
+  protected $description = 'A command to play around with AWS SDB.';
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
-    {
-        //
-    }
+  /**
+   * Create a new command instance.
+   *
+   * @return void
+   */
+  public function __construct() {
+    parent::__construct();
+  }
+
+  /**
+   * Execute the console command.
+   *
+   * @return mixed
+   */
+  public function handle() {
+    $awsAccessKeyID = env('AWS_ACCESS_KEY_ID');
+    $awsSecretAccessKey = env('AWS_SECRET_ACCESS_KEY');
+  }
 }
