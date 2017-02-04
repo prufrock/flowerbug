@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Aws\SimpleDb\SimpleDbClient;
 use Illuminate\Console\Command;
 
 class TestSimpleDB extends Command {
@@ -35,7 +36,18 @@ class TestSimpleDB extends Command {
    * @return mixed
    */
   public function handle() {
+    // http://docs.aws.amazon.com/aws-sdk-php/v2/guide/
+    // http://docs.aws.amazon.com/aws-sdk-php/v2/guide/service-simpledb.html
+
     $awsAccessKeyID = env('AWS_ACCESS_KEY_ID');
     $awsSecretAccessKey = env('AWS_SECRET_ACCESS_KEY');
+
+    $client = SimpleDbClient::factory(array(
+      'region'  => 'us-east-1'
+    ));
+
+    $domains = $client->getIterator('ListDomains')->toArray();
+
+    var_dump($domains);
   }
 }
