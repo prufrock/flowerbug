@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\AwsSimpleDbFlowerbugProjectsPut;
 use App\Console\Commands\AwsSimpleDbListDomains;
 use App\Console\Commands\TestSimpleDB;
 use Illuminate\Console\Scheduling\Schedule;
@@ -15,6 +16,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+      AwsSimpleDbFlowerbugProjectsPut::class,
       AwsSimpleDbListDomains::class,
       TestSimpleDB::class
     ];
