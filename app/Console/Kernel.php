@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Console\Commands\AwsSimpleDbFlowerbugProjectsPut;
 use App\Console\Commands\AwsSimpleDbListDomains;
+use App\Console\Commands\S3Upload;
 use App\Console\Commands\TestSimpleDB;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -18,6 +19,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
       AwsSimpleDbFlowerbugProjectsPut::class,
       AwsSimpleDbListDomains::class,
+      S3Upload::class,
       TestSimpleDB::class
     ];
 
