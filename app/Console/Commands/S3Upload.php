@@ -83,6 +83,7 @@ class S3Upload extends Command {
     }
 
     if ($verbose) {
+
       if ($succeeded) {
 
         $this->info($pathToFile . ' ' . Constants::COPY_TO_SIGIL . ' ' . $bucket . ' ' . $pathToDestination);
@@ -93,8 +94,10 @@ class S3Upload extends Command {
     }
 
     if ($succeeded) {
+
       return self::EXIT_SUCCESS;
     } else {
+
       return self::EXIT_FAILURE;
     }
   }
