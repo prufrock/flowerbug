@@ -28,7 +28,6 @@ class S3Upload extends Command {
    * @var string
    */
   protected $signature = 's3:upload ' .
-    '{path-to-file : The file to upload.} ' .
     '{bucket : The name of the bucket to upload to.} ' .
     '{path-to-destination : The name of the file to upload to.} ' .
     '{content-type : The content type of the file.} ' .
@@ -67,7 +66,7 @@ class S3Upload extends Command {
   public function handle() {
 
     $aDryRun = $this->option('dry-run');
-    $pathToFile = $this->argument('path-to-file');
+    $stdin = fopen('php://stdin', 'r');
     $bucket = $this->argument('bucket');
     $pathToDestination = $this->argument('path-to-destination');
     $contentType = $this->argument('content-type');
@@ -79,14 +78,14 @@ class S3Upload extends Command {
 
     if (!$aDryRun) {
 
-      $succeeded = $this->service->upload($pathToFile, $bucket, $pathToDestination, $contentType, $compress, $makePublic);
+      $succeeded = $this->service->uploadStream($stdin, $bucket, $pathToDestination, $contentType, $compress, $makePublic);
     }
 
     if ($verbose) {
 
       if ($succeeded) {
 
-        $this->info($pathToFile . ' ' . Constants::COPY_TO_SIGIL . ' ' . $bucket . ' ' . $pathToDestination);
+        $this->info('Uploaded to ' . $bucket . ' ' . $pathToDestination);
       } else {
 
         $this->info($this->service->getErrorMessage());

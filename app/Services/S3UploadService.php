@@ -25,16 +25,16 @@ class S3UploadService {
   }
 
   /**
-   * Uploads a file to S3.
-   * @param $pathToFile
-   * @param $bucket
-   * @param $pathToDestination
-   * @param $contentType
-   * @param $compress
-   * @param $makePublic
+   * Uploads a stream to S3.
+   * @param resource $stream The stream to upload.
+   * @param string $bucket The bucket to upload to.
+   * @param string $pathToDestination The path to S3 folder it should be uploaded to.
+   * @param string $contentType The content type header to set.
+   * @param bool $compressed Whether or not the file is compresssed
+   * @param bool $makePublic Whether or not the file should be publicly accessible.
    * @return bool
    */
-  public function upload($pathToFile, $bucket, $pathToDestination, $contentType, $compress, $makePublic) {
+  public function uploadStream($stream, $bucket, $pathToDestination, $contentType, $compressed, $makePublic) {
 
     $succeeded = false;
     $client = null;
@@ -46,13 +46,12 @@ class S3UploadService {
     $args = [
       'Bucket' => $bucket,
       'Key' => $pathToDestination,
-      'SourceFile' => $pathToFile,
+      'Body' => $stream,
       'ContentType' => $contentType
     ];
 
-    if ($compress) {
+    if ($compressed) {
 
-      //TODO compress the file
       $args['ContentEncoding'] = 'gzip';
     }
 
