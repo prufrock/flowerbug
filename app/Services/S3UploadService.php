@@ -58,7 +58,7 @@ class S3UploadService {
 
     if ($makePublic) {
 
-      http://docs.aws.amazon.com/aws-sdk-php/v2/api/class-Aws.S3.S3Client.html#_putObjectAcl
+      // http://docs.aws.amazon.com/aws-sdk-php/v2/api/class-Aws.S3.S3Client.html#_putObjectAcl
       $args['ACL'] = 'public-read';
     } else {
 
