@@ -73,6 +73,11 @@ class S3UploadService {
       $this->errorMessage = $e->getMessage();
     }
 
+    $client->waitUntil('ObjectExists', array(
+      'Bucket' => $bucket,
+      'Key'    => $pathToDestination
+    ));
+
     return $succeeded;
   }
 }
