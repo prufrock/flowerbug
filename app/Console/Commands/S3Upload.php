@@ -33,7 +33,8 @@ class S3Upload extends Command {
     '{content-type : The content type of the file.} ' .
     '{--z|gzip : compress the file, upload it and set content encoding.} ' .
     '{--p|public : make the file public.}'.
-    '{--d|dry-run : Shows what would have been uploaded.}';
+    '{--d|dry-run : Shows what would have been uploaded.}'.
+    '{--debug : Show debug output.}';
 
   /**
    * The console command description.
@@ -72,7 +73,7 @@ class S3Upload extends Command {
     $contentType = $this->argument('content-type');
     $compress = $this->option('gzip');
     $makePublic = $this->option('public');
-    $verbose = $this->option('verbose');
+    $debug = $this->option('debug');
     $succeeded = false;
 
 
@@ -81,7 +82,7 @@ class S3Upload extends Command {
       $succeeded = $this->service->uploadStream($stdin, $bucket, $pathToDestination, $contentType, $compress, $makePublic);
     }
 
-    if ($verbose) {
+    if ($debug) {
 
       if ($succeeded) {
 
