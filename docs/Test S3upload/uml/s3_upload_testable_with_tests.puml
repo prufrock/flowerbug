@@ -1,0 +1,42 @@
+@startuml
+
+class php_standard_library {
+	resource fopen(string $path)
+}
+
+class FileUtility {
+	resource fopen(string $path)
+}
+
+class S3ServiceProvider {
+
+}
+
+class S3Client {
+	stdClass putObject(array $args)
+	waitUntil($waiter, array $input)
+}
+
+class S3UploadService {
+    __construct(S3ServiceProvider $client)
+}
+
+Command <|-- S3Upload
+S3Upload <-- S3UploadService
+S3Upload <-- FileUtility
+S3UploadTest <-- S3Upload
+S3UploadTest <-- Mockery
+TestCase <|-- S3UploadTest
+Illuminate\Foundation\Testing\TestCase <|-- TestCase
+PHPUnit\Framework\TestCase <|-- Illuminate\Foundation\Testing\TestCase
+S3UploadServiceTest <-- S3UploadService
+S3UploadServiceTest <-- Mockery
+TestCase <|-- S3UploadServiceTest
+FileUtility <-- php_standard_library
+S3UploadService <-- S3ServiceProvider
+S3UploadService <-- S3Exception
+
+ServiceProvider <|-- S3ServiceProvider
+S3ServiceProvider <-- S3Client
+
+@enduml

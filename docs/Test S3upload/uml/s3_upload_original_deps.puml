@@ -1,0 +1,18 @@
+@startuml
+
+class php_standard_library {
+	resource fopen(string $path)
+}
+
+class S3Client {
+  stdClass putObject(array $args)
+  waitUntil($waiter, array $input)
+}
+
+Command <|-- S3Upload
+S3Upload <-- S3UploadService
+S3Upload <-- php_standard_library
+S3UploadService <-- S3Client
+S3UploadService <-- S3Exception
+
+@enduml

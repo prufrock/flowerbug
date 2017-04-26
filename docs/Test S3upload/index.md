@@ -1,0 +1,1 @@
+![Dependencies and their external calls](images/s3_upload_original_deps.png "Dependencies and their external calls")
