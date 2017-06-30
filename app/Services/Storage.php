@@ -2,15 +2,15 @@
 
 class Storage {
 
-  private $putsObjects;
+  private $storesObjects;
 
-  public function __construct($putsObjects) {
-    $this->putsObjects = $putsObjects;
+  public function __construct($storesObjects) {
+    $this->storesObjects = $storesObjects;
   }
 
-  public function store() {
+  public function store($storable) {
 
-    $this->putsObjects->putObject();
+    $this->storesObjects->store($storable);
     return true;
   }
 }

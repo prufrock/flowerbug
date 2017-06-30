@@ -5,7 +5,7 @@ use \Mockery as m;
 
 class StorageTest extends TestCase {
 
-  private $putsObjects;
+  private $storesObjects;
 
   private $object;
 
@@ -13,14 +13,16 @@ class StorageTest extends TestCase {
 
     parent::setUp();
 
-    $this->putsObjects = m::mock('PutsObjects');
-    $this->object = new Storage($this->putsObjects);
+    $this->storesObjects = m::mock('StoresObjects');
+    $this->object = new Storage($this->storesObjects);
   }
 
   public function testStore() {
 
-    $this->putsObjects->shouldReceive('putObject')->once();
-    $result = $this->object->store();
+    $storable = m::mock('Storable');
+    $this->storesObjects->shouldReceive('store')->withArgs(['storable'])->once();
+
+    $result = $this->object->store($storable);
 
     $this->assertTrue($result, "File wasn't stored.");
   }
