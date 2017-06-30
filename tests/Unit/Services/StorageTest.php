@@ -1,6 +1,7 @@
 <?php namespace App\Services;
 
 use Tests\TestCase;
+use \Mockery as m;
 
 class StorageTest extends TestCase {
 
@@ -12,7 +13,7 @@ class StorageTest extends TestCase {
 
     parent::setUp();
 
-    $this->putsObjects = \Mockery::mock('PutsObjects');
+    $this->putsObjects = m::mock('PutsObjects');
     $this->object = new Storage($this->putsObjects);
   }
 
