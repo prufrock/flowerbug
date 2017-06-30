@@ -1,6 +1,5 @@
 <?php namespace App\Services;
 
-use Mockery\Exception\InvalidCountException;
 use Tests\TestCase;
 
 class StorageTest extends TestCase {
@@ -23,16 +22,5 @@ class StorageTest extends TestCase {
     $result = $this->object->store();
 
     $this->assertTrue($result, "File wasn't stored.");
-  }
-
-  protected function tearDown() {
-
-    parent::tearDown();
-
-    try {
-      \Mockery::close();
-    } catch(InvalidCountException $e) {
-      $this->fail($e->getMessage());
-    }
   }
 }
