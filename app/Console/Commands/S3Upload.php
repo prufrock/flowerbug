@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Services\S3UploadService;
+use App\Services\Locker;
 use Illuminate\Console\Command;
 use App\Utilities\Constants;
 
@@ -22,19 +22,21 @@ class S3Upload extends Command {
    */
   const EXIT_FAILURE = 1;
 
+  private $fileDescription = [];
+
   /**
    * The name and signature of the console command.
    *
    * @var string
    */
   protected $signature = 's3:upload ' .
-    '{bucket : The name of the bucket to upload to.} ' .
-    '{path-to-destination : The name of the file to upload to.} ' .
-    '{content-type : The content type of the file.} ' .
-    '{--z|gzip : compress the file, upload it and set content encoding.} ' .
-    '{--p|public : make the file public.}'.
-    '{--d|dry-run : Shows what would have been uploaded.}'.
-    '{--debug : Show debug output.}';
+  '{bucket : The name of the bucket to upload to.} ' .
+  '{path-to-destination : The name of the file to upload to.} ' .
+  '{content-type : The content type of the file.} ' .
+  '{--z|gzip : compress the file, upload it and set content encoding.} ' .
+  '{--p|public : make the file public.}' .
+  '{--d|dry-run : Shows what would have been uploaded.}' .
+  '{--debug : Show debug output.}';
 
   /**
    * The console command description.
@@ -44,19 +46,26 @@ class S3Upload extends Command {
   protected $description = 'Uploads a file to S3.';
 
   /**
-   * @var S3UploadService
+   * @var Locker
    */
-  private $service;
+  private $locker;
+
+  /**
+   * @param array $fileDescription
+   */
+  private function setFileDescription(array $fileDescription) {
+    $this->fileDescription = $fileDescription;
+  }
 
   /**
    * Create a new command instance.
    *
-   * @param S3UploadService $service Knows how to upload files to S3.
+   * @param Locker $locker Knows how to upload files to S3.
    */
-  public function __construct(S3UploadService $service) {
+  public function __construct(Locker $locker) {
 
     parent::__construct();
-    $this->service = $service;
+    $this->locker = $locker;
   }
 
   /**
@@ -71,15 +80,25 @@ class S3Upload extends Command {
     $bucket = $this->argument('bucket');
     $pathToDestination = $this->argument('path-to-destination');
     $contentType = $this->argument('content-type');
-    $compress = $this->option('gzip');
-    $makePublic = $this->option('public');
+    $contentEncoding = $this->option('gzip') ? 'gzip' : '';
+    $acl = $this->option('public') ? 'public-read' : 'private';
     $debug = $this->option('debug');
     $succeeded = false;
 
+    $fileDescription = [
+      'Bucket' => $bucket,
+      'Key' => $pathToDestination,
+      'Body' => $stdin,
+      'ContentType' => $contentType,
+      'ContentEncoding' => $contentEncoding,
+      'ACL' => $acl
+    ];
+
+    $this->setFileDescription($fileDescription);
 
     if (!$aDryRun) {
 
-      $succeeded = $this->service->uploadStream($stdin, $bucket, $pathToDestination, $contentType, $compress, $makePublic);
+      $succeeded = $this->locker->store($this);
     }
 
     if ($debug) {
@@ -89,7 +108,7 @@ class S3Upload extends Command {
         $this->info('Uploaded to ' . $bucket . ' ' . $pathToDestination);
       } else {
 
-        $this->info($this->service->getErrorMessage());
+        $this->info($this->locker->getErrorMessage());
       }
     }
 
@@ -100,5 +119,12 @@ class S3Upload extends Command {
 
       return self::EXIT_FAILURE;
     }
+  }
+
+  /**
+   * @return array
+   */
+  public function getFileDescription(): array {
+    return $this->fileDescription;
   }
 }
