@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Services\Locker;
 use Illuminate\Console\Command;
-use App\Utilities\Constants;
 
 /**
  * Class S3Upload provides command line access to the S3Upload service.
