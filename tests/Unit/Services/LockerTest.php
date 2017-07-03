@@ -10,8 +10,8 @@ class LockerTest extends TestCase {
 
     $storesFiles = m::mock('FileStorer');
     $locker = new Locker($storesFiles);
-    $fileDescription = [];
     $canBeStored = m::mock('canBeStored');
+    $fileDescription = [];
     $canBeStored->shouldReceive('getFileDescription')->once()->andReturn($fileDescription);
     $storesFiles->shouldReceive('putObject')->once()->withArgs([$fileDescription]);
 
