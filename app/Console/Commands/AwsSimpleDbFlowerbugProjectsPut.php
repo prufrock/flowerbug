@@ -45,7 +45,7 @@ class AwsSimpleDbFlowerbugProjectsPut extends Command {
 
     // Set options
     $aDryRun = $this->option('dry-run');
-    $path = $this->argument('path-to-project-folder');
+    $path = $this->argument('path-to-project-folder') . '/project.json';
 
     $client = SimpleDbClient::factory(
       array(
