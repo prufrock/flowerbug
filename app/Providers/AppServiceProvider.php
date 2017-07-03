@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Services\Locker;
+use Aws\S3\S3Client;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider {
@@ -25,7 +26,7 @@ class AppServiceProvider extends ServiceProvider {
     $this->app->bind(
       Locker::class,
       function ($app) {
-        return new Locker($app->make('S3Client'));
+        return new Locker($app->make(S3Client::class));
       }
     );
   }
