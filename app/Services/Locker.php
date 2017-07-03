@@ -15,7 +15,7 @@ class Locker {
   public function store($canBeStored) {
 
     try {
-      $this->storesObjects->upload($canBeStored->getFileDescription());
+      $this->storesObjects->putObject($canBeStored->getFileDescription());
     } catch (S3Exception $e) {
       $this->message = $e->getMessage();
       return false;

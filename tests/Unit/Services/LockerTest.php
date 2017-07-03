@@ -13,16 +13,16 @@ class LockerTest extends TestCase {
     $fileDescription = [];
     $canBeStored = m::mock('canBeStored');
     $canBeStored->shouldReceive('getFileDescription')->once()->andReturn($fileDescription);
-    $storesFiles->shouldReceive('upload')->once()->withArgs([$fileDescription]);
+    $storesFiles->shouldReceive('putObject')->once()->withArgs([$fileDescription]);
 
     $this->assertTrue($locker->store($canBeStored));
   }
 
-  public function testStoreWhenAnUploadFails() {
+  public function testStoreWhenPutObjectFails() {
 
     $storesFiles = m::mock('FileStorer');
     $message = 'Unknown bucket';
-    $storesFiles->shouldReceive('upload')->andThrow(\Aws\S3\Exception\S3Exception::class, $message);
+    $storesFiles->shouldReceive('putObject')->andThrow(\Aws\S3\Exception\S3Exception::class, $message);
     $locker = new Locker($storesFiles);
     $canBeStored = m::mock('canBeStored');
     $canBeStored->shouldReceive('getFileDescription')->once()->andReturn([]);
