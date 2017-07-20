@@ -1,25 +1,21 @@
 <?php namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class IpnController {
 
-  public function index(Request $request) {
-    $this->verifyIpnMessageWithPayPal($request);
-    $this->storeIpnMessageWithDatabase($request);
-    $this->sendTheCustomerTheProject($request);
-    return response("");
-  }
+  public function index($request, $messageFactory) {
 
-  private function verifyIpnMessageWithPayPal($request) {
+    $message = $messageFactory->createFromRequest($request);
 
-  }
+    if ($message->wasInvalid()) {
+      return response('', Response::HTTP_BAD_REQUEST);
+    }
 
-  private function storeIpnMessageWithDatabase($request) {
+    $message->save();
 
-  }
+    $message->shipPurchases();
 
-  private function sendTheCustomerTheProject($request) {
-
+    return response('', Response::HTTP_OK);
   }
 }
