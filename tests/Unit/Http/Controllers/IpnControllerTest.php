@@ -1,4 +1,4 @@
-<?php
+<?php namespace App\Tests\Unit\Http\Controllers;
 
 class IpnControllerTest extends \Tests\TestCase {
 
