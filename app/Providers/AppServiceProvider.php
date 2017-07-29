@@ -29,5 +29,9 @@ class AppServiceProvider extends ServiceProvider {
         return new Locker($app->make(S3Client::class));
       }
     );
+    $this->app->bind(
+      \App\Domain\Interfaces\PaymentProcessorInterface::class,
+      \App\Domain\PaymentProccesor::class
+    );
   }
 }

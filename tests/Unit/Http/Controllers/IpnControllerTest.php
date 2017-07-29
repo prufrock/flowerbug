@@ -4,6 +4,14 @@ use Mockery as m;
 
 class IpnControllerTest extends \Tests\TestCase {
 
+  public function testPaymentProcessorIsBound() {
+
+    $this->assertInstanceOf(
+      \App\Domain\Interfaces\PaymentProcessorInterface::class,
+      $this->app->make(\App\Domain\Interfaces\PaymentProcessorInterface::class)
+    );
+  }
+
   public function testValidateIpn() {
 
     $paymentProcessor = m::mock(\App\Domain\Interfaces\PaymentProcessorInterface::class);
