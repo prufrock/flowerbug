@@ -4,19 +4,11 @@ use Mockery as m;
 
 class IpnControllerTest extends \Tests\TestCase {
 
-  public function testPaymentProcessorIsBound() {
-
-    $this->assertInstanceOf(
-      \App\Domain\Interfaces\PaymentProcessorInterface::class,
-      $this->app->make(\App\Domain\Interfaces\PaymentProcessorInterface::class)
-    );
-  }
-
   public function testValidateIpn() {
 
-    $paymentProcessor = m::mock(\App\Domain\Interfaces\PaymentProcessorInterface::class);
+    $paymentProcessor = m::mock(\App\Domain\PaymentProccesor::class);
     $paymentProcessor->shouldReceive('process')->once()->with([]);
-    $this->app->bind(\App\Domain\Interfaces\PaymentProcessorInterface::class, function() use($paymentProcessor) {
+    $this->app->bind(\App\Domain\PaymentProccesor::class, function() use($paymentProcessor) {
       return $paymentProcessor;
     });
 
