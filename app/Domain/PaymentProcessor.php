@@ -1,8 +1,8 @@
 <?php namespace App\Domain;
 
-class PaymentProccesor {
+class PaymentProcessor {
 
   public function process($payment) {
-    // TODO: Implement process() method.
+//     TODO: Implement process() method.
   }
 }
