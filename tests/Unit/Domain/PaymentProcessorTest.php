@@ -45,7 +45,9 @@ class PaymentProcessorTest extends TestCase {
       'validationPort' => $validationPort,
       'validationTimeout' => $validationTimeout,
       'validationExpectedResponse' => $validationExpectedResponse,
-      'invalidExpectedResponse' => $invalidExpectedResponse
+      'invalidExpectedResponse' => $invalidExpectedResponse,
+      'ipnDataStore' => new \stdClass(),
+      'logger' => new \stdClass()
     ]);
 
     $processor->process(['id' => '1']);

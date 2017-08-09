@@ -22,6 +22,8 @@ class PaymentProcessor {
     $validationTimeout = 30;
     $validationExpectedResponse = "VERIFIED";
     $invalidExpectedResponse = "INVALID";
+    $ipnDataStore = new \stdClass();
+    $logger = new \stdClass();
 
     $this->responder->create([
       'ipnVars' => $payment,
@@ -31,7 +33,9 @@ class PaymentProcessor {
       'validationPort' => $validationPort,
       'validationTimeout' => $validationTimeout,
       'validationExpectedResponse' => $validationExpectedResponse,
-      'invalidExpectedResponse' => $invalidExpectedResponse
+      'invalidExpectedResponse' => $invalidExpectedResponse,
+      'ipnDataStore' => $ipnDataStore,
+      'logger' => $logger
     ]);
   }
 }
