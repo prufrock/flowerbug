@@ -53,6 +53,13 @@ class PaymentProcessor {
         . " message is " . $this->responder->get('txn_id') . ".");
       return;
     }
+
+    if($this->responder->hasBeenReceivedBefore()){
+      $this->recordAMessageInTheLog(__METHOD__ . ":" . __LINE__ . ":"
+        . "an IPN message has been received before. The "
+        . " message is " . $this->responder->get('txn_id') . ".");
+      return;
+    }
   }
 
   private function recordAMessageInTheLog($message) {
