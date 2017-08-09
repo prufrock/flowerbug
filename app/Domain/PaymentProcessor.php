@@ -1,5 +1,7 @@
 <?php namespace App\Domain;
 
+use Illuminate\Support\Facades\Log;
+
 class PaymentProcessor {
 
   private $responder;
@@ -37,5 +39,16 @@ class PaymentProcessor {
       'ipnDataStore' => $ipnDataStore,
       'logger' => $logger
     ]);
+
+    if(!$this->responder->isVerified()){
+      $this->recordAMessageInTheLog(__METHOD__ . ":" . __LINE__ . ":"
+        . "an IPN message was received but couldn't be verified. The "
+        . " message is " . $this->responder->get('txn_id') . ".");
+      return;
+    }
+  }
+
+  private function recordAMessageInTheLog($message) {
+    Log::info($message);
   }
 }

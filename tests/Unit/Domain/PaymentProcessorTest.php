@@ -50,6 +50,8 @@ class PaymentProcessorTest extends TestCase {
       'logger' => new \stdClass()
     ]);
 
+    $ipnResponder->shouldReceive('isVerified')->once()->andReturn(true);
+
     $processor->process(['id' => '1']);
   }
 }
