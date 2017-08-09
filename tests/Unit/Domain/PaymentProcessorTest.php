@@ -34,6 +34,8 @@ class PaymentProcessorTest extends TestCase {
     $validationUrl = 'ssl://www.paypal.com';
     $validationPort = 443;
     $validationTimeout = 30;
+    $validationExpectedResponse = "VERIFIED";
+    $invalidExpectedResponse = "INVALID";
 
     $ipnResponder->shouldReceive('create')->once()->with([
       'ipnVars' => ['id' => '1'],
@@ -41,7 +43,9 @@ class PaymentProcessorTest extends TestCase {
       'validationCmd' => $validationCmd,
       'validationUrl' => $validationUrl,
       'validationPort' => $validationPort,
-      'validationTimeout' => $validationTimeout
+      'validationTimeout' => $validationTimeout,
+      'validationExpectedResponse' => $validationExpectedResponse,
+      'invalidExpectedResponse' => $invalidExpectedResponse
     ]);
 
     $processor->process(['id' => '1']);

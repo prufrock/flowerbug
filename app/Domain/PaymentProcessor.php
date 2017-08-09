@@ -20,6 +20,8 @@ class PaymentProcessor {
     $validationUrl = 'ssl://www.paypal.com';
     $validationPort = 443;
     $validationTimeout = 30;
+    $validationExpectedResponse = "VERIFIED";
+    $invalidExpectedResponse = "INVALID";
 
     $this->responder->create([
       'ipnVars' => $payment,
@@ -27,7 +29,9 @@ class PaymentProcessor {
       'validationCmd' => $validationCmd,
       'validationUrl' => $validationUrl,
       'validationPort' => $validationPort,
-      'validationTimeout' => $validationTimeout
+      'validationTimeout' => $validationTimeout,
+      'validationExpectedResponse' => $validationExpectedResponse,
+      'invalidExpectedResponse' => $invalidExpectedResponse
     ]);
   }
 }
