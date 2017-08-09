@@ -54,6 +54,7 @@ class PaymentProcessorTest extends TestCase {
     $ipnResponder->shouldReceive('isValid')->once()->andReturn(true);
     $ipnResponder->shouldReceive('hasBeenReceivedBefore')->once()->andReturn(false);
     $ipnResponder->shouldReceive('get')->withAnyArgs();
+    $ipnResponder->shouldReceive('persist')->once();
 
     $processor->process(['id' => '1']);
   }

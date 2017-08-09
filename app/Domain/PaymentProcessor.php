@@ -64,6 +64,8 @@ class PaymentProcessor {
     $this->recordAMessageInTheLog(__METHOD__ . ":" . __LINE__ . ":"
       . "an IPN message was received succesfully. The "
       . " message is " . $this->responder->get('txn_id') . ".");
+
+    $this->responder->persist();
   }
 
   private function recordAMessageInTheLog($message) {
