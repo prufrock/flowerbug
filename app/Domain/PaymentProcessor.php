@@ -16,7 +16,12 @@ class PaymentProcessor {
     $validationHeader .= "Content-Type: "
       . "application/x-www-form-urlencoded\r\n";
     $validationHeader .= "Content-Length: <contentlength>\r\n\r\n";
+    $validationCmd = 'cmd=_notify-validate';
 
-    $this->responder->create(['ipnVars' => $payment, 'validationHeader' => $validationHeader]);
+    $this->responder->create([
+      'ipnVars' => $payment,
+      'validationHeader' => $validationHeader,
+      'validationCmd' => $validationCmd
+    ]);
   }
 }

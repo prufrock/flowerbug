@@ -30,9 +30,10 @@ class PaymentProcessorTest extends TestCase {
     $validationHeader .= "Content-Type: "
       . "application/x-www-form-urlencoded\r\n";
     $validationHeader .= "Content-Length: <contentlength>\r\n\r\n";
+    $validationCmd = 'cmd=_notify-validate';
 
     $ipnResponder->shouldReceive('create')->once()->with(
-      ['ipnVars' => ['id' => '1'], 'validationHeader' => $validationHeader]
+      ['ipnVars' => ['id' => '1'], 'validationHeader' => $validationHeader, 'validationCmd' => $validationCmd]
     );
 
     $processor->process(['id' => '1']);
