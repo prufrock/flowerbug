@@ -11,6 +11,6 @@ class PaymentProcessor {
 
   public function process($payment) {
 
-    $this->responder->create();
+    $this->responder->create(['ipnVars' => $payment]);
   }
 }

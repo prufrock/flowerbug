@@ -25,8 +25,8 @@ class PaymentProcessorTest extends TestCase {
     $ipnResponder = m::mock('\Application\Domain\IpnResponder');
     $processor = new \App\Domain\PaymentProcessor($ipnResponder);
 
-    $ipnResponder->shouldReceive('create')->once();
+    $ipnResponder->shouldReceive('create')->once()->with(['ipnVars' => ['id' => '1']]);
 
-    $processor->process([]);
+    $processor->process(['id' => '1']);
   }
 }
