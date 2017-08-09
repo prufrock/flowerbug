@@ -17,11 +17,13 @@ class PaymentProcessor {
       . "application/x-www-form-urlencoded\r\n";
     $validationHeader .= "Content-Length: <contentlength>\r\n\r\n";
     $validationCmd = 'cmd=_notify-validate';
+    $validationUrl = 'ssl://www.paypal.com';
 
     $this->responder->create([
       'ipnVars' => $payment,
       'validationHeader' => $validationHeader,
-      'validationCmd' => $validationCmd
+      'validationCmd' => $validationCmd,
+      'validationUrl' => $validationUrl
     ]);
   }
 }
