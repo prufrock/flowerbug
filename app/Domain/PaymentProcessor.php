@@ -2,7 +2,15 @@
 
 class PaymentProcessor {
 
+  private $responder;
+
+  public function __construct($responder=NULL) {
+
+    $this->responder = $responder;
+  }
+
   public function process($payment) {
-//     TODO: Implement process() method.
+
+    $this->responder->create();
   }
 }
