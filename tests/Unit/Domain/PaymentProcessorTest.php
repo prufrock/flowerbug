@@ -25,7 +25,15 @@ class PaymentProcessorTest extends TestCase {
     $ipnResponder = m::mock('\Application\Domain\IpnResponder');
     $processor = new \App\Domain\PaymentProcessor($ipnResponder);
 
-    $ipnResponder->shouldReceive('create')->once()->with(['ipnVars' => ['id' => '1']]);
+    $validationHeader = "";
+    $validationHeader .= "POST /cgi-bin/webscr HTTP/1.0\r\n";
+    $validationHeader .= "Content-Type: "
+      . "application/x-www-form-urlencoded\r\n";
+    $validationHeader .= "Content-Length: <contentlength>\r\n\r\n";
+
+    $ipnResponder->shouldReceive('create')->once()->with(
+      ['ipnVars' => ['id' => '1'], 'validationHeader' => $validationHeader]
+    );
 
     $processor->process(['id' => '1']);
   }
