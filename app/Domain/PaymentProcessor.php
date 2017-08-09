@@ -18,12 +18,16 @@ class PaymentProcessor {
     $validationHeader .= "Content-Length: <contentlength>\r\n\r\n";
     $validationCmd = 'cmd=_notify-validate';
     $validationUrl = 'ssl://www.paypal.com';
+    $validationPort = 443;
+    $validationTimeout = 30;
 
     $this->responder->create([
       'ipnVars' => $payment,
       'validationHeader' => $validationHeader,
       'validationCmd' => $validationCmd,
-      'validationUrl' => $validationUrl
+      'validationUrl' => $validationUrl,
+      'validationPort' => $validationPort,
+      'validationTimeout' => $validationTimeout
     ]);
   }
 }
