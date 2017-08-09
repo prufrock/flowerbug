@@ -46,6 +46,13 @@ class PaymentProcessor {
         . " message is " . $this->responder->get('txn_id') . ".");
       return;
     }
+
+    if(!$this->responder->isValid()){
+      $this->recordAMessageInTheLog(__METHOD__ . ":" . __LINE__ . ":"
+        . "an IPN message was received but couldn't be validated. The "
+        . " message is " . $this->responder->get('txn_id') . ".");
+      return;
+    }
   }
 
   private function recordAMessageInTheLog($message) {
