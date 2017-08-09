@@ -66,6 +66,13 @@ class PaymentProcessor {
       . " message is " . $this->responder->get('txn_id') . ".");
 
     $this->responder->persist();
+    $itemsPurchased = $this->responder->getItemsPurchased();
+    if(empty($itemsPurchased)){
+      $this->_recordAMessageInTheLog(__METHOD__ . ":" . __LINE__ . ":"
+        . "an IPN message was received succesfully. The "
+        . " message is " . $this->responder->get('txn_id') . ": no items were purchased.");
+      return;
+    }
   }
 
   private function recordAMessageInTheLog($message) {
