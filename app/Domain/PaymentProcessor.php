@@ -77,8 +77,7 @@ class PaymentProcessor {
       return;
     }
 
-    $this->responder->getBuyersEmailAddress();
-    $this->orderFullFiller->fulfill($itemsPurchased);
+    $this->orderFullFiller->fulfill($itemsPurchased, $this->responder->getBuyersEmailAddress());
   }
 
   private function recordAMessageInTheLog($message) {
