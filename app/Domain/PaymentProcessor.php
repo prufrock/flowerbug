@@ -6,9 +6,12 @@ class PaymentProcessor {
 
   private $responder;
 
-  public function __construct($responder = NULL) {
+  private $orderFullFiller;
+
+  public function __construct($responder = NULL, $orderFullFiller = NULL) {
 
     $this->responder = $responder;
+    $this->orderFullFiller = $orderFullFiller;
   }
 
   public function process($payment) {
@@ -73,6 +76,7 @@ class PaymentProcessor {
         . " message is " . $this->responder->get('txn_id') . ": no items were purchased.");
       return;
     }
+    $this->orderFullFiller->fulfill($itemsPurchased);
   }
 
   private function recordAMessageInTheLog($message) {

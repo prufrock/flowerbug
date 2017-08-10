@@ -23,7 +23,8 @@ class PaymentProcessorTest extends TestCase {
   public function testValidMessage() {
 
     $ipnResponder = m::mock('\Application\Domain\IpnResponder');
-    $processor = new \App\Domain\PaymentProcessor($ipnResponder);
+    $order = m::mock('\Application\Domain\Order');
+    $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order);
 
     $validationHeader = "";
     $validationHeader .= "POST /cgi-bin/webscr HTTP/1.0\r\n";
@@ -56,6 +57,8 @@ class PaymentProcessorTest extends TestCase {
     $ipnResponder->shouldReceive('get')->withAnyArgs();
     $ipnResponder->shouldReceive('persist')->once();
     $ipnResponder->shouldReceive('getItemsPurchased')->once()->andReturn(['technique201708']);
+
+    $order->shouldReceive('fulfill')->with(['technique201708'])->once();
 
     $processor->process(['id' => '1']);
   }
