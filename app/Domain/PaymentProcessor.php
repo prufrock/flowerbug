@@ -76,6 +76,8 @@ class PaymentProcessor {
         . " message is " . $this->responder->get('txn_id') . ": no items were purchased.");
       return;
     }
+
+    $this->responder->getBuyersEmailAddress();
     $this->orderFullFiller->fulfill($itemsPurchased);
   }
 
