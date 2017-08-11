@@ -61,6 +61,6 @@ class PaymentProcessorTest extends TestCase {
 
     $order->shouldReceive('fulfill')->with(['technique201708'], 'd.kanen+flowerbugtest@gmail.com')->once();
 
-    $processor->process(['id' => '1']);
+    $this->assertTrue($processor->process(['id' => '1']));
   }
 }

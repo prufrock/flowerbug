@@ -78,6 +78,8 @@ class PaymentProcessor {
     }
 
     $this->orderFullFiller->fulfill($itemsPurchased, $this->responder->getBuyersEmailAddress());
+
+    return true;
   }
 
   private function recordAMessageInTheLog($message) {
