@@ -47,25 +47,25 @@ class PaymentProcessor {
       $this->recordAMessageInTheLog(__METHOD__ . ":" . __LINE__ . ":"
         . "an IPN message was received but couldn't be verified. The "
         . " message is " . $this->responder->get('txn_id') . ".");
-      return;
+      return false;
     }
 
     if(!$this->responder->isValid()){
       $this->recordAMessageInTheLog(__METHOD__ . ":" . __LINE__ . ":"
         . "an IPN message was received but couldn't be validated. The "
         . " message is " . $this->responder->get('txn_id') . ".");
-      return;
+      return false;
     }
 
     if($this->responder->hasBeenReceivedBefore()){
       $this->recordAMessageInTheLog(__METHOD__ . ":" . __LINE__ . ":"
         . "an IPN message has been received before. The "
         . " message is " . $this->responder->get('txn_id') . ".");
-      return;
+      return false;
     }
 
     $this->recordAMessageInTheLog(__METHOD__ . ":" . __LINE__ . ":"
-      . "an IPN message was received succesfully. The "
+      . "an IPN message was received successfully. The "
       . " message is " . $this->responder->get('txn_id') . ".");
 
     $this->responder->persist();
