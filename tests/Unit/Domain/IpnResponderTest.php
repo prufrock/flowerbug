@@ -1,17 +1,14 @@
 <?php namespace Tests\Unit\Domain;
 
+use App\Domain\IpnResponder;
 use Tests\TestCase;
 use Mockery as m;
 
 class IpnResponderTest extends TestCase {
 
-  private function containerOverride($fullClassName, $override) {
-    $this->app->bind($fullClassName, $override);
-  }
-
   public function testNew() {
 
-    $this->containerOverride('\App\Domain\FilePointerProxy', m::mock('\App\Domain\FilePointerProxy'));
+    $this->app->bind('\App\Domain\FilePointerProxy', m::mock('\App\Domain\FilePointerProxy'));
     $responder = $this->app->make(\App\Domain\IpnResponder::class);
 
     $this->assertInstanceOf(
@@ -36,23 +33,25 @@ class IpnResponderTest extends TestCase {
     $invalidExpectedResponse = "INVALID";
     $ipnDataStore = new \stdClass();
     $logger = new \stdClass();
+    $errno = null;
+    $errstr = null;
 
     $fproxy = m::mock('\App\Domain\FilePointerProxy');
-    $this->containerOverride('\App\Domain\FilePointerProxy', $fproxy);
+    $fproxy->shouldReceive('fsockopen')
+      ->with(
+        $validationUrl,
+        $validationPort,
+        $errno,
+        $errstr,
+        $validationTimeout
+      )->once();
 
-    $responder = $this->app->make(\App\Domain\IpnResponder::class);
+    $responder = new IpnResponder($fproxy);
 
-    $responder->create([
-      'ipnVars' => $payment,
-      'validationHeader' => $validationHeader,
-      'validationCmd' => $validationCmd,
+    $responder->initialize([
       'validationUrl' => $validationUrl,
       'validationPort' => $validationPort,
-      'validationTimeout' => $validationTimeout,
-      'validationExpectedResponse' => $validationExpectedResponse,
-      'invalidExpectedResponse' => $invalidExpectedResponse,
-      'ipnDataStore' => $ipnDataStore,
-      'logger' => $logger
+      'validationTimeout' => $validationTimeout
     ]);
 
     $this->assertTrue($responder->isVerified());

@@ -2,29 +2,38 @@
 
 class IpnResponder {
 
-  private $ipnVars;
-  private $validationHeader;
-  private $validationCmd;
+  private $fproxy;
+
   private $validationUrl;
+
   private $validationPort;
+
   private $validationTimeout;
-  private $validationExpectedResponse;
-  private $invalidExpectedResponse;
-  private $ipnDataStore;
-  private $logger;
 
   public function __construct(\App\Domain\FilePointerProxy $fproxy) {
 
+    $this->fproxy = $fproxy;
   }
 
-  public function create($params) {
+  public function initialize($arguments) {
 
-    foreach($params as $key => $value) {
-      $this->$key = $value;
-    }
+    $this->validationUrl = $arguments['validationUrl'];
+    $this->validationPort = $arguments['validationPort'];
+    $this->validationTimeout = $arguments['validationTimeout'];
   }
 
   public function isVerified() {
+
+    $errno = null;
+    $errstr = null;
+
+    $this->fproxy->fsockopen(
+      $this->validationUrl,
+      $this->validationPort,
+      $errno,
+      $errstr,
+      $this->validationTimeout
+    );
 
     return true;
   }
