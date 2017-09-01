@@ -16,9 +16,15 @@ class IpnResponder {
 
   private $validationExpectedResponse;
 
-  public function __construct(\App\Domain\FilePointerProxy $fproxy) {
+  private $ipnDataStore;
+
+  public function __construct(
+    \App\Domain\FilePointerProxy $fproxy,
+    \App\Domain\IpnDataStore $ipnDataStore
+  ) {
 
     $this->fproxy = $fproxy;
+    $this->ipnDataStore = $ipnDataStore;
   }
 
   public function initialize($arguments) {
@@ -44,11 +50,11 @@ class IpnResponder {
       $req .= "&$key=$value";
     }
 
-    $header ="POST /cgi-bin/webscr HTTP/1.1\r\n";
-    $header .="Content-Type: application/x-www-form-urlencoded\r\n";
-    $header .="Content-Length: " . strlen($req) . "\r\n";
-    $header .="Host: www.paypal.com\r\n";
-    $header .="Connection: close\r\n\r\n";
+    $header = "POST /cgi-bin/webscr HTTP/1.1\r\n";
+    $header .= "Content-Type: application/x-www-form-urlencoded\r\n";
+    $header .= "Content-Length: " . strlen($req) . "\r\n";
+    $header .= "Host: www.paypal.com\r\n";
+    $header .= "Connection: close\r\n\r\n";
 
     $fp = $this->fproxy->fsockopen(
       $this->validationUrl,
@@ -58,13 +64,13 @@ class IpnResponder {
       $this->validationTimeout
     );
 
-    if(!$fp) {
+    if (!$fp) {
       return false;
     } else {
       $this->fproxy->fputs($fp, $header . $req);
-      while(!$this->fproxy->feof($fp)) {
+      while (!$this->fproxy->feof($fp)) {
         $res = $this->fproxy->fgets($fp, 1024);
-        if(strcmp($res, $this->validationExpectedResponse) == 0) {
+        if (strcmp($res, $this->validationExpectedResponse) == 0) {
           $this->fproxy->fclose(true);
           return true;
         } else {
@@ -77,5 +83,9 @@ class IpnResponder {
 
   public function isValid() {
     return true;
+  }
+
+  public function hasBeenReceivedBefore($ipnVars) {
+    return $this->ipnDataStore->doesMessageExist($ipnVars);
   }
 }

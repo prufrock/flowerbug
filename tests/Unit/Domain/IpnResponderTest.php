@@ -57,8 +57,8 @@ class IpnResponderTest extends TestCase {
     $fproxy->shouldReceive('feof')->andReturn(false)->once();
     $fproxy->shouldReceive('fgets')->with(true, 1024)->andReturn("VERIFIED")->once();
     $fproxy->shouldReceive('fclose')->with(true)->once();
-
-    $responder = new IpnResponder($fproxy);
+    $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
+    $responder = new IpnResponder($fproxy, $ipnDataStore);
 
     $responder->initialize(
       [
@@ -88,8 +88,8 @@ class IpnResponderTest extends TestCase {
         $errstr,
         30
       )->andReturn(false)->once();
-
-    $responder = new IpnResponder($fproxy);
+    $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
+    $responder = new IpnResponder($fproxy, $ipnDataStore);
 
     $responder->initialize(
       [
@@ -139,8 +139,8 @@ class IpnResponderTest extends TestCase {
     $fproxy->shouldReceive('feof')->andReturn(false)->once();
     $fproxy->shouldReceive('fgets')->with(true, 1024)->andReturn("INVALID")->once();
     $fproxy->shouldReceive('fclose')->with(true)->once();
-
-    $responder = new IpnResponder($fproxy);
+    $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
+    $responder = new IpnResponder($fproxy, $ipnDataStore);
 
     $responder->initialize(
       [
@@ -157,9 +157,32 @@ class IpnResponderTest extends TestCase {
   }
 
   public function testIsValid() {
+
+    $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
     $fproxy = m::mock('\App\Domain\FilePointerProxy');
-    $responder = new IpnResponder($fproxy);
+    $responder = new IpnResponder($fproxy, $ipnDataStore);
 
     $this->assertTrue($responder->isValid());
+  }
+
+  public function testHasBeenReceivedBefore() {
+
+    $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
+    $ipnDataStore->shouldReceive('doesMessageExist')->with(['txn_id' => 1])->andReturn(true)->once();
+    $fproxy = m::mock('\App\Domain\FilePointerProxy');
+    $responder = new IpnResponder($fproxy, $ipnDataStore);
+
+    $responder->initialize(
+      [
+        'ipnVars' => ['txn_id' => 1],
+        'validationUrl' => 'ssl://www.paypal.com',
+        'validationPort' => 443,
+        'validationTimeout' => 30,
+        'validationCmd' => 'cmd=_notify-validate',
+        'validationExpectedResponse' => "VERIFIED"
+      ]
+    );
+
+    $this->assertTrue($responder->hasBeenReceivedBefore(['txn_id' => 1]));
   }
 }
