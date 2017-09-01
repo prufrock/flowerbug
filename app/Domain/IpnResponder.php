@@ -14,6 +14,8 @@ class IpnResponder {
 
   private $ipnVars;
 
+  private $validationExpectedResponse;
+
   public function __construct(\App\Domain\FilePointerProxy $fproxy) {
 
     $this->fproxy = $fproxy;
@@ -25,6 +27,7 @@ class IpnResponder {
     $this->validationPort = $arguments['validationPort'];
     $this->validationTimeout = $arguments['validationTimeout'];
     $this->validationCmd = $arguments['validationCmd'];
+    $this->validationExpectedResponse = $arguments['validationExpectedResponse'];
     $this->ipnVars = $arguments['ipnVars'];
   }
 
@@ -58,9 +61,17 @@ class IpnResponder {
     if(!$fp) {
       return false;
     } else {
-      $this->fproxy->fputs ($fp, $header . $req);
+      $this->fproxy->fputs($fp, $header . $req);
+      while(!$this->fproxy->feof($fp)) {
+        $res = $this->fproxy->fgets($fp, 1024);
+        if(strcmp($res, $this->validationExpectedResponse) == 0) {
+          $this->fproxy->fclose(true);
+          return true;
+        } else {
+          $this->fproxy->fclose(true);
+          return false;
+        }
+      }
     }
-
-    return true;
   }
 }

@@ -25,9 +25,6 @@ class IpnResponderTest extends TestCase {
     $validationPort = 443;
     $validationTimeout = 30;
     $validationExpectedResponse = "VERIFIED";
-    $invalidExpectedResponse = "INVALID";
-    $ipnDataStore = new \stdClass();
-    $logger = new \stdClass();
     $errno = null;
     $errstr = null;
 
@@ -57,6 +54,9 @@ class IpnResponderTest extends TestCase {
       true,
       $header
     )->once();
+    $fproxy->shouldReceive('feof')->andReturn(false)->once();
+    $fproxy->shouldReceive('fgets')->with(true, 1024)->andReturn("VERIFIED")->once();
+    $fproxy->shouldReceive('fclose')->with(true)->once();
 
     $responder = new IpnResponder($fproxy);
 
@@ -66,7 +66,8 @@ class IpnResponderTest extends TestCase {
         'validationUrl' => $validationUrl,
         'validationPort' => $validationPort,
         'validationTimeout' => $validationTimeout,
-        'validationCmd' => $validationCmd
+        'validationCmd' => $validationCmd,
+        'validationExpectedResponse' => $validationExpectedResponse
       ]
     );
 
@@ -81,9 +82,6 @@ class IpnResponderTest extends TestCase {
     $validationPort = 443;
     $validationTimeout = 30;
     $validationExpectedResponse = "VERIFIED";
-    $invalidExpectedResponse = "INVALID";
-    $ipnDataStore = new \stdClass();
-    $logger = new \stdClass();
     $errno = null;
     $errstr = null;
 
@@ -105,7 +103,65 @@ class IpnResponderTest extends TestCase {
         'validationUrl' => $validationUrl,
         'validationPort' => $validationPort,
         'validationTimeout' => $validationTimeout,
-        'validationCmd' => $validationCmd
+        'validationCmd' => $validationCmd,
+        'validationExpectedResponse' => $validationExpectedResponse
+      ]
+    );
+
+    $this->assertFalse($responder->isVerified());
+  }
+
+  public function testIsVerifiedInvalidReponse() {
+
+    $ipnVars = ['txn_id' => 1];
+    $validationCmd = 'cmd=_notify-validate';
+    $validationUrl = 'ssl://www.paypal.com';
+    $validationPort = 443;
+    $validationTimeout = 30;
+    $validationExpectedResponse = "VERIFIED";
+    $errno = null;
+    $errstr = null;
+
+    $req = $validationCmd;
+    foreach ($ipnVars as $key => $value) {
+      $value = urlencode(stripslashes($value));
+      $req .= "&$key=$value";
+    }
+
+    $header ="POST /cgi-bin/webscr HTTP/1.1\r\n";
+    $header .="Content-Type: application/x-www-form-urlencoded\r\n";
+    $header .="Content-Length: " . strlen($req) . "\r\n";
+    $header .="Host: www.paypal.com\r\n";
+    $header .="Connection: close\r\n\r\n";
+    $header .= $req;
+
+    $fproxy = m::mock('\App\Domain\FilePointerProxy');
+    $fproxy->shouldReceive('fsockopen')
+      ->with(
+        $validationUrl,
+        $validationPort,
+        $errno,
+        $errstr,
+        $validationTimeout
+      )->andReturn(true)->once();
+    $fproxy->shouldReceive('fputs')->with(
+      true,
+      $header
+    )->once();
+    $fproxy->shouldReceive('feof')->andReturn(false)->once();
+    $fproxy->shouldReceive('fgets')->with(true, 1024)->andReturn("INVALID")->once();
+    $fproxy->shouldReceive('fclose')->with(true)->once();
+
+    $responder = new IpnResponder($fproxy);
+
+    $responder->initialize(
+      [
+        'ipnVars' => $ipnVars,
+        'validationUrl' => $validationUrl,
+        'validationPort' => $validationPort,
+        'validationTimeout' => $validationTimeout,
+        'validationCmd' => $validationCmd,
+        'validationExpectedResponse' => $validationExpectedResponse
       ]
     );
 
