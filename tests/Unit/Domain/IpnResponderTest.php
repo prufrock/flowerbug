@@ -76,35 +76,29 @@ class IpnResponderTest extends TestCase {
 
   public function testIsVerifiedUnableToGetAFileHandle() {
 
-    $ipnVars = ['txn_id' => 1];
-    $validationCmd = 'cmd=_notify-validate';
-    $validationUrl = 'ssl://www.paypal.com';
-    $validationPort = 443;
-    $validationTimeout = 30;
-    $validationExpectedResponse = "VERIFIED";
     $errno = null;
     $errstr = null;
 
     $fproxy = m::mock('\App\Domain\FilePointerProxy');
     $fproxy->shouldReceive('fsockopen')
       ->with(
-        $validationUrl,
-        $validationPort,
+        'ssl://www.paypal.com',
+        443,
         $errno,
         $errstr,
-        $validationTimeout
+        30
       )->andReturn(false)->once();
 
     $responder = new IpnResponder($fproxy);
 
     $responder->initialize(
       [
-        'ipnVars' => $ipnVars,
-        'validationUrl' => $validationUrl,
-        'validationPort' => $validationPort,
-        'validationTimeout' => $validationTimeout,
-        'validationCmd' => $validationCmd,
-        'validationExpectedResponse' => $validationExpectedResponse
+        'ipnVars' => ['txn_id' => 1],
+        'validationUrl' => 'ssl://www.paypal.com',
+        'validationPort' => 443,
+        'validationTimeout' => 30,
+        'validationCmd' => 'cmd=_notify-validate',
+        'validationExpectedResponse' => "VERIFIED"
       ]
     );
 
@@ -113,17 +107,11 @@ class IpnResponderTest extends TestCase {
 
   public function testIsVerifiedInvalidReponse() {
 
-    $ipnVars = ['txn_id' => 1];
-    $validationCmd = 'cmd=_notify-validate';
-    $validationUrl = 'ssl://www.paypal.com';
-    $validationPort = 443;
-    $validationTimeout = 30;
-    $validationExpectedResponse = "VERIFIED";
     $errno = null;
     $errstr = null;
 
-    $req = $validationCmd;
-    foreach ($ipnVars as $key => $value) {
+    $req = 'cmd=_notify-validate';
+    foreach (['txn_id' => 1] as $key => $value) {
       $value = urlencode(stripslashes($value));
       $req .= "&$key=$value";
     }
@@ -138,11 +126,11 @@ class IpnResponderTest extends TestCase {
     $fproxy = m::mock('\App\Domain\FilePointerProxy');
     $fproxy->shouldReceive('fsockopen')
       ->with(
-        $validationUrl,
-        $validationPort,
+        'ssl://www.paypal.com',
+        443,
         $errno,
         $errstr,
-        $validationTimeout
+        30
       )->andReturn(true)->once();
     $fproxy->shouldReceive('fputs')->with(
       true,
@@ -156,12 +144,12 @@ class IpnResponderTest extends TestCase {
 
     $responder->initialize(
       [
-        'ipnVars' => $ipnVars,
-        'validationUrl' => $validationUrl,
-        'validationPort' => $validationPort,
-        'validationTimeout' => $validationTimeout,
-        'validationCmd' => $validationCmd,
-        'validationExpectedResponse' => $validationExpectedResponse
+        'ipnVars' => ['txn_id' => 1],
+        'validationUrl' => 'ssl://www.paypal.com',
+        'validationPort' => 443,
+        'validationTimeout' => 30,
+        'validationCmd' => 'cmd=_notify-validate',
+        'validationExpectedResponse' => "VERIFIED"
       ]
     );
 
