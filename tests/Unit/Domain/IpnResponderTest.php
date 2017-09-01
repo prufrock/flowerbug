@@ -155,4 +155,11 @@ class IpnResponderTest extends TestCase {
 
     $this->assertFalse($responder->isVerified());
   }
+
+  public function testIsValid() {
+    $fproxy = m::mock('\App\Domain\FilePointerProxy');
+    $responder = new IpnResponder($fproxy);
+
+    $this->assertTrue($responder->isValid());
+  }
 }

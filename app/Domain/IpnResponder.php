@@ -74,4 +74,8 @@ class IpnResponder {
       }
     }
   }
+
+  public function isValid() {
+    return true;
+  }
 }
