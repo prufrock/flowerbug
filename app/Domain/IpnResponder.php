@@ -88,4 +88,9 @@ class IpnResponder {
   public function hasBeenReceivedBefore($ipnVars) {
     return $this->ipnDataStore->doesMessageExist($ipnVars);
   }
+
+  public function persist() {
+
+    return $this->ipnDataStore->storeMessage(['txn_id' => 1]);
+  }
 }

@@ -185,4 +185,14 @@ class IpnResponderTest extends TestCase {
 
     $this->assertTrue($responder->hasBeenReceivedBefore(['txn_id' => 1]));
   }
+
+  public function testPersist() {
+
+    $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
+    $ipnDataStore->shouldReceive('storeMessage')->with(['txn_id' => 1])->andReturn(true);
+    $fproxy = m::mock('\App\Domain\FilePointerProxy');
+    $responder = new IpnResponder($fproxy, $ipnDataStore);
+
+    $this->assertTrue($responder->persist());
+  }
 }
