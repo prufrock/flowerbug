@@ -214,4 +214,9 @@ class IpnResponderTest extends TestCase {
 
     $this->assertEquals(1, $responder->get('txn_id'));
   }
+
+  public function testGetBuyersEmailAddress() {
+
+    $this->assertEquals('buyer@example.com', (new IpnResponder(m::mock('\App\Domain\FilePointerProxy'), m::mock('\App\Domain\IpnDataStore')))->getBuyersEmailAddress());
+  }
 }

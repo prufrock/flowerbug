@@ -101,4 +101,9 @@ class IpnResponder {
 
     return $this->ipnVars[$key];
   }
+
+  public function getBuyersEmailAddress() {
+
+    return 'buyer@example.com';
+  }
 }
