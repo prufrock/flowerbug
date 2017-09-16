@@ -97,8 +97,8 @@ class IpnResponderTest extends TestCase {
         'validationUrl' => 'ssl://www.paypal.com',
         'validationPort' => 443,
         'validationTimeout' => 30,
-        'validationCmd' => 'cmd=_notify-validate',
-        'validationExpectedResponse' => "VERIFIED"
+        'validationCmd' => '',
+        'validationExpectedResponse' => ''
       ]
     );
 
@@ -149,7 +149,7 @@ class IpnResponderTest extends TestCase {
         'validationPort' => 443,
         'validationTimeout' => 30,
         'validationCmd' => 'cmd=_notify-validate',
-        'validationExpectedResponse' => "VERIFIED"
+        'validationExpectedResponse' => 'VERIFIED'
       ]
     );
 
@@ -174,12 +174,12 @@ class IpnResponderTest extends TestCase {
 
     $responder->initialize(
       [
-        'ipnVars' => ['txn_id' => 1],
-        'validationUrl' => 'ssl://www.paypal.com',
-        'validationPort' => 443,
-        'validationTimeout' => 30,
-        'validationCmd' => 'cmd=_notify-validate',
-        'validationExpectedResponse' => "VERIFIED"
+        'ipnVars' => '',
+        'validationUrl' => '',
+        'validationPort' => 0,
+        'validationTimeout' => 0,
+        'validationCmd' => '',
+        'validationExpectedResponse' => ''
       ]
     );
 
