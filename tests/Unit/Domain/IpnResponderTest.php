@@ -217,6 +217,30 @@ class IpnResponderTest extends TestCase {
 
   public function testGetBuyersEmailAddress() {
 
-    $this->assertEquals('buyer@example.com', (new IpnResponder(m::mock('\App\Domain\FilePointerProxy'), m::mock('\App\Domain\IpnDataStore')))->getBuyersEmailAddress());
+    $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
+    $fproxy = m::mock('\App\Domain\FilePointerProxy');
+    $responder = new IpnResponder($fproxy, $ipnDataStore);
+    $responder->initialize(
+      [
+        'ipnVars' => ['payer_email' => 'buyer@example.com'],
+        'validationUrl' => '',
+        'validationPort' => 0,
+        'validationTimeout' => 0,
+        'validationCmd' => '',
+        'validationExpectedResponse' => ''
+      ]
+    );
+
+    $this->assertEquals('buyer@example.com', $responder->getBuyersEmailAddress());
+  }
+
+  public function testGetBuyersEmailAddressWithNoEmailAddress() {
+
+    $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
+    $fproxy = m::mock('\App\Domain\FilePointerProxy');
+    $responder = new IpnResponder($fproxy, $ipnDataStore);
+
+    $this->assertNotNull($responder->getBuyersEmailAddress());
+    $this->assertEquals('', $responder->getBuyersEmailAddress());
   }
 }

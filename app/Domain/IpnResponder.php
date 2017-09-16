@@ -104,6 +104,6 @@ class IpnResponder {
 
   public function getBuyersEmailAddress() {
 
-    return 'buyer@example.com';
+    return array_get($this->ipnVars, 'payer_email', '');
   }
 }
