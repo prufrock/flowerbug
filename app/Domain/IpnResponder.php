@@ -19,6 +19,7 @@ class IpnResponder {
   private $ipnDataStore;
 
   public function __construct(
+
     \App\Domain\FilePointerProxy $fproxy,
     \App\Domain\IpnDataStore $ipnDataStore
   ) {
@@ -82,10 +83,12 @@ class IpnResponder {
   }
 
   public function isValid() {
+
     return true;
   }
 
   public function hasBeenReceivedBefore($ipnVars) {
+
     return $this->ipnDataStore->doesMessageExist($ipnVars);
   }
 
