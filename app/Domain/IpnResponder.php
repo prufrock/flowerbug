@@ -89,8 +89,8 @@ class IpnResponder {
     return $this->ipnDataStore->doesMessageExist($ipnVars);
   }
 
-  public function persist() {
+  public function persist($ipnVars) {
 
-    return $this->ipnDataStore->storeMessage(['txn_id' => 1]);
+    return $this->ipnDataStore->storeMessage($ipnVars);
   }
 }
