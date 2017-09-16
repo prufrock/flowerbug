@@ -106,4 +106,24 @@ class IpnResponder {
 
     return array_get($this->ipnVars, 'payer_email', '');
   }
+
+  public function getItemsPurchased() {
+
+    $items = array();
+    if(!is_array($this->ipnVars)){
+      return $items;
+    }
+    $findItemKeys = function($key, $value) {
+      if(strpos($key, "item_number") !== FALSE){
+        return $value;
+      }
+    };
+    $items = array_filter(
+      array_map( $findItemKeys
+        , array_keys($this->ipnVars)
+        , array_values($this->ipnVars)
+      )
+    );
+    return $items;
+  }
 }

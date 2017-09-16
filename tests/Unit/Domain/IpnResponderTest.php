@@ -243,4 +243,23 @@ class IpnResponderTest extends TestCase {
     $this->assertNotNull($responder->getBuyersEmailAddress());
     $this->assertEquals('', $responder->getBuyersEmailAddress());
   }
+
+  public function testGetItemsPurchased() {
+
+    $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
+    $fproxy = m::mock('\App\Domain\FilePointerProxy');
+    $responder = new IpnResponder($fproxy, $ipnDataStore);
+    $responder->initialize(
+      [
+        'ipnVars' => ['item_number_1' => 'technique201707', 'item_number_2' => 'technique201708'],
+        'validationUrl' => '',
+        'validationPort' => 0,
+        'validationTimeout' => 0,
+        'validationCmd' => '',
+        'validationExpectedResponse' => ''
+      ]
+    );
+
+    $this->assertEquals(['technique201707', 'technique201708'], $responder->getItemsPurchased());
+  }
 }
