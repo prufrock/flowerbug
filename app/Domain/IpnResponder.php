@@ -96,4 +96,9 @@ class IpnResponder {
 
     return $this->ipnDataStore->storeMessage($ipnVars);
   }
+
+  public function get($key) {
+
+    return $this->ipnVars[$key];
+  }
 }
