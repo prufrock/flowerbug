@@ -193,7 +193,18 @@ class IpnResponderTest extends TestCase {
     $fproxy = m::mock('\App\Domain\FilePointerProxy');
     $responder = new IpnResponder($fproxy, $ipnDataStore);
 
-    $this->assertTrue($responder->persist(['txn_id' => 1]));
+    $responder->initialize(
+      [
+        'ipnVars' => ['txn_id' => 1],
+        'validationUrl' => '',
+        'validationPort' => 0,
+        'validationTimeout' => 0,
+        'validationCmd' => '',
+        'validationExpectedResponse' => ''
+      ]
+    );
+
+    $this->assertTrue($responder->persist());
   }
 
   public function testGet() {

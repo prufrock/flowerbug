@@ -92,9 +92,9 @@ class IpnResponder {
     return $this->ipnDataStore->doesMessageExist($ipnVars);
   }
 
-  public function persist($ipnVars) {
+  public function persist() {
 
-    return $this->ipnDataStore->storeMessage($ipnVars);
+    return $this->ipnDataStore->storeMessage($this->ipnVars);
   }
 
   public function get($key) {
