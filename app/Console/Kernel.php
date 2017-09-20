@@ -2,7 +2,10 @@
 
 namespace App\Console;
 
+use App\Console\Commands\AwsSimpleDbFlowerbugListDomainContents;
 use App\Console\Commands\AwsSimpleDbFlowerbugProjectsPut;
+use App\Console\Commands\AwsSimpleDbGetItem;
+use App\Console\Commands\AwsSimpleDbListDomainContents;
 use App\Console\Commands\AwsSimpleDbListDomains;
 use App\Console\Commands\S3Upload;
 use App\Console\Commands\TestSimpleDB;
@@ -19,6 +22,8 @@ class Kernel extends ConsoleKernel
     protected $commands = [
       AwsSimpleDbFlowerbugProjectsPut::class,
       AwsSimpleDbListDomains::class,
+      AwsSimpleDbListDomainContents::class,
+      AwsSimpleDbGetItem::class,
       S3Upload::class,
       TestSimpleDB::class
     ];
