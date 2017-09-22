@@ -4,7 +4,7 @@ class IpnDataStore {
 
   private $sdb;
 
-  public function __construct($sdb = null) {
+  public function __construct(\Aws\SimpleDb\SimpleDbClient $sdb) {
 
     $this->sdb = $sdb;
   }

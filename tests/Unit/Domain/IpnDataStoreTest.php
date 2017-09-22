@@ -9,7 +9,7 @@ class IpnDataStoreTest extends TestCase {
 
     $this->assertInstanceOf(
       \App\Domain\IpnDataStore::class,
-      new \App\Domain\IpnDataStore
+      app(\App\Domain\IpnDataStore::class)
     );
   }
 
