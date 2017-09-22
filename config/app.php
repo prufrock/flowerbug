@@ -182,6 +182,7 @@ return [
          * Custom Service Providers
          */
         App\Providers\S3ServiceProvider::class,
+        App\Providers\SimpleDbServiceProvider::class,
     ],
 
     /*
