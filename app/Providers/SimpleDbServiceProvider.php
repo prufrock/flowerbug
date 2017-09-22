@@ -22,7 +22,7 @@ class SimpleDbServiceProvider extends ServiceProvider {
   public function register() {
     $this->app->singleton(
       SimpleDbClient::class,
-      function ($app) {
+      function () {
         return SimpleDbClient::factory(['region' => 'us-east-1']);
       }
     );

@@ -22,7 +22,7 @@ class S3ServiceProvider extends ServiceProvider {
   public function register() {
     $this->app->singleton(
       S3Client::class,
-      function ($app) {
+      function () {
         return S3Client::factory();
       }
     );
