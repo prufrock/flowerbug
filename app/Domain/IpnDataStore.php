@@ -9,15 +9,29 @@ class IpnDataStore {
     $this->sdb = $sdb;
   }
 
-  public function doesMessageExist() {
+  public function doesMessageExist($message) {
 
-    $this->sdb->getAttributes(
+    $result = $this->sdb->getAttributes(
       [
         'DomainName' => config('flowerbug.simpledb.ipn_messages_domain'),
-        'ItemName' => '0XV34832YX668463W',
+        'ItemName' => $message['txn_id'],
         'ConsistentRead' => true
       ]
     );
-    return true;
+
+    return isset($result['Attributes']);
+  }
+
+  public function storeMessage($message) {
+
+    $result = $this->sdb->putAttributes(
+      [
+        'DomainName' => config('flowerbug.simpledb.ipn_messages_domain'),
+        'ItemName' => $message['txn_id'],
+        'Attributes' => $message
+      ]
+    );
+
+    return isset($result['Attributes']);
   }
 }
