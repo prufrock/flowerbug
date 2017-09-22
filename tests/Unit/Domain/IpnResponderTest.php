@@ -174,7 +174,7 @@ class IpnResponderTest extends TestCase {
 
     $responder->initialize(
       [
-        'ipnVars' => '',
+        'ipnVars' => ['txn_id' => 1],
         'validationUrl' => '',
         'validationPort' => 0,
         'validationTimeout' => 0,
@@ -183,7 +183,7 @@ class IpnResponderTest extends TestCase {
       ]
     );
 
-    $this->assertTrue($responder->hasBeenReceivedBefore(['txn_id' => 1]));
+    $this->assertTrue($responder->hasBeenReceivedBefore());
   }
 
   public function testPersist() {

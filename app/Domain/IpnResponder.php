@@ -87,9 +87,9 @@ class IpnResponder {
     return true;
   }
 
-  public function hasBeenReceivedBefore($ipnVars) {
+  public function hasBeenReceivedBefore() {
 
-    return $this->ipnDataStore->doesMessageExist($ipnVars);
+    return $this->ipnDataStore->doesMessageExist($this->ipnVars);
   }
 
   public function persist() {

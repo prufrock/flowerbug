@@ -7,7 +7,7 @@ class PaymentProcessorTest extends TestCase {
 
   public function testPaymentProcessorRole() {
 
-    $paymentProcessor = new \App\Domain\PaymentProcessor();
+    $paymentProcessor = resolve(\App\Domain\PaymentProcessor::class);
 
     $this->assertTrue(method_exists($paymentProcessor, 'process'));
   }
@@ -16,13 +16,13 @@ class PaymentProcessorTest extends TestCase {
 
     $this->assertInstanceOf(
       \App\Domain\PaymentProcessor::class,
-      new \App\Domain\PaymentProcessor()
+      resolve(\App\Domain\PaymentProcessor::class)
     );
   }
 
   public function testValidMessage() {
 
-    $ipnResponder = m::mock('\Application\Domain\IpnResponder');
+    $ipnResponder = m::mock(\App\Domain\IpnResponder::class);
     $order = m::mock('\Application\Domain\Order');
     $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order);
 
@@ -66,7 +66,7 @@ class PaymentProcessorTest extends TestCase {
 
   public function testUnableToVerifyMessage() {
 
-    $ipnResponder = m::mock('\Application\Domain\IpnResponder');
+    $ipnResponder = m::mock(\App\Domain\IpnResponder::class);
     $order = m::mock('\Application\Domain\Order');
     $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order);
 
@@ -78,7 +78,7 @@ class PaymentProcessorTest extends TestCase {
 
   public function testInvalidMessage() {
 
-    $ipnResponder = m::mock('\Application\Domain\IpnResponder');
+    $ipnResponder = m::mock(\App\Domain\IpnResponder::class);
     $order = m::mock('\Application\Domain\Order');
     $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order);
 
@@ -91,7 +91,7 @@ class PaymentProcessorTest extends TestCase {
 
   public function testHasntBeenReceivedBefore() {
 
-    $ipnResponder = m::mock('\Application\Domain\IpnResponder');
+    $ipnResponder = m::mock(\App\Domain\IpnResponder::class);
     $order = m::mock('\Application\Domain\Order');
     $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order);
 
