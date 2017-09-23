@@ -24,8 +24,7 @@ class OrderFullFillerTest extends TestCase {
 
     $transmitter->shouldReceive('setOrder')->with($orderFullFiller)->once();
 
-    $saleNotifier->shouldReceive('initialize')->with($orderFullFiller)->once();
-    $saleNotifier->shouldReceive('notify')->andReturn(true)->once();
+    $saleNotifier->shouldReceive('notify')->with($orderFullFiller)->andReturn(true)->once();
 
     $itemsPurchased = ['technique201709'];
     $buyersEmailAddress = 'buyer@example.com';

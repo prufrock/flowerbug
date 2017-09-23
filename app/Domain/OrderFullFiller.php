@@ -22,8 +22,7 @@ class OrderFullFiller {
     $this->buyersEmailAddress = $buyersEmailAddress;
 
     $this->transmitter->setOrder($this);
-    $this->saleNotifier->initialize($this);
-    return $this->saleNotifier->notify();
+    return $this->saleNotifier->notify($this);
   }
 
   public function getItemsPurchased() {
