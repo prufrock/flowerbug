@@ -5,6 +5,15 @@ use Mockery as m;
 
 class OrderFullFillerTest extends TestCase {
 
+  public function testTransmit() {
+
+    $transmitter = new NotifierDouble();
+    $saleNotifier = new SaleNotifierDouble();
+    $orderFullFiller = new \App\Domain\OrderFullFiller($transmitter, $saleNotifier);
+
+    $this->assertTrue($orderFullFiller->transmit(''));
+  }
+
   public function testNew() {
 
     $transmitter = m::mock('\App\Domain\TransmitterSES');
@@ -32,6 +41,16 @@ class OrderFullFillerTest extends TestCase {
     $this->assertTrue($orderFullFiller->fulfill($itemsPurchased, $buyersEmailAddress));
     $this->assertEquals('buyer@example.com', $orderFullFiller->getBuyersEmailAddress());
     $this->assertEquals($itemsPurchased, $orderFullFiller->getItemsPurchased());
-    $this->assertEquals($transmitter, $orderFullFiller->getTransmitter());
   }
+}
+
+class NotifierDouble {
+
+  public function transmit($output) {
+    return true;
+  }
+}
+
+class SaleNotifierDouble {
+
 }

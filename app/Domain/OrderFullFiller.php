@@ -35,8 +35,8 @@ class OrderFullFiller {
     return $this->buyersEmailAddress;
   }
 
-  public function getTransmitter() {
+  public function transmit($output) {
 
-    return $this->transmitter;
+    return $this->transmitter->transmit($output);
   }
 }
