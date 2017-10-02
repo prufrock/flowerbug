@@ -14,6 +14,6 @@ class SaleNotifierTest extends TestCase {
 
   public function testSuccessfulNotify() {
 
-    $this->assertNull((new \App\Domain\SaleNotifier)->notify());
+    $this->assertTrue((new \App\Domain\SaleNotifier)->notify());
   }
 }

@@ -4,5 +4,6 @@ class SaleNotifier {
 
   public function notify() {
 
+    return true;
   }
 }
