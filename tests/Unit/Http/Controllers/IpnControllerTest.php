@@ -6,9 +6,9 @@ class IpnControllerTest extends \Tests\TestCase {
 
   public function testValidateIpn() {
 
-    $paymentProcessor = m::mock(\App\Domain\PaymentProccesor::class);
+    $paymentProcessor = m::mock(\App\Domain\PaymentProcessor::class);
     $paymentProcessor->shouldReceive('process')->once()->with([]);
-    $this->app->bind(\App\Domain\PaymentProccesor::class, function() use($paymentProcessor) {
+    $this->app->bind(\App\Domain\PaymentProcessor::class, function() use($paymentProcessor) {
       return $paymentProcessor;
     });
 
