@@ -30,7 +30,7 @@ class PaymentProcessor {
     $ipnDataStore = new \stdClass();
     $logger = new \stdClass();
 
-    $this->responder->create([
+    $this->responder->initialize([
       'ipnVars' => $payment,
       'validationHeader' => $validationHeader,
       'validationCmd' => $validationCmd,

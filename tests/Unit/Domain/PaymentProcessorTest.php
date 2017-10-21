@@ -38,7 +38,7 @@ class PaymentProcessorTest extends TestCase {
     $validationExpectedResponse = "VERIFIED";
     $invalidExpectedResponse = "INVALID";
 
-    $ipnResponder->shouldReceive('create')->once()->with([
+    $ipnResponder->shouldReceive('initialize')->once()->with([
       'ipnVars' => ['id' => '1'],
       'validationHeader' => $validationHeader,
       'validationCmd' => $validationCmd,
@@ -70,7 +70,7 @@ class PaymentProcessorTest extends TestCase {
     $order = m::mock('\Application\Domain\Order');
     $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order);
 
-    $ipnResponder->shouldReceive('create');
+    $ipnResponder->shouldReceive('initialize');
     $ipnResponder->shouldReceive('isVerified')->once()->andReturn(false);
     $ipnResponder->shouldReceive('get');
     $this->assertFalse($processor->process(['txn_id' => '1']));
@@ -82,7 +82,7 @@ class PaymentProcessorTest extends TestCase {
     $order = m::mock('\Application\Domain\Order');
     $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order);
 
-    $ipnResponder->shouldReceive('create');
+    $ipnResponder->shouldReceive('initialize');
     $ipnResponder->shouldReceive('isVerified')->once()->andReturn(true);
     $ipnResponder->shouldReceive('isValid')->once()->andReturn(false);
     $ipnResponder->shouldReceive('get');
@@ -95,7 +95,7 @@ class PaymentProcessorTest extends TestCase {
     $order = m::mock('\Application\Domain\Order');
     $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order);
 
-    $ipnResponder->shouldReceive('create');
+    $ipnResponder->shouldReceive('initialize');
     $ipnResponder->shouldReceive('isVerified')->once()->andReturn(true);
     $ipnResponder->shouldReceive('isValid')->once()->andReturn(true);
     $ipnResponder->shouldReceive('hasBeenReceivedBefore')->once()->andReturn(true);
