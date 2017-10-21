@@ -71,7 +71,7 @@ class PaymentProcessor {
     $this->responder->persist();
     $itemsPurchased = $this->responder->getItemsPurchased();
     if(empty($itemsPurchased)){
-      $this->_recordAMessageInTheLog(__METHOD__ . ":" . __LINE__ . ":"
+      $this->recordAMessageInTheLog(__METHOD__ . ":" . __LINE__ . ":"
         . "an IPN message was received successfully. The "
         . " message is " . $this->responder->get('txn_id') . ": no items were purchased.");
       return;
