@@ -4,21 +4,16 @@ class SaleNotifier {
 
   public function notify($transmitter) {
 
-    $expectedMessage =<<<MESSAGE
-<p>a</p><br/>
-
-February 2012 Technique Class<br/>
-Microsoft Office Word<br/>
-<a href="http://example.com/example.doc">example.doc</a><br/>
+    $expectedMessage = config('flowerbug.sale_message');
+    $expectedMessage .=<<<MESSAGE
 <br/><br/>
+MESSAGE;
 
-Adobe Acrobat PDF<br/>
-<a href="http://example.com/example.pdf">example.pdf</a><br/>
-<br/><br/>
+    foreach($transmitter->getProjects() as $project) {
+      $expectedMessage .= "\n\n" . $project;
+    }
+    $expectedMessage .=<<<MESSAGE
 
-Images<br/>
-<a href="http://example.com/example.jpg">example.jpg</a><br/>
-<br/><br/>
 
 <br/><br/><br/>
 

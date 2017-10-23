@@ -19,7 +19,7 @@ class SaleNotifierTest extends TestCase {
     $this->assertTrue((new \App\Domain\SaleNotifier())->notify($transmitter));
 
     $expectedMessage =<<<MESSAGE
-<p>a</p><br/>
+Thank you for purchase. Here are your files:<br/><br/>
 
 February 2012 Technique Class<br/>
 Microsoft Office Word<br/>
@@ -53,5 +53,21 @@ class Transmitter {
     $this->message = $message;
 
     return true;
+  }
+
+  public function getProjects() {
+
+    return [
+      'February 2012 Technique Class<br/>
+Microsoft Office Word<br/>
+<a href="http://example.com/example.doc">example.doc</a><br/>
+<br/><br/>',
+      'Adobe Acrobat PDF<br/>
+<a href="http://example.com/example.pdf">example.pdf</a><br/>
+<br/><br/>',
+      'Images<br/>
+<a href="http://example.com/example.jpg">example.jpg</a><br/>
+<br/><br/>'
+    ];
   }
 }
