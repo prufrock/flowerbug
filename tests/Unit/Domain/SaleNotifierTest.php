@@ -57,8 +57,26 @@ class Transmitter {
 
   public function getProjects() {
 
+    $projects = [
+      new Project('February 2012 Technique Class')
+    ];
+
+    return $projects;
+  }
+}
+
+class Project {
+
+  public $title;
+
+  public function __construct($title) {
+
+    $this->title = $title;
+  }
+
+  public function getGuides() {
     return [
-      'February 2012 Technique Class<br/>
+      '<br/>
 Microsoft Office Word<br/>
 <a href="http://example.com/example.doc">example.doc</a><br/>
 <br/><br/>',

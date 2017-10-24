@@ -4,15 +4,20 @@ class SaleNotifier {
 
   public function notify($transmitter) {
 
-    $expectedMessage = config('flowerbug.sale_message');
-    $expectedMessage .=<<<MESSAGE
+    $message = config('flowerbug.sale_message');
+    $message .=<<<MESSAGE
 <br/><br/>
+
+
 MESSAGE;
 
     foreach($transmitter->getProjects() as $project) {
-      $expectedMessage .= "\n\n" . $project;
+
+      $message .= $project->title;
+
+      $message .= implode($project->getGuides(), "\n\n");
     }
-    $expectedMessage .=<<<MESSAGE
+    $message .=<<<MESSAGE
 
 
 <br/><br/><br/>
@@ -20,7 +25,7 @@ MESSAGE;
 
 MESSAGE;
 
-    $transmitter->transmit($expectedMessage);
+    $transmitter->transmit($message);
 
     return true;
   }
