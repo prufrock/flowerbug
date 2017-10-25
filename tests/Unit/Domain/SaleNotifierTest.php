@@ -76,16 +76,19 @@ class Project {
 
   public function getGuides() {
     return [
-      '<br/>
-Microsoft Office Word<br/>
-<a href="http://example.com/example.doc">example.doc</a><br/>
-<br/><br/>',
-      'Adobe Acrobat PDF<br/>
-<a href="http://example.com/example.pdf">example.pdf</a><br/>
-<br/><br/>',
-      'Images<br/>
-<a href="http://example.com/example.jpg">example.jpg</a><br/>
-<br/><br/>'
+      new Guide('example.doc'),
+      new Guide('example.pdf'),
+      new Guide('example.jpg')
     ];
+  }
+}
+
+class Guide {
+
+  public $filename;
+
+  public function __construct($filename) {
+
+    $this->filename = $filename;
   }
 }
