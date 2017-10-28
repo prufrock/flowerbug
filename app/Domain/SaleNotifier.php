@@ -14,7 +14,6 @@ MESSAGE;
     foreach($transmitter->getProjects() as $project) {
 
       $message .= $project->title . "<br/>\n";
-      $baseUrl = "http://example.com/";
       $types = ['doc' => 'Microsoft Office Word', 'pdf' => 'Adobe Acrobat PDF', 'jpg' => 'Images'];
 
       foreach($types as $type => $title) {
