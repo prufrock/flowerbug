@@ -1,4 +1,4 @@
-
+[![Build Status](https://travis-ci.org/prufrock/flowerbug.svg?branch=master)](https://travis-ci.org/prufrock/flowerbug)
 
 # About flowerbug-admin
 The flowerbug-admim is a site built to administer a shops that sells digital goods.
