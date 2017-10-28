@@ -2,7 +2,6 @@
 
 namespace App\Console;
 
-use App\Console\Commands\AwsSimpleDbFlowerbugListDomainContents;
 use App\Console\Commands\AwsSimpleDbFlowerbugProjectsPut;
 use App\Console\Commands\AwsSimpleDbGetItem;
 use App\Console\Commands\AwsSimpleDbListDomainContents;
