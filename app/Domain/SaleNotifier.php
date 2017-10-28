@@ -15,12 +15,15 @@ MESSAGE;
 
       $message .= $project->title . "<br/>\n";
       $baseUrl = "http://example.com/";
-      $typeTitles = ['Microsoft Office Word','Adobe Acrobat PDF','Images'];
+      $types = ['doc' => 'Microsoft Office Word', 'pdf' => 'Adobe Acrobat PDF', 'jpg' => 'Images'];
 
-      foreach ($project->getGuides() as $guide) {
+      foreach($types as $type => $title) {
 
-        $message .= array_shift($typeTitles) . "<br/>\n";
-        $message .= "<a href=\"$baseUrl{$guide->filename}\">{$guide->filename}</a>" . "<br/>\n<br/><br/>\n\n";
+        $message .= $title . "<br/>\n";
+        foreach ($project->getGuides($type) as $guide) {
+
+          $message .= "<a href=\"{$guide->getUrl()}\">{$guide->getName()}</a>" . "<br/>\n<br/><br/>\n\n";
+        }
       }
     }
     $message .=<<<MESSAGE

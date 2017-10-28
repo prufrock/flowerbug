@@ -72,23 +72,50 @@ class Project {
   public function __construct($title) {
 
     $this->title = $title;
+    $this->guides = collect(
+      [
+        new Guide('example.doc', 'http://example.com/example.doc', 'doc'),
+        new Guide('example.pdf', 'http://example.com/example.pdf', 'pdf'),
+        new Guide('example.jpg', 'http://example.com/example.jpg', 'jpg')
+      ]
+    );
   }
 
-  public function getGuides() {
-    return [
-      new Guide('example.doc'),
-      new Guide('example.pdf'),
-      new Guide('example.jpg')
-    ];
+  public function getGuides($type) {
+
+    return $this->guides->filter(function($guide) use ($type) {
+      return $guide->getFileType() == $type ? true : false;
+    });
   }
 }
 
 class Guide {
 
-  public $filename;
+  private $name;
 
-  public function __construct($filename) {
+  private $filetype;
 
-    $this->filename = $filename;
+  private $url;
+
+  public function __construct($name, $url, $filetype) {
+
+    $this->name = $name;
+    $this->filetype = $filetype;
+    $this->url = $url;
+  }
+
+  public function getUrl() {
+
+    return $this->url;
+  }
+
+  public function getFileType() {
+
+    return $this->filetype;
+  }
+
+  public function getName() {
+
+    return $this->name;
   }
 }
