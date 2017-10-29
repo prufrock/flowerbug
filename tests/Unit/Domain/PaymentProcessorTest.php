@@ -23,7 +23,7 @@ class PaymentProcessorTest extends TestCase {
   public function testValidMessage() {
 
     $ipnResponder = m::mock(\App\Domain\IpnResponder::class);
-    $order = m::mock('\Application\Domain\Order');
+    $order = m::mock(\App\Domain\OrderFullFiller::class);
     $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order);
 
     $validationHeader = "";
@@ -67,7 +67,7 @@ class PaymentProcessorTest extends TestCase {
   public function testUnableToVerifyMessage() {
 
     $ipnResponder = m::mock(\App\Domain\IpnResponder::class);
-    $order = m::mock('\Application\Domain\Order');
+    $order = m::mock(\App\Domain\OrderFullFiller::class);
     $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order);
 
     $ipnResponder->shouldReceive('initialize');
@@ -79,7 +79,7 @@ class PaymentProcessorTest extends TestCase {
   public function testInvalidMessage() {
 
     $ipnResponder = m::mock(\App\Domain\IpnResponder::class);
-    $order = m::mock('\Application\Domain\Order');
+    $order = m::mock(\App\Domain\OrderFullFiller::class);
     $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order);
 
     $ipnResponder->shouldReceive('initialize');
@@ -92,7 +92,7 @@ class PaymentProcessorTest extends TestCase {
   public function testHasntBeenReceivedBefore() {
 
     $ipnResponder = m::mock(\App\Domain\IpnResponder::class);
-    $order = m::mock('\Application\Domain\Order');
+    $order = m::mock(\App\Domain\OrderFullFiller::class);
     $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order);
 
     $ipnResponder->shouldReceive('initialize');

@@ -8,7 +8,10 @@ class PaymentProcessor {
 
   private $orderFullFiller;
 
-  public function __construct(\App\Domain\IpnResponder $responder, $orderFullFiller = NULL) {
+  public function __construct(
+    \App\Domain\IpnResponder $responder,
+    \App\Domain\OrderFullFiller $orderFullFiller
+  ) {
 
     $this->responder = $responder;
     $this->orderFullFiller = $orderFullFiller;
