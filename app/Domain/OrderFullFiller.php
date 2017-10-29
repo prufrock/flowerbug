@@ -11,7 +11,7 @@ class OrderFullFiller {
   private $saleNotifier;
 
   public function __construct(
-    $transmitter = NULL,
+    \App\Domain\Transmitter $transmitter,
     \App\Domain\SaleNotifier $saleNotifier
   ) {
 
@@ -40,6 +40,6 @@ class OrderFullFiller {
 
   public function transmit($output) {
 
-    return $this->transmitter->transmit($output);
+    return $this->transmitter->transmit($this->buyersEmailAddress, $output);
   }
 }

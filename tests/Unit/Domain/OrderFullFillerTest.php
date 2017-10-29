@@ -7,7 +7,8 @@ class OrderFullFillerTest extends TestCase {
 
   public function testTransmit() {
 
-    $transmitter = new TransmitterDouble();
+    $transmitter = m::mock(\App\Domain\Transmitter::class);
+    $transmitter->shouldReceive('transmit')->andReturn(true);
     $saleNotifier = m::mock(\App\Domain\SaleNotifier::class);
     $orderFullFiller = new \App\Domain\OrderFullFiller($transmitter, $saleNotifier);
 
@@ -16,7 +17,7 @@ class OrderFullFillerTest extends TestCase {
 
   public function testNew() {
 
-    $transmitter = m::mock('\App\Domain\TransmitterSES');
+    $transmitter = m::mock(\App\Domain\Transmitter::class);
     $saleNotifier = m::mock(\App\Domain\SaleNotifier::class);
 
     $this->assertInstanceOf(
@@ -27,7 +28,7 @@ class OrderFullFillerTest extends TestCase {
 
   public function testFulfillingAnOrder() {
 
-    $transmitter = m::mock('\App\Domain\TransmitterSES');
+    $transmitter = m::mock(\App\Domain\Transmitter::class);
     $saleNotifier = m::mock(\App\Domain\SaleNotifier::class);
     $orderFullFiller = new \App\Domain\OrderFullFiller($transmitter, $saleNotifier);
 
@@ -41,13 +42,6 @@ class OrderFullFillerTest extends TestCase {
     $this->assertTrue($orderFullFiller->fulfill($itemsPurchased, $buyersEmailAddress));
     $this->assertEquals('buyer@example.com', $orderFullFiller->getBuyersEmailAddress());
     $this->assertEquals($itemsPurchased, $orderFullFiller->getItemsPurchased());
-  }
-}
-
-class TransmitterDouble {
-
-  public function transmit($output) {
-    return true;
   }
 }
 
