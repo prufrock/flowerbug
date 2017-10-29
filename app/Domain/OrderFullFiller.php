@@ -10,7 +10,10 @@ class OrderFullFiller {
 
   private $saleNotifier;
 
-  public function __construct($transmitter = NULL, $saleNotifier = NULL) {
+  public function __construct(
+    $transmitter = NULL,
+    \App\Domain\SaleNotifier $saleNotifier
+  ) {
 
     $this->transmitter = $transmitter;
     $this->saleNotifier = $saleNotifier;
