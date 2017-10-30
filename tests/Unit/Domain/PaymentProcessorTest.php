@@ -24,7 +24,10 @@ class PaymentProcessorTest extends TestCase {
 
     $ipnResponder = m::mock(\App\Domain\IpnResponder::class);
     $order = m::mock(\App\Domain\OrderFullFiller::class);
-    $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order);
+    $project = m::mock('\App\Domain\Project');
+    $projects = collect([$project]);
+    $project->shouldReceive('find')->andReturn($projects);
+    $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order, $project);
 
     $validationHeader = "";
     $validationHeader .= "POST /cgi-bin/webscr HTTP/1.0\r\n";
@@ -59,7 +62,7 @@ class PaymentProcessorTest extends TestCase {
     $ipnResponder->shouldReceive('getItemsPurchased')->once()->andReturn(['technique201708']);
     $ipnResponder->shouldReceive('getBuyersEmailAddress')->once()->andReturn('d.kanen+flowerbugtest@gmail.com');
 
-    $order->shouldReceive('fulfill')->with(['technique201708'], 'd.kanen+flowerbugtest@gmail.com')->once();
+    $order->shouldReceive('fulfill')->with($projects, 'd.kanen+flowerbugtest@gmail.com')->once();
 
     $this->assertTrue($processor->process(['id' => '1']));
   }

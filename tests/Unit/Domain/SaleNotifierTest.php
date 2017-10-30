@@ -1,6 +1,7 @@
 <?php namespace Tests\Unit\Domain;
 
 use Tests\TestCase;
+use Mockery as m;
 
 class SaleNotifierTest extends TestCase {
 
@@ -14,9 +15,15 @@ class SaleNotifierTest extends TestCase {
 
   public function testSuccessfulNotify() {
 
-    $transmitter = new Transmitter();
+    $orderFulFiller = m::mock(\App\Domain\OrderFullFiller::class);
+    $orderFulFiller->shouldReceive('getProjects')->andReturn(
+      collect([
+        new Project('February 2012 Technique Class')
+      ])
+    );
+    $orderFulFiller->shouldReceive('transmit')->once();
 
-    $this->assertTrue((new \App\Domain\SaleNotifier())->notify($transmitter));
+    $this->assertTrue((new \App\Domain\SaleNotifier())->notify($orderFulFiller));
 
     $expectedMessage =<<<MESSAGE
 Thank you for purchase. Here are your files:<br/><br/>
@@ -39,12 +46,11 @@ Images<br/>
 
 MESSAGE;
 
-
-    $this->assertEquals($expectedMessage,$transmitter->message);
+    $orderFulFiller->shouldReceive('transmit')->with($expectedMessage);
   }
 }
 
-class Transmitter {
+class OrderFulFiller {
 
   public $message;
 

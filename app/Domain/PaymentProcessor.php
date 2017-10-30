@@ -8,13 +8,17 @@ class PaymentProcessor {
 
   private $orderFullFiller;
 
+  private $project;
+
   public function __construct(
     \App\Domain\IpnResponder $responder,
-    \App\Domain\OrderFullFiller $orderFullFiller
+    \App\Domain\OrderFullFiller $orderFullFiller,
+  $project = NULL
   ) {
 
     $this->responder = $responder;
     $this->orderFullFiller = $orderFullFiller;
+    $this->project = $project;
   }
 
   public function process($payment) {
@@ -80,7 +84,10 @@ class PaymentProcessor {
       return;
     }
 
-    $this->orderFullFiller->fulfill($itemsPurchased, $this->responder->getBuyersEmailAddress());
+    $this->orderFullFiller->fulfill(
+      $this->project->find($itemsPurchased),
+      $this->responder->getBuyersEmailAddress()
+    );
 
     return true;
   }

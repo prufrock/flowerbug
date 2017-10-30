@@ -2,7 +2,7 @@
 
 class SaleNotifier {
 
-  public function notify($transmitter) {
+  public function notify($orderFulFiller) {
 
     $message = config('flowerbug.sale_message');
     $message .=<<<MESSAGE
@@ -11,7 +11,7 @@ class SaleNotifier {
 
 MESSAGE;
 
-    foreach($transmitter->getProjects() as $project) {
+    foreach($orderFulFiller->getProjects() as $project) {
 
       $message .= $project->title . "<br/>\n";
       $types = ['doc' => 'Microsoft Office Word', 'pdf' => 'Adobe Acrobat PDF', 'jpg' => 'Images'];
@@ -31,7 +31,7 @@ MESSAGE;
 
 MESSAGE;
 
-    $transmitter->transmit($message);
+    $orderFulFiller->transmit($message);
 
     return true;
   }

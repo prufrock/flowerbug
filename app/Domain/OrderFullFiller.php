@@ -4,7 +4,7 @@ class OrderFullFiller {
 
   private $transmitter;
 
-  private $itemsPurchased;
+  private $projects;
 
   private $buyersEmailAddress;
 
@@ -19,18 +19,17 @@ class OrderFullFiller {
     $this->saleNotifier = $saleNotifier;
   }
 
-  public function fulfill($itemsPurchased, $buyersEmailAddress) {
+  public function fulfill($projects, $buyersEmailAddress) {
 
-    $this->itemsPurchased = $itemsPurchased;
+    $this->projects = $projects;
     $this->buyersEmailAddress = $buyersEmailAddress;
 
-    $this->transmitter->setOrder($this);
     return $this->saleNotifier->notify($this);
   }
 
-  public function getItemsPurchased() {
+  public function getProjects() {
 
-    return $this->itemsPurchased;
+    return $this->projects;
   }
 
   public function getBuyersEmailAddress() {

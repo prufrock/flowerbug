@@ -32,16 +32,14 @@ class OrderFullFillerTest extends TestCase {
     $saleNotifier = m::mock(\App\Domain\SaleNotifier::class);
     $orderFullFiller = new \App\Domain\OrderFullFiller($transmitter, $saleNotifier);
 
-    $transmitter->shouldReceive('setOrder')->with($orderFullFiller)->once();
-
     $saleNotifier->shouldReceive('notify')->with($orderFullFiller)->andReturn(true)->once();
 
-    $itemsPurchased = ['technique201709'];
+    $project = collect(new \App\Domain\Project);
     $buyersEmailAddress = 'buyer@example.com';
 
-    $this->assertTrue($orderFullFiller->fulfill($itemsPurchased, $buyersEmailAddress));
+    $this->assertTrue($orderFullFiller->fulfill($project, $buyersEmailAddress));
     $this->assertEquals('buyer@example.com', $orderFullFiller->getBuyersEmailAddress());
-    $this->assertEquals($itemsPurchased, $orderFullFiller->getItemsPurchased());
+    $this->assertEquals($project, $orderFullFiller->getProjects());
   }
 }
 
