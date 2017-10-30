@@ -16,9 +16,20 @@ class SaleNotifierTest extends TestCase {
   public function testSuccessfulNotify() {
 
     $orderFulFiller = m::mock(\App\Domain\OrderFullFiller::class);
+    $project = m::mock(\App\Domain\Project::class);
+    $project->shouldReceive('getTitle')->andReturn('February 2012 Technique Class\'');
+    $project->shouldReceive('getGuides')->andReturn(
+      collect(
+        [
+          new \App\Domain\Guide('example.doc', 'http://example.com/example.doc', 'doc'),
+          new \App\Domain\Guide('example.pdf', 'http://example.com/example.pdf', 'pdf'),
+          new \App\Domain\Guide('example.jpg', 'http://example.com/example.jpg', 'jpg')
+        ]
+      )
+    );
     $orderFulFiller->shouldReceive('getProjects')->andReturn(
       collect([
-        new Project('February 2012 Technique Class')
+        $project
       ])
     );
     $orderFulFiller->shouldReceive('transmit')->once();
@@ -47,81 +58,5 @@ Images<br/>
 MESSAGE;
 
     $orderFulFiller->shouldReceive('transmit')->with($expectedMessage);
-  }
-}
-
-class OrderFulFiller {
-
-  public $message;
-
-  public function transmit($message) {
-
-    $this->message = $message;
-
-    return true;
-  }
-
-  public function getProjects() {
-
-    $projects = [
-      new Project('February 2012 Technique Class')
-    ];
-
-    return $projects;
-  }
-}
-
-class Project {
-
-  public $title;
-
-  public function __construct($title) {
-
-    $this->title = $title;
-    $this->guides = collect(
-      [
-        new Guide('example.doc', 'http://example.com/example.doc', 'doc'),
-        new Guide('example.pdf', 'http://example.com/example.pdf', 'pdf'),
-        new Guide('example.jpg', 'http://example.com/example.jpg', 'jpg')
-      ]
-    );
-  }
-
-  public function getGuides($type) {
-
-    return $this->guides->filter(function($guide) use ($type) {
-      return $guide->getFileType() == $type ? true : false;
-    });
-  }
-}
-
-class Guide {
-
-  private $name;
-
-  private $filetype;
-
-  private $url;
-
-  public function __construct($name, $url, $filetype) {
-
-    $this->name = $name;
-    $this->filetype = $filetype;
-    $this->url = $url;
-  }
-
-  public function getUrl() {
-
-    return $this->url;
-  }
-
-  public function getFileType() {
-
-    return $this->filetype;
-  }
-
-  public function getName() {
-
-    return $this->name;
   }
 }

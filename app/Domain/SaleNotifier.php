@@ -13,8 +13,12 @@ MESSAGE;
 
     foreach($orderFulFiller->getProjects() as $project) {
 
-      $message .= $project->title . "<br/>\n";
-      $types = ['doc' => 'Microsoft Office Word', 'pdf' => 'Adobe Acrobat PDF', 'jpg' => 'Images'];
+      $message .= $project->getTitle() . "<br/>\n";
+      $types = [
+        'doc' => 'Microsoft Office Word',
+        'pdf' => 'Adobe Acrobat PDF',
+        'jpg' => 'Images'
+      ];
 
       foreach($types as $type => $title) {
 
