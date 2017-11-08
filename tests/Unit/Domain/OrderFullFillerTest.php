@@ -34,7 +34,7 @@ class OrderFullFillerTest extends TestCase {
 
     $saleNotifier->shouldReceive('notify')->with($orderFullFiller)->andReturn(true)->once();
 
-    $project = collect(new \App\Domain\Project);
+    $project = collect(m::mock(\App\Domain\Project::class));
     $buyersEmailAddress = 'buyer@example.com';
 
     $this->assertTrue($orderFullFiller->fulfill($project, $buyersEmailAddress));

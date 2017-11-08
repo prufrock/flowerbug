@@ -1,19 +1,24 @@
 <?php namespace App\Domain;
 
+use Aws\SimpleDb\SimpleDbClient;
+
 class Project {
 
   private $attributes;
 
   private $guideGateway;
 
-  public function __construct($guideGateway = null) {
+  private $simpleDb;
 
+  public function __construct(SimpleDbClient $simpleDb, $guideGateway = null) {
+
+    $this->simpleDb = $simpleDb;
     $this->guideGateway = $guideGateway;
   }
 
   public function create($attributes = []) {
 
-    $project = new self($this->guideGateway);
+    $project = new self($this->simpleDb, $this->guideGateway);
     $project->setAttributes($attributes);
 
     return $project;
@@ -29,9 +34,26 @@ class Project {
     return $this->attributes['id'];
   }
 
-  public function find() {
+  public function find($ids = null) {
 
-    return collect([$this->create(), $this->create(), $this->create()]);
+    $predicateClauses = collect($ids)->map(function($id) {
+      return "id = '$id'";
+    }
+    );
+
+    $predicate = $predicateClauses->implode(' or ');
+
+    $this->simpleDb->select(
+      [
+        'SelectExpression' => 'select * from ' . config('flowerbug.projects_domain') . ' where ' . $predicate,
+        'ConsistentRead' => true
+      ]
+    );
+
+    return collect(collect($ids)->map(function($id) {
+      return $this->create(['id' => $id]);
+    }
+    ));
   }
 
   public function getGuides() {

@@ -15,7 +15,8 @@ class ProjectTest extends TestCase {
 
   public function testCreateANewProjectWithTitle() {
 
-    $projectGateway = new \App\Domain\Project();
+    $simpleDbClient = m::mock(\Aws\SimpleDb\SimpleDbClient::class);
+    $projectGateway = new \App\Domain\Project($simpleDbClient);
     $project = $projectGateway->create(['title' => 'February 2017 Technique Class']);
 
     $this->assertEquals('February 2017 Technique Class', $project->getTitle());
@@ -23,8 +24,15 @@ class ProjectTest extends TestCase {
 
   public function testFind() {
 
-    $project = new \App\Domain\Project();
-    $found = $project->find();
+    $simpleDbClient = m::mock(\Aws\SimpleDb\SimpleDbClient::class);
+    $simpleDbClient->shouldReceive('select')->withAnyArgs()->with(
+      [
+        'SelectExpression' => 'select * from ' . config('flowerbug.projects_domain') . ' where id = \'technique201702\' or id = \'technique201703\' or id = \'technique201704\'',
+        'ConsistentRead' => true
+      ]
+    )->once();
+    $project = new \App\Domain\Project($simpleDbClient);
+    $found = $project->find(['technique201702', 'technique201703', 'technique201704']);
 
     $this->assertInstanceOf(\Illuminate\Support\Collection::class, $found);
     $this->assertEquals(3, $found->count());
@@ -35,8 +43,15 @@ class ProjectTest extends TestCase {
 
     $guideGateway = m::mock(\App\Domain\Guide::class);
     $guideGateway->shouldReceive('find')->with(['technique201702'])->andReturn(collect([$guideGateway]));
-    $project = (new \App\Domain\Project($guideGateway))->create(['id' => 'technique201702']);
-    $guides = $project->getGuides();
+    $simpleDbClient = m::mock(\Aws\SimpleDb\SimpleDbClient::class);
+    $simpleDbClient->shouldReceive('select')->withAnyArgs()->with(
+      [
+        'SelectExpression' => 'select * from ' . config('flowerbug.projects_domain') . ' where id = \'technique201702\'',
+        'ConsistentRead' => true
+      ]
+    )->once();
+    $project = (new \App\Domain\Project($simpleDbClient, $guideGateway))->find(['technique201702']);
+    $guides = $project->first()->getGuides();
 
     $this->assertInstanceOf(\Illuminate\Support\Collection::class, $guides);
     $this->assertEquals(1, $guides->count());

@@ -23,7 +23,7 @@ class SimpleDbServiceProvider extends ServiceProvider {
     $this->app->singleton(
       SimpleDbClient::class,
       function () {
-        return SimpleDbClient::factory(['region' => 'us-east-1']);
+        return SimpleDbClient::factory(['region' => config('flowerbug.aws_region')]);
       }
     );
   }
