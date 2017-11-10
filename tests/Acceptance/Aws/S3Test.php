@@ -78,4 +78,42 @@ class S3Test extends TestCase {
 
     $this->assertGreaterThanOrEqual(1, $iterator->count());
   }
+
+  public function testCreatePreSignedUrlForPrivateObjects() {
+    $client = S3Client::factory();
+
+    $iterator = $client->getIterator('ListObjects', [
+      'Bucket' => config('flowerbug.s3.projects_bucket'),
+      'Prefix' => env('FLOWERBUG_S3_TEST_PREFIX')
+    ]);
+
+    $http = new \Guzzle\Http\Client;
+
+    $unsignedUrls = [];
+    foreach ($iterator as $object) {
+      if ($object['Size'] > 0) {
+        $unsignedUrls[] = $client->getObjectUrl(config('flowerbug.s3.projects_bucket'), $object['Key']);
+      }
+    }
+
+    foreach($unsignedUrls as $unsignedUrl) {
+      try {
+        $response = $http->get($unsignedUrl)->send();
+      } catch (\Guzzle\Http\Exception\ClientErrorResponseException $e) {
+        $this->assertEquals('403', $e->getResponse()->getStatusCode());
+      }
+    }
+
+    $signedUrls = [];
+    foreach ($iterator as $object) {
+      if ($object['Size'] > 0) {
+        $signedUrls[] = $client->getObjectUrl(config('flowerbug.s3.projects_bucket'), $object['Key'], '+10 minutes');
+      }
+    }
+
+    foreach($signedUrls as $signedUrl) {
+      $response = $http->get($signedUrl)->send();
+      $this->assertEquals('200', $response->getStatusCode());
+    }
+  }
 }
