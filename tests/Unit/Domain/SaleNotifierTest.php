@@ -16,14 +16,15 @@ class SaleNotifierTest extends TestCase {
   public function testSuccessfulNotify() {
 
     $orderFulFiller = m::mock(\App\Domain\OrderFullFiller::class);
+    $guideGateway = new \App\Domain\Guide();
     $project = m::mock(\App\Domain\Project::class);
     $project->shouldReceive('getTitle')->andReturn('February 2012 Technique Class\'');
     $project->shouldReceive('getGuides')->andReturn(
       collect(
         [
-          new \App\Domain\Guide('example.doc', 'http://example.com/example.doc', 'doc'),
-          new \App\Domain\Guide('example.pdf', 'http://example.com/example.pdf', 'pdf'),
-          new \App\Domain\Guide('example.jpg', 'http://example.com/example.jpg', 'jpg')
+          $guideGateway->create(['name' => 'example.doc', 'url' => 'http://example.com/example.doc', 'file_type' => 'doc']),
+          $guideGateway->create(['name' => 'example.pdf', 'url' => 'http://example.com/example.pdf', 'file_type' => 'pdf']),
+          $guideGateway->create(['name' => 'example.jpg', 'url' => 'http://example.com/example.jpg', 'file_type' => 'jpg'])
         ]
       )
     );

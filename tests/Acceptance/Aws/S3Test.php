@@ -107,7 +107,7 @@ class S3Test extends TestCase {
     $signedUrls = [];
     foreach ($iterator as $object) {
       if ($object['Size'] > 0) {
-        $signedUrls[] = $client->getObjectUrl(config('flowerbug.s3.projects_bucket'), $object['Key'], '+10 minutes');
+        $signedUrls[] = $client->getObjectUrl(config('flowerbug.s3.projects_bucket'), $object['Key'], config('flowerbug.s3.signed_url_expiration'));
       }
     }
 
