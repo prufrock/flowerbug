@@ -98,7 +98,7 @@ class S3Test extends TestCase {
 
     foreach($unsignedUrls as $unsignedUrl) {
       try {
-        $response = $http->get($unsignedUrl)->send();
+        $http->get($unsignedUrl)->send();
       } catch (\Guzzle\Http\Exception\ClientErrorResponseException $e) {
         $this->assertEquals('403', $e->getResponse()->getStatusCode());
       }
