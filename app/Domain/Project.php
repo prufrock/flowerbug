@@ -58,7 +58,7 @@ class Project {
 
   public function getGuides() {
 
-    return $this->guideGateway->find([$this->getId()]);
+    return $this->guideGateway->find($this->getId());
   }
 
   private function setAttributes($attributes) {

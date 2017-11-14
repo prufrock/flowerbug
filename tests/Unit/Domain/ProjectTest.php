@@ -42,7 +42,7 @@ class ProjectTest extends TestCase {
   public function testGetGuides() {
 
     $guideGateway = m::mock(\App\Domain\Guide::class);
-    $guideGateway->shouldReceive('find')->with(['technique201702'])->andReturn(collect([$guideGateway]));
+    $guideGateway->shouldReceive('find')->with('technique201702')->andReturn(collect([$guideGateway]));
     $simpleDbClient = m::mock(\Aws\SimpleDb\SimpleDbClient::class);
     $simpleDbClient->shouldReceive('select')->withAnyArgs()->with(
       [
@@ -50,7 +50,7 @@ class ProjectTest extends TestCase {
         'ConsistentRead' => true
       ]
     )->once();
-    $project = (new \App\Domain\Project($simpleDbClient, $guideGateway))->find(['technique201702']);
+    $project = (new \App\Domain\Project($simpleDbClient, $guideGateway))->find('technique201702');
     $guides = $project->first()->getGuides();
 
     $this->assertInstanceOf(\Illuminate\Support\Collection::class, $guides);
