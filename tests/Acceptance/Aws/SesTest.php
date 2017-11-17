@@ -29,7 +29,7 @@ class SesTest extends TestCase {
       'ReplyToAddresses' => [Config::get('flowerbug.seller_address')]
     ]);
     
-    $this->assertObjectHasAttribute('MessageId', $result);
+    $this->assertArrayHasKey('MessageId', $result->getAll());
   }
 }
 
