@@ -1,6 +1,4 @@
-<?php
-
-namespace Tests\Unit\Providers;
+<?php namespace Tests\Unit\Providers;
 
 use Aws\S3\S3Client;
 use Tests\TestCase;
