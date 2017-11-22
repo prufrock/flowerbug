@@ -23,30 +23,29 @@ class TransmitterTest extends TestCase {
       ->once();
     $ses = m::mock(\Aws\Ses\SesClient::class);
     $transmitter = new \App\Domain\Transmitter($ses);
-    $ses->shouldReceive('sendEmail')->andReturn(
-      'seller@example.com'
-      ,
-      Array(
+    $ses->shouldReceive('sendEmail')->with([
+      'Source' => 'seller@example.com',
+      'Destination' => [
         'ToAddresses' => ['buyer@example.com', 'seller@example.com']
-      )
-      ,
-      Array(
-        'Subject' => [
-          'Data' => 'congrats on your purchase'
-          ,
-          'Charset' => 'UTF-8'
-        ]
-      ,
-        'Body' => [
-          'Html' => [
-            'Data' => 'You bought some stuff!',
+      ],
+      'Message' => [
+        [
+          'Subject' => [
+            'Data' => 'congrats on your purchase'
+            ,
             'Charset' => 'UTF-8'
           ]
-        ]
-      )
-      ,
-      ['ReplyToAddresses' => ['seller@example.com']]
-    )->once();
+          ,
+          'Body' => [
+            'Html' => [
+              'Data' => 'You bought some stuff!',
+              'Charset' => 'UTF-8'
+            ]
+          ]
+        ],
+        'ReplyToAddresses' => ['seller@example.com']
+      ]
+    ])->once();
 
     $this->assertTrue($transmitter->transmit('buyer@example.com', 'You bought some stuff!'));
   }

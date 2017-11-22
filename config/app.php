@@ -183,6 +183,7 @@ return [
          */
         App\Providers\S3ServiceProvider::class,
         App\Providers\SimpleDbServiceProvider::class,
+        App\Providers\SesServiceProvider::class,
     ],
 
     /*

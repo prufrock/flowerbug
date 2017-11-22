@@ -16,30 +16,29 @@ class Transmitter {
     $source = Config::get('flowerbug.seller_address');
     $subject = Config::get('flowerbug.email_subject');
 
-    $this->ses->sendEmail(
-      $source
-      ,
-      Array(
+    $this->ses->sendEmail([
+      'Source' => $source,
+      'Destination' => [
         'ToAddresses' => [$destAddr, $source]
-      )
-      ,
-      Array(
-        'Subject' => [
-          'Data' => $subject
-        ,
-          'Charset' => 'UTF-8'
-        ]
-      ,
-        'Body' => [
-          'Html' => [
-            'Data' => $message,
+      ],
+      'Message' => [
+        [
+          'Subject' => [
+            'Data' => $subject
+            ,
             'Charset' => 'UTF-8'
           ]
-        ]
-      )
-      ,
-      ['ReplyToAddresses' => [$source]]
-    );
+          ,
+          'Body' => [
+            'Html' => [
+              'Data' => $message,
+              'Charset' => 'UTF-8'
+            ]
+          ]
+        ],
+        'ReplyToAddresses' => [$source]
+      ]
+    ]);
 
     return true;
   }
