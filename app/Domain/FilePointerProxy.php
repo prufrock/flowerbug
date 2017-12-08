@@ -7,9 +7,14 @@ class FilePointerProxy {
     return fsockopen($hostname, $port, $errno, $errstr, $timeout);
   }
 
-  public function fputs($handle, $string, $length = null) {
-
-    return fputs($handle, $string, $length);
+  public function fputs($handle, $string, $length =  null) {
+     
+    //watch out if you pass null as the third argument fputs won't write data. 
+    if($length) {
+       return fputs($handle, $string, $length);
+     } else {
+      return fputs($handle, $string);
+     }
   }
 
   public function feof($handle) {

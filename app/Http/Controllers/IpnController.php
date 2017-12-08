@@ -6,7 +6,7 @@ use Illuminate\Http\Response;
 
 class IpnController {
 
-  public function index(Request $request, PaymentProcessor $paymentProcessor) {
+  public function store(Request $request, PaymentProcessor $paymentProcessor) {
 
     $paymentProcessor->process($request->all());
     return response('', Response::HTTP_OK);

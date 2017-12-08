@@ -29,8 +29,8 @@ class PaymentProcessor {
       . "application/x-www-form-urlencoded\r\n";
     $validationHeader .= "Content-Length: <contentlength>\r\n\r\n";
     $validationCmd = 'cmd=_notify-validate';
-    $validationUrl = 'ssl://www.paypal.com';
-    $validationPort = 443;
+    $validationUrl = env('PAYPAL_IPN_VERIFY_URL');
+    $validationPort = env('PAYPAL_IPN_VERIFY_PORT');
     $validationTimeout = 30;
     $validationExpectedResponse = "VERIFIED";
     $invalidExpectedResponse = "INVALID";

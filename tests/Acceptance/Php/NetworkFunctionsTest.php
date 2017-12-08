@@ -15,7 +15,9 @@ class NetworkFunctionsTest extends TestCase {
     fputs($temp, $header);
     
     $this->assertFalse(feof($temp));
-    $this->assertNotEmpty(fread($temp, 1024));
+    $data = fread($temp, 1024);
+    $this->assertNotEmpty($data);
+    $this->assertEquals(1024, strlen($data));
   }
 
   public function test_fsockopen_with_ip() {

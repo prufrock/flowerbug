@@ -16,3 +16,9 @@ use Illuminate\Http\Request;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:api');
+
+Route::post('/ipn', 'IpnController@store');
+
+Route::post('/cgi-bin/webscr', function (Request $request) {
+  return 'VERIFIED';
+});

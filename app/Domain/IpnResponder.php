@@ -15,11 +15,12 @@ class IpnResponder {
   private $ipnVars;
 
   private $validationExpectedResponse;
+  
+  private $invalidExpectedResponse;
 
   private $ipnDataStore;
 
   public function __construct(
-
     \App\Domain\FilePointerProxy $fproxy,
     \App\Domain\IpnDataStore $ipnDataStore
   ) {
@@ -35,6 +36,7 @@ class IpnResponder {
     $this->validationTimeout = $arguments['validationTimeout'];
     $this->validationCmd = $arguments['validationCmd'];
     $this->validationExpectedResponse = $arguments['validationExpectedResponse'];
+    $this->invalidExpectedResponse = $arguments['invalidExpectedResponse'];
     $this->ipnVars = $arguments['ipnVars'];
   }
 
@@ -51,18 +53,18 @@ class IpnResponder {
       $req .= "&$key=$value";
     }
 
-    $header = "POST /cgi-bin/webscr HTTP/1.1\r\n";
+    $header = "POST " . env('PAYPAL_IPN_VERIFY_RESOURCE') . " HTTP/1.1\r\n";
     $header .= "Content-Type: application/x-www-form-urlencoded\r\n";
     $header .= "Content-Length: " . strlen($req) . "\r\n";
-    $header .= "Host: www.paypal.com\r\n";
+    $header .= "Host: " . env('PAYPAL_IPN_VERIFY_HOST') . "\r\n";
     $header .= "Connection: close\r\n\r\n";
-
+    
     $fp = $this->fproxy->fsockopen(
       $this->validationUrl,
       $this->validationPort,
       $errno,
       $errstr,
-      $this->validationTimeout
+      $this->validationTimeout     
     );
 
     if (!$fp) {
@@ -71,15 +73,18 @@ class IpnResponder {
       $this->fproxy->fputs($fp, $header . $req);
       while (!$this->fproxy->feof($fp)) {
         $res = $this->fproxy->fgets($fp, 1024);
-        if (strcmp($res, $this->validationExpectedResponse) == 0) {
-          $this->fproxy->fclose(true);
+        if (strcmp(trim($res), $this->validationExpectedResponse) == 0) {
+          $this->fproxy->fclose($fp);
           return true;
-        } else {
-          $this->fproxy->fclose(true);
+        } elseif (strcmp(trim($res), $this->invalidExpectedResponse) == 0)  {
+          $this->fproxy->fclose($fp);
           return false;
         }
       }
     }
+    
+    $this->fproxy->fclose($fp);
+    return false;
   }
 
   public function isValid() {

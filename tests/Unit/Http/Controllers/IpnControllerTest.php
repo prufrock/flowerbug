@@ -18,7 +18,7 @@ class IpnControllerTest extends \Tests\TestCase {
       return $request;
     });
 
-    $response = $this->get('ipn');
+    $response = $this->post('/api/ipn');
 
     $response->assertStatus(200);
   }
