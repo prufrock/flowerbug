@@ -52,21 +52,21 @@ class IpnDataStoreTest extends TestCase {
       [
         'DomainName' => config('flowerbug.simpledb.ipn_messages_domain'),
         'ItemName' => '0XV34832YX668463W',
-        'Attributes' => ['txn_id' => '0XV34832YX668463W']
+        'Attributes' => [['Name' => 'txn_id', 'Value' => '0XV34832YX668463W']]
       ]
     )->andReturn(['Attributes' => ''])->once();
 
     $this->assertTrue((new \App\Domain\IpnDataStore($sdb))->storeMessage(['txn_id' => '0XV34832YX668463W']));
   }
 
-  public function testUFailingToStoreAMessage() {
+  public function testFailingToStoreAMessage() {
 
     $sdb = m::mock(\Aws\SimpleDb\SimpleDbClient::class);
     $sdb->shouldReceive('putAttributes')->with(
       [
         'DomainName' => config('flowerbug.simpledb.ipn_messages_domain'),
         'ItemName' => '0XV34832YX668463W',
-        'Attributes' => ['txn_id' => '0XV34832YX668463W']
+        'Attributes' => [['Name' => 'txn_id', 'Value' => '0XV34832YX668463W']]
       ]
     )->andReturn([])->once();
 

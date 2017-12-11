@@ -1,5 +1,6 @@
 <?php namespace Tests\Feature;
 
+use Aws\SimpleDb\SimpleDbClient;
 use Tests\TestCase;
 use Mockery as m;
 
@@ -52,5 +53,17 @@ class IpnTest extends TestCase {
     $response = $this->post('/api/ipn', $data);
     
     $response->assertStatus(200);
+  }
+  
+  public function tearDown() {
+
+    $client = SimpleDbClient::factory(['region' => env('AWS_REGION')]);
+
+    $client->deleteAttributes(
+      [
+        'DomainName' => env('FLOWERBUG_SIMPLEDB_TEST_DOMAIN'),
+        'ItemName' => '899327589'
+      ]
+    );
   }
 }

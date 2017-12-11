@@ -24,11 +24,23 @@ class IpnDataStore {
 
   public function storeMessage($message) {
 
+    $attributes = [];
+
+    foreach($message as $k => $v) {
+      $attribute = [
+        'Name' => $k,
+        'Value' => $v
+      ];
+
+      $attributes[] = $attribute;
+    }
+    
+    
     $result = $this->sdb->putAttributes(
       [
         'DomainName' => config('flowerbug.simpledb.ipn_messages_domain'),
         'ItemName' => $message['txn_id'],
-        'Attributes' => $message
+        'Attributes' => $attributes
       ]
     );
 
