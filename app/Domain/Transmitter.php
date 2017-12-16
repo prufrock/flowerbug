@@ -23,18 +23,16 @@ class Transmitter {
         'ToAddresses' => [$destAddr, $source]
       ],
       'Message' => [
-        [
-          'Subject' => [
-            'Data' => $subject
-            ,
-            'Charset' => 'UTF-8'
-          ]
+        'Subject' => [
+          'Data' => $subject
           ,
-          'Body' => [
-            'Html' => [
-              'Data' => $message,
-              'Charset' => 'UTF-8'
-            ]
+          'Charset' => 'UTF-8'
+        ]
+        ,
+        'Body' => [
+          'Html' => [
+            'Data' => $message,
+            'Charset' => 'UTF-8'
           ]
         ],
         'ReplyToAddresses' => [$source]

@@ -29,18 +29,16 @@ class TransmitterTest extends TestCase {
         'ToAddresses' => ['buyer@example.com', 'seller@example.com']
       ],
       'Message' => [
-        [
-          'Subject' => [
-            'Data' => 'congrats on your purchase'
-            ,
-            'Charset' => 'UTF-8'
-          ]
+        'Subject' => [
+          'Data' => 'congrats on your purchase'
           ,
-          'Body' => [
-            'Html' => [
-              'Data' => 'You bought some stuff!',
-              'Charset' => 'UTF-8'
-            ]
+          'Charset' => 'UTF-8'
+        ]
+        ,
+        'Body' => [
+          'Html' => [
+            'Data' => 'You bought some stuff!',
+            'Charset' => 'UTF-8'
           ]
         ],
         'ReplyToAddresses' => ['seller@example.com']
