@@ -45,7 +45,7 @@ class Project {
 
     $this->simpleDb->select(
       [
-        'SelectExpression' => 'select * from ' . config('flowerbug.projects_domain') . ' where ' . $predicate,
+        'SelectExpression' => 'select * from ' . config('flowerbug.simpledb.projects_domain') . ' where ' . $predicate,
         'ConsistentRead' => true
       ]
     );

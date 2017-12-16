@@ -27,7 +27,7 @@ class ProjectTest extends TestCase {
     $simpleDbClient = m::mock(\Aws\SimpleDb\SimpleDbClient::class);
     $simpleDbClient->shouldReceive('select')->withAnyArgs()->with(
       [
-        'SelectExpression' => 'select * from ' . config('flowerbug.projects_domain') . ' where id = \'technique201702\' or id = \'technique201703\' or id = \'technique201704\'',
+        'SelectExpression' => 'select * from ' . config('flowerbug.simpledb.projects_domain') . ' where id = \'technique201702\' or id = \'technique201703\' or id = \'technique201704\'',
         'ConsistentRead' => true
       ]
     )->once();
@@ -46,7 +46,7 @@ class ProjectTest extends TestCase {
     $simpleDbClient = m::mock(\Aws\SimpleDb\SimpleDbClient::class);
     $simpleDbClient->shouldReceive('select')->withAnyArgs()->with(
       [
-        'SelectExpression' => 'select * from ' . config('flowerbug.projects_domain') . ' where id = \'technique201702\'',
+        'SelectExpression' => 'select * from ' . config('flowerbug.simpledb.projects_domain') . ' where id = \'technique201702\'',
         'ConsistentRead' => true
       ]
     )->once();
