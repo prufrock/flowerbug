@@ -43,15 +43,21 @@ class Project {
 
     $predicate = $predicateClauses->implode(' or ');
 
-    $this->simpleDb->select(
+    $result = $this->simpleDb->select(
       [
         'SelectExpression' => 'select * from ' . config('flowerbug.simpledb.projects_domain') . ' where ' . $predicate,
         'ConsistentRead' => true
       ]
     );
 
-    return collect(collect($ids)->map(function($id) {
-      return $this->create(['id' => $id]);
+    return collect(collect($result['Items'])->map(function($item) {
+      $title = '';
+      foreach($item['Attributes'] as $attribute) {
+        if($attribute['Name'] == 'name') {
+          $title = $attribute['Value'];
+        }
+      }
+      return $this->create(['id' => $item['Name'], 'title' => $title]);
     }
     ));
   }

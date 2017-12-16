@@ -30,6 +30,33 @@ class ProjectTest extends TestCase {
         'SelectExpression' => 'select * from ' . config('flowerbug.simpledb.projects_domain') . ' where id = \'technique201702\' or id = \'technique201703\' or id = \'technique201704\'',
         'ConsistentRead' => true
       ]
+    )->andReturn(
+      [
+        'Items' =>
+          [
+            [
+              'Name' => 'technique201702',
+              'Attributes' => 
+                [
+                  ['Name' => 'name', 'Value' => 'February 2017 Technique Class']
+                ]
+            ],
+            [
+              'Name' => 'technique201703',
+              'Attributes' =>
+                [
+                  ['Name' => 'name', 'Value' => 'March 2017 Technique Class']
+                ]
+            ],
+            [
+              'Name' => 'technique201704',
+              'Attributes' =>
+                [
+                  ['Name' => 'name', 'Value' => 'May 2017 Technique Class']
+                ]
+            ]
+          ]
+      ]
     )->once();
     $project = new \App\Domain\Project($simpleDbClient);
     $found = $project->find(['technique201702', 'technique201703', 'technique201704']);
@@ -48,6 +75,19 @@ class ProjectTest extends TestCase {
       [
         'SelectExpression' => 'select * from ' . config('flowerbug.simpledb.projects_domain') . ' where id = \'technique201702\'',
         'ConsistentRead' => true
+      ]
+    )->andReturn(
+      [
+        'Items' =>
+          [
+            [
+              'Name' => 'technique201702',
+              'Attributes' =>
+                [
+                  ['Name' => 'name', 'Value' => 'February 2017 Technique Class']
+                ]
+            ]
+          ]
       ]
     )->once();
     $project = (new \App\Domain\Project($simpleDbClient, $guideGateway))->find('technique201702');
