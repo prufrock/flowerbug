@@ -10,7 +10,7 @@ class Project {
 
   private $simpleDb;
 
-  public function __construct(SimpleDbClient $simpleDb, $guideGateway = null) {
+  public function __construct(SimpleDbClient $simpleDb, Guide $guideGateway) {
 
     $this->simpleDb = $simpleDb;
     $this->guideGateway = $guideGateway;

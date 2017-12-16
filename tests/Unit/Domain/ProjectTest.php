@@ -16,7 +16,8 @@ class ProjectTest extends TestCase {
   public function testCreateANewProjectWithTitle() {
 
     $simpleDbClient = m::mock(\Aws\SimpleDb\SimpleDbClient::class);
-    $projectGateway = new \App\Domain\Project($simpleDbClient);
+    $guideGateway = m::mock(\App\Domain\Guide::class);
+    $projectGateway = new \App\Domain\Project($simpleDbClient, $guideGateway);
     $project = $projectGateway->create(['title' => 'February 2017 Technique Class']);
 
     $this->assertEquals('February 2017 Technique Class', $project->getTitle());
@@ -58,7 +59,8 @@ class ProjectTest extends TestCase {
           ]
       ]
     )->once();
-    $project = new \App\Domain\Project($simpleDbClient);
+    $guideGateway = m::mock(\App\Domain\Guide::class);
+    $project = new \App\Domain\Project($simpleDbClient, $guideGateway);
     $found = $project->find(['technique201702', 'technique201703', 'technique201704']);
 
     $this->assertInstanceOf(\Illuminate\Support\Collection::class, $found);
