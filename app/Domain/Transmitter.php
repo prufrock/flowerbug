@@ -1,12 +1,13 @@
 <?php namespace App\Domain;
 
+use Aws\Ses\SesClient;
 use Illuminate\Support\Facades\Config;
 
 class Transmitter {
 
   private $ses;
 
-  public function __construct($ses = NULL) {
+  public function __construct(SesClient $ses) {
 
     $this->ses = $ses;
   }
