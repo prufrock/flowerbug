@@ -71,7 +71,8 @@ class PaymentProcessorTest extends TestCase {
 
     $ipnResponder = m::mock(\App\Domain\IpnResponder::class);
     $order = m::mock(\App\Domain\OrderFullFiller::class);
-    $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order);
+    $project = m::mock(\App\Domain\Project::class);
+    $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order, $project);
 
     $ipnResponder->shouldReceive('initialize');
     $ipnResponder->shouldReceive('isVerified')->once()->andReturn(false);
@@ -83,7 +84,8 @@ class PaymentProcessorTest extends TestCase {
 
     $ipnResponder = m::mock(\App\Domain\IpnResponder::class);
     $order = m::mock(\App\Domain\OrderFullFiller::class);
-    $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order);
+    $project = m::mock(\App\Domain\Project::class);
+    $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order, $project);
 
     $ipnResponder->shouldReceive('initialize');
     $ipnResponder->shouldReceive('isVerified')->once()->andReturn(true);
@@ -96,7 +98,8 @@ class PaymentProcessorTest extends TestCase {
 
     $ipnResponder = m::mock(\App\Domain\IpnResponder::class);
     $order = m::mock(\App\Domain\OrderFullFiller::class);
-    $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order);
+    $project = m::mock(\App\Domain\Project::class);
+    $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order, $project);
 
     $ipnResponder->shouldReceive('initialize');
     $ipnResponder->shouldReceive('isVerified')->once()->andReturn(true);

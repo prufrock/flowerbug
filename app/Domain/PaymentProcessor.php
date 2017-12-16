@@ -13,7 +13,7 @@ class PaymentProcessor {
   public function __construct(
     \App\Domain\IpnResponder $responder,
     \App\Domain\OrderFullFiller $orderFullFiller,
-  $project = NULL
+    \App\Domain\Project $project
   ) {
 
     $this->responder = $responder;
