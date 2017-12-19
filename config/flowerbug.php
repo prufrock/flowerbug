@@ -12,5 +12,15 @@ return [
   'sale_message' => env('FLOWERBUG_SALE_MESSAGE', 'Thank you for purchase. Here are your files:'),
   'seller_address' => env('FLOWERBUG_SELLER_ADDRESS'),
   'email_subject' => env('FLOWERBUG_EMAIL_SUBJECT'),
-  'aws_region' => env('AWS_REGION')
+  'aws_region' => env('AWS_REGION'),
+  'paypal' => [
+    'ipn_verify_resource' => env('PAYPAL_IPN_VERIFY_RESOURCE'),
+    'ipn_verify_host' => env('PAYPAL_IPN_VERIFY_HOST'),
+    'ipn_verify_url' => env('PAYPAL_IPN_VERIFY_URL'),
+    'ipn_verify_port' => env('PAYPAL_IPN_VERIFY_PORT')
+  ],
+  'test' => [
+    'receiver_email' => env('FLOWERBUG_TEST_RECEIVER_EMAIL'),
+    'payer_email' => env('FLOWERBUG_TEST_PAYER_EMAIL') 
+  ]
 ];

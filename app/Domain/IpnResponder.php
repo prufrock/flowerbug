@@ -53,7 +53,7 @@ class IpnResponder {
       $req .= "&$key=$value";
     }
 
-    $header = "POST " . env('PAYPAL_IPN_VERIFY_RESOURCE') . " HTTP/1.1\r\n";
+    $header = "POST " . config('flowerbug.paypal.ipn_verify_resource') . " HTTP/1.1\r\n";
     $header .= "Content-Type: application/x-www-form-urlencoded\r\n";
     $header .= "Content-Length: " . strlen($req) . "\r\n";
     $header .= "Host: " . env('PAYPAL_IPN_VERIFY_HOST') . "\r\n";

@@ -21,7 +21,7 @@ class IpnResponderTest extends TestCase {
 
     $ipnVars = ['txn_id' => 1];
     $validationCmd = 'cmd=_notify-validate';
-    $validationUrl = env('PAYPAL_IPN_VERIFY_URL');
+    $validationUrl = config('flowerbug.paypal.ipn_verify_url');
     $validationPort = 443;
     $validationTimeout = 30;
     $validationExpectedResponse = "VERIFIED";
@@ -34,10 +34,10 @@ class IpnResponderTest extends TestCase {
       $req .= "&$key=$value";
     }
 
-    $header ="POST " . env('PAYPAL_IPN_VERIFY_RESOURCE') . " HTTP/1.1\r\n";
+    $header ="POST " . config('flowerbug.paypal.ipn_verify_resource') . " HTTP/1.1\r\n";
     $header .="Content-Type: application/x-www-form-urlencoded\r\n";
     $header .="Content-Length: " . strlen($req) . "\r\n";
-    $header .="Host: " . env('PAYPAL_IPN_VERIFY_HOST') . "\r\n";
+    $header .="Host: " . config('flowerbug.paypal.ipn_verify_host') . "\r\n";
     $header .="Connection: close\r\n\r\n";
     $header .= $req;
     
@@ -86,7 +86,7 @@ class IpnResponderTest extends TestCase {
     $fproxy = m::mock('\App\Domain\FilePointerProxy');
     $fproxy->shouldReceive('fsockopen')
       ->with(
-        env('PAYPAL_IPN_VERIFY_URL'),
+        config('flowerbug.paypal.ipn_verify_url'),
         443,
         $errno,
         $errstr,
@@ -98,7 +98,7 @@ class IpnResponderTest extends TestCase {
     $responder->initialize(
       [
         'ipnVars' => ['txn_id' => 1],
-        'validationUrl' => env('PAYPAL_IPN_VERIFY_URL'),
+        'validationUrl' => config('flowerbug.paypal.ipn_verify_url'),
         'validationPort' => 443,
         'validationTimeout' => 30,
         'validationCmd' => '',
@@ -121,17 +121,17 @@ class IpnResponderTest extends TestCase {
       $req .= "&$key=$value";
     }
 
-    $header ="POST " . env('PAYPAL_IPN_VERIFY_RESOURCE') . " HTTP/1.1\r\n";
+    $header ="POST " . config('flowerbug.paypal.ipn_verify_resource') . " HTTP/1.1\r\n";
     $header .="Content-Type: application/x-www-form-urlencoded\r\n";
     $header .="Content-Length: " . strlen($req) . "\r\n";
-    $header .="Host: " . env('PAYPAL_IPN_VERIFY_HOST') . "\r\n";
+    $header .="Host: " . config('flowerbug.paypal.ipn_verify_host') . "\r\n";
     $header .="Connection: close\r\n\r\n";
     $header .= $req;
 
     $fproxy = m::mock('\App\Domain\FilePointerProxy');
     $fproxy->shouldReceive('fsockopen')
       ->with(
-        env('PAYPAL_IPN_VERIFY_URL'),
+        config('flowerbug.paypal.ipn_verify_url'),
         443,
         $errno,
         $errstr,
@@ -153,7 +153,7 @@ class IpnResponderTest extends TestCase {
     $responder->initialize(
       [
         'ipnVars' => ['txn_id' => 1],
-        'validationUrl' => env('PAYPAL_IPN_VERIFY_URL'),
+        'validationUrl' => config('flowerbug.paypal.ipn_verify_url'),
         'validationPort' => 443,
         'validationTimeout' => 30,
         'validationCmd' => 'cmd=_notify-validate',

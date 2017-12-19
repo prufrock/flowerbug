@@ -16,7 +16,7 @@ class IpnTest extends TestCase {
       "payer_status" => "verified",
       "first_name" => "Test",
       "last_name" => "Testerson",
-      "payer_email" => "d.kanen+payer@gmail.com",
+      "payer_email" => config('flowerbug.test.payer_email'),
       "payer_id" => "TESTBUYERID01",
       "address_name" => "Test Testerson",
       "address_country" => "United States",
@@ -26,8 +26,8 @@ class IpnTest extends TestCase {
       "address_city" => "San Jose",
       "address_street" => "123 any street",
       "business" => "seller@paypalsandbox.com",
-      "receiver_email" => "d.kanen+receiver@gmail.com",
-      "receiver_id" => "d.kanen+receiver@@gmail.com",
+      "receiver_email" => config('flowerbug.test.receiver_email'),
+      "receiver_id" => config('flowerbug.test.receiver_email'),
       "residence_country" => "US",
       "item_name1" => "November 2017 Technique Class",
       "item_number1" => "technique201711",
@@ -57,11 +57,11 @@ class IpnTest extends TestCase {
   
   public function tearDown() {
 
-    $client = SimpleDbClient::factory(['region' => env('AWS_REGION')]);
+    $client = SimpleDbClient::factory(['region' => config('flowerbug.aws_region')]);
 
     $client->deleteAttributes(
       [
-        'DomainName' => env('FLOWERBUG_SIMPLEDB_TEST_DOMAIN'),
+        'DomainName' => config('flowerbug.simpledb.ipn_messages_domain'),
         'ItemName' => '899327589'
       ]
     );
