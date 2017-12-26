@@ -37,7 +37,7 @@ class GuideTest extends TestCase {
     $s3 = m::mock(\Aws\S3\S3Client::class);
     $s3->shouldReceive('getIterator')->with('ListObjects', [
       'Bucket' => config('flowerbug.s3.projects_bucket'),
-      'Prefix' => 'technique201707'
+      'Prefix' => 'technique201707/guides'
     ])->andReturn($iterator)->once();
     $s3->shouldReceive('getObjectUrl')->with(
       config('flowerbug.s3.projects_bucket'),
@@ -64,7 +64,7 @@ class GuideTest extends TestCase {
     $s3 = m::mock(\Aws\S3\S3Client::class);
     $s3->shouldReceive('getIterator')->with('ListObjects', [
       'Bucket' => config('flowerbug.s3.projects_bucket'),
-      'Prefix' => 'technique201707'
+      'Prefix' => 'technique201707/guides'
     ])->andReturn($iterator)->once();
     $s3->shouldReceive('getObjectUrl')->with(
       config('flowerbug.s3.projects_bucket'),

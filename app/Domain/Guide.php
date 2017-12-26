@@ -39,7 +39,7 @@ class Guide {
 
     $iterator = $this->s3->getIterator('ListObjects', [
       'Bucket' => config('flowerbug.s3.projects_bucket'),
-      'Prefix' => $id
+      'Prefix' => $id . '/guides'
     ]);
 
     $guides = [];

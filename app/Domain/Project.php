@@ -62,9 +62,15 @@ class Project {
     ));
   }
 
-  public function getGuides() {
-
-    return $this->guideGateway->find($this->getId());
+  public function getGuides($type = null) {
+    
+    if ($type) {
+      return $this->guideGateway->find($this->getId())->filter(function($guide) use ($type) {
+        return $guide->getFileType() == $type;
+      });
+    } else {
+      return $this->guideGateway->find($this->getId());
+    }
   }
 
   private function setAttributes($attributes) {

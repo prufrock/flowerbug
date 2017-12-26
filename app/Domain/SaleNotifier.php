@@ -21,11 +21,15 @@ MESSAGE;
       ];
 
       foreach($types as $type => $title) {
+        
+        if (($guides = $project->getGuides($type))->count() > 0) {
 
-        $message .= $title . "<br/>\n";
-        foreach ($project->getGuides($type) as $guide) {
+          $message .= $title . "<br/>\n";
+          foreach ($guides as $guide) {
 
-          $message .= "<a href=\"{$guide->getUrl()}\">{$guide->getName()}</a>" . "<br/>\n<br/><br/>\n\n";
+            $message .= "<a href=\"{$guide->getUrl()}\">{$guide->getName()}</a>" . "<br/>\n";
+          }
+          $message .= "<br/><br/>\n";
         }
       }
     }
