@@ -23,32 +23,7 @@ class PaymentProcessor {
 
   public function process($payment) {
 
-    $validationHeader = "";
-    $validationHeader .= "POST /cgi-bin/webscr HTTP/1.0\r\n";
-    $validationHeader .= "Content-Type: "
-      . "application/x-www-form-urlencoded\r\n";
-    $validationHeader .= "Content-Length: <contentlength>\r\n\r\n";
-    $validationCmd = 'cmd=_notify-validate';
-    $validationUrl = config('flowerbug.paypal.ipn_verify_url');
-    $validationPort = config('flowerbug.paypal.ipn_verify_port');
-    $validationTimeout = 30;
-    $validationExpectedResponse = "VERIFIED";
-    $invalidExpectedResponse = "INVALID";
-    $ipnDataStore = new \stdClass();
-    $logger = new \stdClass();
-
-    $this->responder->initialize([
-      'ipnVars' => $payment,
-      'validationHeader' => $validationHeader,
-      'validationCmd' => $validationCmd,
-      'validationUrl' => $validationUrl,
-      'validationPort' => $validationPort,
-      'validationTimeout' => $validationTimeout,
-      'validationExpectedResponse' => $validationExpectedResponse,
-      'invalidExpectedResponse' => $invalidExpectedResponse,
-      'ipnDataStore' => $ipnDataStore,
-      'logger' => $logger
-    ]);
+    $this->prepareResponderToVerify($payment);
 
     if(!$this->responder->isVerified()){
       $this->recordAMessageInTheLog(__METHOD__ . ":" . __LINE__ . ":"
@@ -90,6 +65,35 @@ class PaymentProcessor {
     );
 
     return true;
+  }
+  
+  private function prepareResponderToVerify($payment) {
+    $validationHeader = "";
+    $validationHeader .= "POST /cgi-bin/webscr HTTP/1.0\r\n";
+    $validationHeader .= "Content-Type: "
+      . "application/x-www-form-urlencoded\r\n";
+    $validationHeader .= "Content-Length: <contentlength>\r\n\r\n";
+    $validationCmd = 'cmd=_notify-validate';
+    $validationUrl = config('flowerbug.paypal.ipn_verify_url');
+    $validationPort = config('flowerbug.paypal.ipn_verify_port');
+    $validationTimeout = 30;
+    $validationExpectedResponse = "VERIFIED";
+    $invalidExpectedResponse = "INVALID";
+    $ipnDataStore = new \stdClass();
+    $logger = new \stdClass();
+
+    $this->responder->initialize([
+      'ipnVars' => $payment,
+      'validationHeader' => $validationHeader,
+      'validationCmd' => $validationCmd,
+      'validationUrl' => $validationUrl,
+      'validationPort' => $validationPort,
+      'validationTimeout' => $validationTimeout,
+      'validationExpectedResponse' => $validationExpectedResponse,
+      'invalidExpectedResponse' => $invalidExpectedResponse,
+      'ipnDataStore' => $ipnDataStore,
+      'logger' => $logger
+    ]);
   }
 
   private function recordAMessageInTheLog($message) {
