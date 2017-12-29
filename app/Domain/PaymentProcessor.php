@@ -26,34 +26,34 @@ class PaymentProcessor {
     $this->prepareResponderToVerify($payment);
 
     if(!$this->responder->isVerified()){
-      $this->recordAMessageInTheLog(__METHOD__ . ":" . __LINE__ . ":"
+      $this->log(__METHOD__ . ":" . __LINE__ . ":"
         . "an IPN message was received but couldn't be verified. The "
         . " message is " . $this->responder->get('txn_id') . ".");
       return false;
     }
 
     if(!$this->responder->isValid()){
-      $this->recordAMessageInTheLog(__METHOD__ . ":" . __LINE__ . ":"
+      $this->log(__METHOD__ . ":" . __LINE__ . ":"
         . "an IPN message was received but couldn't be validated. The "
         . " message is " . $this->responder->get('txn_id') . ".");
       return false;
     }
 
     if($this->responder->hasBeenReceivedBefore()){
-      $this->recordAMessageInTheLog(__METHOD__ . ":" . __LINE__ . ":"
+      $this->log(__METHOD__ . ":" . __LINE__ . ":"
         . "an IPN message has been received before. The "
         . " message is " . $this->responder->get('txn_id') . ".");
       return false;
     }
 
-    $this->recordAMessageInTheLog(__METHOD__ . ":" . __LINE__ . ":"
+    $this->log(__METHOD__ . ":" . __LINE__ . ":"
       . "an IPN message was received successfully. The "
       . " message is " . $this->responder->get('txn_id') . ".");
 
     $this->responder->persist();
     $itemsPurchased = $this->responder->getItemsPurchased();
     if(empty($itemsPurchased)){
-      $this->recordAMessageInTheLog(__METHOD__ . ":" . __LINE__ . ":"
+      $this->log(__METHOD__ . ":" . __LINE__ . ":"
         . "an IPN message was received successfully. The "
         . " message is " . $this->responder->get('txn_id') . ": no items were purchased.");
       return;
@@ -92,7 +92,7 @@ class PaymentProcessor {
     ]);
   }
 
-  private function recordAMessageInTheLog($message) {
+  private function log($message) {
     Log::info($message);
   }
 }
