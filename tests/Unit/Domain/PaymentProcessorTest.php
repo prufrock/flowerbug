@@ -50,8 +50,6 @@ class PaymentProcessorTest extends TestCase {
       'validationTimeout' => $validationTimeout,
       'validationExpectedResponse' => $validationExpectedResponse,
       'invalidExpectedResponse' => $invalidExpectedResponse,
-      'ipnDataStore' => new \stdClass(),
-      'logger' => new \stdClass()
     ]);
 
     $ipnResponder->shouldReceive('isVerified')->once()->andReturn(true);

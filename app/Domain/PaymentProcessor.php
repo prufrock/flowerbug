@@ -79,8 +79,6 @@ class PaymentProcessor {
     $validationTimeout = 30;
     $validationExpectedResponse = "VERIFIED";
     $invalidExpectedResponse = "INVALID";
-    $ipnDataStore = new \stdClass();
-    $logger = new \stdClass();
 
     $this->responder->initialize([
       'ipnVars' => $payment,
@@ -91,8 +89,6 @@ class PaymentProcessor {
       'validationTimeout' => $validationTimeout,
       'validationExpectedResponse' => $validationExpectedResponse,
       'invalidExpectedResponse' => $invalidExpectedResponse,
-      'ipnDataStore' => $ipnDataStore,
-      'logger' => $logger
     ]);
   }
 
