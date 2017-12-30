@@ -22,7 +22,7 @@ class IpnResponderTest extends TestCase {
     $ipnVars = ['txn_id' => 1];
     $validationCmd = 'cmd=_notify-validate';
     $validationUrl = config('flowerbug.paypal.ipn_verify_url');
-    $validationPort = 443;
+    $validationPort = config('flowerbug.paypal.ipn_verify_port');
     $validationTimeout = 30;
     $validationExpectedResponse = "VERIFIED";
     $errno = null;
@@ -87,7 +87,7 @@ class IpnResponderTest extends TestCase {
     $fproxy->shouldReceive('fsockopen')
       ->with(
         config('flowerbug.paypal.ipn_verify_url'),
-        443,
+        $validationPort = config('flowerbug.paypal.ipn_verify_port'),
         $errno,
         $errstr,
         30
@@ -99,7 +99,7 @@ class IpnResponderTest extends TestCase {
       [
         'ipnVars' => ['txn_id' => 1],
         'validationUrl' => config('flowerbug.paypal.ipn_verify_url'),
-        'validationPort' => 443,
+        'validationPort' => config('flowerbug.paypal.ipn_verify_port'),
         'validationTimeout' => 30,
         'validationCmd' => '',
         'validationExpectedResponse' => '',
@@ -132,7 +132,7 @@ class IpnResponderTest extends TestCase {
     $fproxy->shouldReceive('fsockopen')
       ->with(
         config('flowerbug.paypal.ipn_verify_url'),
-        443,
+        config('flowerbug.paypal.ipn_verify_port'),
         $errno,
         $errstr,
         30
@@ -154,7 +154,7 @@ class IpnResponderTest extends TestCase {
       [
         'ipnVars' => ['txn_id' => 1],
         'validationUrl' => config('flowerbug.paypal.ipn_verify_url'),
-        'validationPort' => 443,
+        'validationPort' => config('flowerbug.paypal.ipn_verify_port'),
         'validationTimeout' => 30,
         'validationCmd' => 'cmd=_notify-validate',
         'validationExpectedResponse' => 'VERIFIED',
