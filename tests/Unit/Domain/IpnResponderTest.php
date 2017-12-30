@@ -287,4 +287,22 @@ class IpnResponderTest extends TestCase {
 
     $this->assertEquals(['technique201707', 'technique201708'], $responder->getItemsPurchased());
   }
+  
+  public function testInitializeWithIpnConfig() {
+
+    $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
+    $fproxy = m::mock('\App\Domain\FilePointerProxy');
+    $responder = new IpnResponder($fproxy, $ipnDataStore);
+    
+    try {
+      $responder->initializeWithIpnConfig(
+        ['item_number_1' => 'technique201707'],
+        new \App\Domain\IpnConfig()
+      );
+    } catch(\Exception $e) {
+      $this->fail('InitializeWithIpnConfig didn\'t work with the parameters passed.');
+    }
+    
+    $this->assertTrue(true);
+  }
 }

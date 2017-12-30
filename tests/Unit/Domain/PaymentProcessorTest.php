@@ -29,28 +29,10 @@ class PaymentProcessorTest extends TestCase {
     $project->shouldReceive('find')->andReturn($projects);
     $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order, $project);
 
-    $validationHeader = "";
-    $validationHeader .= "POST /cgi-bin/webscr HTTP/1.0\r\n";
-    $validationHeader .= "Content-Type: "
-      . "application/x-www-form-urlencoded\r\n";
-    $validationHeader .= "Content-Length: <contentlength>\r\n\r\n";
-    $validationCmd = 'cmd=_notify-validate';
-    $validationUrl = config('flowerbug.paypal.ipn_verify_url');
-    $validationPort = config('flowerbug.paypal.ipn_verify_port');
-    $validationTimeout = 30;
-    $validationExpectedResponse = "VERIFIED";
-    $invalidExpectedResponse = "INVALID";
-
-    $ipnResponder->shouldReceive('initialize')->once()->with([
-      'ipnVars' => ['id' => '1'],
-      'validationHeader' => $validationHeader,
-      'validationCmd' => $validationCmd,
-      'validationUrl' => $validationUrl,
-      'validationPort' => $validationPort,
-      'validationTimeout' => $validationTimeout,
-      'validationExpectedResponse' => $validationExpectedResponse,
-      'invalidExpectedResponse' => $invalidExpectedResponse,
-    ]);
+    $ipnResponder->shouldReceive('initializeWithIpnConfig')->once()->with(
+      ['id' => '1'],
+      m::type(\App\Domain\IpnConfig::class)
+    );
 
     $ipnResponder->shouldReceive('isVerified')->once()->andReturn(true);
     $ipnResponder->shouldReceive('isValid')->once()->andReturn(true);
@@ -73,6 +55,7 @@ class PaymentProcessorTest extends TestCase {
     $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order, $project);
 
     $ipnResponder->shouldReceive('initialize');
+    $ipnResponder->shouldReceive('initializeWithIpnConfig');
     $ipnResponder->shouldReceive('isVerified')->once()->andReturn(false);
     $ipnResponder->shouldReceive('get');
     $this->assertFalse($processor->process(['txn_id' => '1']));
@@ -86,6 +69,7 @@ class PaymentProcessorTest extends TestCase {
     $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order, $project);
 
     $ipnResponder->shouldReceive('initialize');
+    $ipnResponder->shouldReceive('initializeWithIpnConfig');
     $ipnResponder->shouldReceive('isVerified')->once()->andReturn(true);
     $ipnResponder->shouldReceive('isValid')->once()->andReturn(false);
     $ipnResponder->shouldReceive('get');
@@ -100,6 +84,7 @@ class PaymentProcessorTest extends TestCase {
     $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order, $project);
 
     $ipnResponder->shouldReceive('initialize');
+    $ipnResponder->shouldReceive('initializeWithIpnConfig');
     $ipnResponder->shouldReceive('isVerified')->once()->andReturn(true);
     $ipnResponder->shouldReceive('isValid')->once()->andReturn(true);
     $ipnResponder->shouldReceive('hasBeenReceivedBefore')->once()->andReturn(true);

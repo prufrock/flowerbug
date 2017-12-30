@@ -39,6 +39,17 @@ class IpnResponder {
     $this->invalidExpectedResponse = $arguments['invalidExpectedResponse'];
     $this->ipnVars = $arguments['ipnVars'];
   }
+  
+  public function initializeWithIpnConfig($ipnVars, IpnConfig $ipnConfig) {
+
+    $this->validationUrl = $ipnConfig->getUrl();
+    $this->validationPort = $ipnConfig->getPort();
+    $this->validationTimeout = $ipnConfig->getTimeout();
+    $this->validationCmd = $ipnConfig->getCmd();
+    $this->validationExpectedResponse = $ipnConfig->getValidatedResponse();
+    $this->invalidExpectedResponse = $ipnConfig->getInvalidatedResponse();
+    $this->ipnVars = $ipnVars;
+  }
 
   public function isVerified() {
 
