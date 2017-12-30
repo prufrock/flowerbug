@@ -69,7 +69,7 @@ class PaymentProcessor {
   
   private function prepareResponderToVerify($payment) {
     
-    $this->responder->initializeWithIpnConfig(
+    $this->responder->initialize(
       $payment,
       new IpnConfig()
     );

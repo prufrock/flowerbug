@@ -24,7 +24,6 @@ class IpnResponderTest extends TestCase {
     $validationUrl = config('flowerbug.paypal.ipn_verify_url');
     $validationPort = config('flowerbug.paypal.ipn_verify_port');
     $validationTimeout = 30;
-    $validationExpectedResponse = "VERIFIED";
     $errno = null;
     $errstr = null;
 
@@ -63,16 +62,9 @@ class IpnResponderTest extends TestCase {
     $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
     $responder = new IpnResponder($fproxy, $ipnDataStore);
 
-    $responder->initialize(
-      [
-        'ipnVars' => $ipnVars,
-        'validationUrl' => $validationUrl,
-        'validationPort' => $validationPort,
-        'validationTimeout' => $validationTimeout,
-        'validationCmd' => $validationCmd,
-        'validationExpectedResponse' => $validationExpectedResponse,
-        'invalidExpectedResponse' => ''
-      ]
+    $responder->initialize( 
+      $ipnVars,
+      new \App\Domain\IpnConfig()
     );
 
     $this->assertTrue($responder->isVerified());
@@ -96,15 +88,8 @@ class IpnResponderTest extends TestCase {
     $responder = new IpnResponder($fproxy, $ipnDataStore);
 
     $responder->initialize(
-      [
-        'ipnVars' => ['txn_id' => 1],
-        'validationUrl' => config('flowerbug.paypal.ipn_verify_url'),
-        'validationPort' => config('flowerbug.paypal.ipn_verify_port'),
-        'validationTimeout' => 30,
-        'validationCmd' => '',
-        'validationExpectedResponse' => '',
-        'invalidExpectedResponse' => ''
-      ]
+      ['txn_id' => 1],
+      new \App\Domain\IpnConfig()
     );
 
     $this->assertFalse($responder->isVerified());
@@ -151,15 +136,8 @@ class IpnResponderTest extends TestCase {
     $responder = new IpnResponder($fproxy, $ipnDataStore);
 
     $responder->initialize(
-      [
-        'ipnVars' => ['txn_id' => 1],
-        'validationUrl' => config('flowerbug.paypal.ipn_verify_url'),
-        'validationPort' => config('flowerbug.paypal.ipn_verify_port'),
-        'validationTimeout' => 30,
-        'validationCmd' => 'cmd=_notify-validate',
-        'validationExpectedResponse' => 'VERIFIED',
-        'invalidExpectedResponse' => 'INVALID'
-      ]
+      ['txn_id' => 1],
+      new \App\Domain\IpnConfig()
     );
 
     $this->assertFalse($responder->isVerified());
@@ -182,15 +160,8 @@ class IpnResponderTest extends TestCase {
     $responder = new IpnResponder($fproxy, $ipnDataStore);
 
     $responder->initialize(
-      [
-        'ipnVars' => ['txn_id' => 1],
-        'validationUrl' => '',
-        'validationPort' => 0,
-        'validationTimeout' => 0,
-        'validationCmd' => '',
-        'validationExpectedResponse' => '',
-        'invalidExpectedResponse' => ''
-      ]
+      ['txn_id' => 1],
+      new \App\Domain\IpnConfig()
     );
 
     $this->assertTrue($responder->hasBeenReceivedBefore());
@@ -204,15 +175,8 @@ class IpnResponderTest extends TestCase {
     $responder = new IpnResponder($fproxy, $ipnDataStore);
 
     $responder->initialize(
-      [
-        'ipnVars' => ['txn_id' => 1],
-        'validationUrl' => '',
-        'validationPort' => 0,
-        'validationTimeout' => 0,
-        'validationCmd' => '',
-        'validationExpectedResponse' => '',
-        'invalidExpectedResponse' => ''
-      ]
+      ['txn_id' => 1],
+      new \App\Domain\IpnConfig()
     );
 
     $this->assertTrue($responder->persist());
@@ -224,15 +188,8 @@ class IpnResponderTest extends TestCase {
     $fproxy = m::mock('\App\Domain\FilePointerProxy');
     $responder = new IpnResponder($fproxy, $ipnDataStore);
     $responder->initialize(
-      [
-        'ipnVars' => ['txn_id' => 1],
-        'validationUrl' => '',
-        'validationPort' => 0,
-        'validationTimeout' => 0,
-        'validationCmd' => '',
-        'validationExpectedResponse' => '',
-        'invalidExpectedResponse' => ''
-      ]
+      ['txn_id' => 1],
+      new \App\Domain\IpnConfig()
     );
 
     $this->assertEquals(1, $responder->get('txn_id'));
@@ -244,15 +201,8 @@ class IpnResponderTest extends TestCase {
     $fproxy = m::mock('\App\Domain\FilePointerProxy');
     $responder = new IpnResponder($fproxy, $ipnDataStore);
     $responder->initialize(
-      [
-        'ipnVars' => ['payer_email' => 'buyer@example.com'],
-        'validationUrl' => '',
-        'validationPort' => 0,
-        'validationTimeout' => 0,
-        'validationCmd' => '',
-        'validationExpectedResponse' => '',
-        'invalidExpectedResponse' => ''
-      ]
+      ['payer_email' => 'buyer@example.com'],
+      new \App\Domain\IpnConfig()
     );
 
     $this->assertEquals('buyer@example.com', $responder->getBuyersEmailAddress());
@@ -274,15 +224,8 @@ class IpnResponderTest extends TestCase {
     $fproxy = m::mock('\App\Domain\FilePointerProxy');
     $responder = new IpnResponder($fproxy, $ipnDataStore);
     $responder->initialize(
-      [
-        'ipnVars' => ['item_number_1' => 'technique201707', 'item_number_2' => 'technique201708'],
-        'validationUrl' => '',
-        'validationPort' => 0,
-        'validationTimeout' => 0,
-        'validationCmd' => '',
-        'validationExpectedResponse' => '',
-        'invalidExpectedResponse' => ''
-      ]
+        ['item_number_1' => 'technique201707', 'item_number_2' => 'technique201708'],
+        new \App\Domain\IpnConfig()
     );
 
     $this->assertEquals(['technique201707', 'technique201708'], $responder->getItemsPurchased());
@@ -295,7 +238,7 @@ class IpnResponderTest extends TestCase {
     $responder = new IpnResponder($fproxy, $ipnDataStore);
     
     try {
-      $responder->initializeWithIpnConfig(
+      $responder->initialize(
         ['item_number_1' => 'technique201707'],
         new \App\Domain\IpnConfig()
       );

@@ -29,18 +29,7 @@ class IpnResponder {
     $this->ipnDataStore = $ipnDataStore;
   }
 
-  public function initialize($arguments) {
-
-    $this->validationUrl = $arguments['validationUrl'];
-    $this->validationPort = $arguments['validationPort'];
-    $this->validationTimeout = $arguments['validationTimeout'];
-    $this->validationCmd = $arguments['validationCmd'];
-    $this->validationExpectedResponse = $arguments['validationExpectedResponse'];
-    $this->invalidExpectedResponse = $arguments['invalidExpectedResponse'];
-    $this->ipnVars = $arguments['ipnVars'];
-  }
-  
-  public function initializeWithIpnConfig($ipnVars, IpnConfig $ipnConfig) {
+  public function initialize($ipnVars, IpnConfig $ipnConfig) {
 
     $this->validationUrl = $ipnConfig->getUrl();
     $this->validationPort = $ipnConfig->getPort();
