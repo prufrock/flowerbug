@@ -62,9 +62,8 @@ class IpnResponderTest extends TestCase {
     $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
     $responder = new IpnResponder($fproxy, $ipnDataStore);
 
-    $responder->initialize( 
-      $ipnVars,
-      new \App\Domain\IpnConfig()
+    $responder->initialize(
+      $ipnVars
     );
 
     $this->assertTrue($responder->isVerified());
@@ -88,8 +87,7 @@ class IpnResponderTest extends TestCase {
     $responder = new IpnResponder($fproxy, $ipnDataStore);
 
     $responder->initialize(
-      ['txn_id' => 1],
-      new \App\Domain\IpnConfig()
+      ['txn_id' => 1]
     );
 
     $this->assertFalse($responder->isVerified());
@@ -136,8 +134,7 @@ class IpnResponderTest extends TestCase {
     $responder = new IpnResponder($fproxy, $ipnDataStore);
 
     $responder->initialize(
-      ['txn_id' => 1],
-      new \App\Domain\IpnConfig()
+      ['txn_id' => 1]
     );
 
     $this->assertFalse($responder->isVerified());
@@ -160,8 +157,7 @@ class IpnResponderTest extends TestCase {
     $responder = new IpnResponder($fproxy, $ipnDataStore);
 
     $responder->initialize(
-      ['txn_id' => 1],
-      new \App\Domain\IpnConfig()
+      ['txn_id' => 1]
     );
 
     $this->assertTrue($responder->hasBeenReceivedBefore());
@@ -175,8 +171,7 @@ class IpnResponderTest extends TestCase {
     $responder = new IpnResponder($fproxy, $ipnDataStore);
 
     $responder->initialize(
-      ['txn_id' => 1],
-      new \App\Domain\IpnConfig()
+      ['txn_id' => 1]
     );
 
     $this->assertTrue($responder->persist());
@@ -188,8 +183,7 @@ class IpnResponderTest extends TestCase {
     $fproxy = m::mock('\App\Domain\FilePointerProxy');
     $responder = new IpnResponder($fproxy, $ipnDataStore);
     $responder->initialize(
-      ['txn_id' => 1],
-      new \App\Domain\IpnConfig()
+      ['txn_id' => 1]
     );
 
     $this->assertEquals(1, $responder->get('txn_id'));
@@ -201,8 +195,7 @@ class IpnResponderTest extends TestCase {
     $fproxy = m::mock('\App\Domain\FilePointerProxy');
     $responder = new IpnResponder($fproxy, $ipnDataStore);
     $responder->initialize(
-      ['payer_email' => 'buyer@example.com'],
-      new \App\Domain\IpnConfig()
+      ['payer_email' => 'buyer@example.com']
     );
 
     $this->assertEquals('buyer@example.com', $responder->getBuyersEmailAddress());
@@ -224,8 +217,7 @@ class IpnResponderTest extends TestCase {
     $fproxy = m::mock('\App\Domain\FilePointerProxy');
     $responder = new IpnResponder($fproxy, $ipnDataStore);
     $responder->initialize(
-        ['item_number_1' => 'technique201707', 'item_number_2' => 'technique201708'],
-        new \App\Domain\IpnConfig()
+      ['item_number_1' => 'technique201707', 'item_number_2' => 'technique201708']
     );
 
     $this->assertEquals(['technique201707', 'technique201708'], $responder->getItemsPurchased());
@@ -239,8 +231,7 @@ class IpnResponderTest extends TestCase {
     
     try {
       $responder->initialize(
-        ['item_number_1' => 'technique201707'],
-        new \App\Domain\IpnConfig()
+        ['item_number_1' => 'technique201707']
       );
     } catch(\Exception $e) {
       $this->fail('InitializeWithIpnConfig didn\'t work with the parameters passed.');

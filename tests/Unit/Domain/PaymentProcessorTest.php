@@ -30,8 +30,7 @@ class PaymentProcessorTest extends TestCase {
     $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order, $project);
 
     $ipnResponder->shouldReceive('initialize')->once()->with(
-      ['id' => '1'],
-      m::type(\App\Domain\IpnConfig::class)
+      ['id' => '1']
     );
 
     $ipnResponder->shouldReceive('isVerified')->once()->andReturn(true);

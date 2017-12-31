@@ -4,21 +4,11 @@ class IpnResponder {
 
   private $fproxy;
 
-  private $validationUrl;
-
-  private $validationPort;
-
-  private $validationTimeout;
-
-  private $validationCmd;
-
   private $ipnVars;
 
-  private $validationExpectedResponse;
-  
-  private $invalidExpectedResponse;
-
   private $ipnDataStore;
+
+  private $ipnConfig;
 
   public function __construct(
     \App\Domain\FilePointerProxy $fproxy,
@@ -27,16 +17,11 @@ class IpnResponder {
 
     $this->fproxy = $fproxy;
     $this->ipnDataStore = $ipnDataStore;
+    $this->ipnConfig = new IpnConfig();
   }
 
-  public function initialize($ipnVars, IpnConfig $ipnConfig) {
-
-    $this->validationUrl = $ipnConfig->getUrl();
-    $this->validationPort = $ipnConfig->getPort();
-    $this->validationTimeout = $ipnConfig->getTimeout();
-    $this->validationCmd = $ipnConfig->getCmd();
-    $this->validationExpectedResponse = $ipnConfig->getValidatedResponse();
-    $this->invalidExpectedResponse = $ipnConfig->getInvalidatedResponse();
+  public function initialize($ipnVars) {
+    
     $this->ipnVars = $ipnVars;
   }
 
@@ -46,7 +31,7 @@ class IpnResponder {
     $errstr = null;
 
     // read the post from PayPal system and add 'cmd'
-    $req = $this->validationCmd;
+    $req = $this->ipnConfig->getCmd();
 
     foreach ($this->ipnVars as $key => $value) {
       $value = urlencode(stripslashes($value));
@@ -60,11 +45,11 @@ class IpnResponder {
     $header .= "Connection: close\r\n\r\n";
     
     $fp = $this->fproxy->fsockopen(
-      $this->validationUrl,
-      $this->validationPort,
+      $this->ipnConfig->getUrl(),
+      $this->ipnConfig->getPort(),
       $errno,
       $errstr,
-      $this->validationTimeout     
+      $this->ipnConfig->getTimeout()
     );
 
     if (!$fp) {
@@ -73,10 +58,10 @@ class IpnResponder {
       $this->fproxy->fputs($fp, $header . $req);
       while (!$this->fproxy->feof($fp)) {
         $res = $this->fproxy->fgets($fp, 1024);
-        if (strcmp(trim($res), $this->validationExpectedResponse) == 0) {
+        if (strcmp(trim($res), $this->ipnConfig->getValidatedResponse()) == 0) {
           $this->fproxy->fclose($fp);
           return true;
-        } elseif (strcmp(trim($res), $this->invalidExpectedResponse) == 0)  {
+        } elseif (strcmp(trim($res), $this->ipnConfig->getInvalidatedResponse()) == 0)  {
           $this->fproxy->fclose($fp);
           return false;
         }
