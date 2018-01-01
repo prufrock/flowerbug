@@ -23,7 +23,7 @@ class PaymentProcessor {
 
   public function process($payment) {
 
-    $this->prepareResponderToVerify($payment);
+    $this->responder->initialize($payment);
 
     if(!$this->responder->isVerified()){
       $this->log(__METHOD__ . ":" . __LINE__ . ":"
@@ -67,13 +67,6 @@ class PaymentProcessor {
     return true;
   }
   
-  private function prepareResponderToVerify($payment) {
-    
-    $this->responder->initialize(
-      $payment
-    );
-  }
-
   private function log($message) {
     Log::info($message);
   }
