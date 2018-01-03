@@ -23,45 +23,43 @@ class PaymentProcessor {
 
   public function process($payment) {
 
-    $this->responder->initialize($payment);
-
-    if(!$this->responder->isVerified()){
+    if(!$this->responder->isVerified($payment)){
       $this->log(__METHOD__ . ":" . __LINE__ . ":"
         . "an IPN message was received but couldn't be verified. The "
-        . " message is " . $this->responder->get('txn_id') . ".");
+        . " message is " . $this->responder->get('txn_id', $payment) . ".");
       return false;
     }
 
-    if(!$this->responder->isValid()){
+    if(!$this->responder->isValid($payment)){
       $this->log(__METHOD__ . ":" . __LINE__ . ":"
         . "an IPN message was received but couldn't be validated. The "
-        . " message is " . $this->responder->get('txn_id') . ".");
+        . " message is " . $this->responder->get('txn_id', $payment) . ".");
       return false;
     }
 
-    if($this->responder->hasBeenReceivedBefore()){
+    if($this->responder->hasBeenReceivedBefore($payment)){
       $this->log(__METHOD__ . ":" . __LINE__ . ":"
         . "an IPN message has been received before. The "
-        . " message is " . $this->responder->get('txn_id') . ".");
+        . " message is " . $this->responder->get('txn_id', $payment) . ".");
       return false;
     }
 
     $this->log(__METHOD__ . ":" . __LINE__ . ":"
       . "an IPN message was received successfully. The "
-      . " message is " . $this->responder->get('txn_id') . ".");
+      . " message is " . $this->responder->get('txn_id', $payment) . ".");
 
-    $this->responder->persist();
-    $itemsPurchased = $this->responder->getItemsPurchased();
+    $this->responder->persist($payment);
+    $itemsPurchased = $this->responder->getItemsPurchased($payment);
     if(empty($itemsPurchased)){
       $this->log(__METHOD__ . ":" . __LINE__ . ":"
         . "an IPN message was received successfully. The "
-        . " message is " . $this->responder->get('txn_id') . ": no items were purchased.");
+        . " message is " . $this->responder->get('txn_id', $payment) . ": no items were purchased.");
       return;
     }
 
     $this->orderFullFiller->fulfill(
       $this->project->find($itemsPurchased),
-      $this->responder->getBuyersEmailAddress()
+      $this->responder->getBuyersEmailAddress($payment)
     );
 
     return true;

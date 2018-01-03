@@ -25,7 +25,7 @@ class IpnResponder {
     $this->ipnVars = $ipnVars;
   }
 
-  public function isVerified() {
+  public function isVerified($ipnVars) {
 
     $errno = null;
     $errstr = null;
@@ -33,7 +33,7 @@ class IpnResponder {
     // read the post from PayPal system and add 'cmd'
     $req = $this->ipnConfig->getCmd();
 
-    foreach ($this->ipnVars as $key => $value) {
+    foreach ($ipnVars as $key => $value) {
       $value = urlencode(stripslashes($value));
       $req .= "&$key=$value";
     }
@@ -72,35 +72,35 @@ class IpnResponder {
     return false;
   }
 
-  public function isValid() {
+  public function isValid($ipnVars) {
 
     return true;
   }
 
-  public function hasBeenReceivedBefore() {
+  public function hasBeenReceivedBefore($ipnVars) {
 
-    return $this->ipnDataStore->doesMessageExist($this->ipnVars);
+    return $this->ipnDataStore->doesMessageExist($ipnVars);
   }
 
-  public function persist() {
+  public function persist($ipnVars) {
 
-    return $this->ipnDataStore->storeMessage($this->ipnVars);
+    return $this->ipnDataStore->storeMessage($ipnVars);
   }
 
-  public function get($key) {
+  public function get($key, $ipnVars) {
 
-    return $this->ipnVars[$key];
+    return $ipnVars[$key];
   }
 
-  public function getBuyersEmailAddress() {
+  public function getBuyersEmailAddress($ipnVars) {
 
-    return array_get($this->ipnVars, 'payer_email', '');
+    return array_get($ipnVars, 'payer_email', '');
   }
 
-  public function getItemsPurchased() {
+  public function getItemsPurchased($ipnVars) {
 
     $items = array();
-    if(!is_array($this->ipnVars)){
+    if(!is_array($ipnVars)){
       return $items;
     }
     $findItemKeys = function($key, $value) {
@@ -110,8 +110,8 @@ class IpnResponder {
     };
     $items = array_filter(
       array_map( $findItemKeys
-        , array_keys($this->ipnVars)
-        , array_values($this->ipnVars)
+        , array_keys($ipnVars)
+        , array_values($ipnVars)
       )
     );
     return $items;

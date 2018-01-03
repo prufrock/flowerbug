@@ -62,11 +62,7 @@ class IpnResponderTest extends TestCase {
     $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
     $responder = new IpnResponder($fproxy, $ipnDataStore);
 
-    $responder->initialize(
-      $ipnVars
-    );
-
-    $this->assertTrue($responder->isVerified());
+    $this->assertTrue($responder->isVerified($ipnVars));
   }
 
   public function testIsVerifiedUnableToGetAFileHandle() {
@@ -86,11 +82,7 @@ class IpnResponderTest extends TestCase {
     $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
     $responder = new IpnResponder($fproxy, $ipnDataStore);
 
-    $responder->initialize(
-      ['txn_id' => 1]
-    );
-
-    $this->assertFalse($responder->isVerified());
+    $this->assertFalse($responder->isVerified(['txn_id' => 1]));
   }
 
   public function testIsVerifiedInvalidReponse() {
@@ -133,11 +125,7 @@ class IpnResponderTest extends TestCase {
     $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
     $responder = new IpnResponder($fproxy, $ipnDataStore);
 
-    $responder->initialize(
-      ['txn_id' => 1]
-    );
-
-    $this->assertFalse($responder->isVerified());
+    $this->assertFalse($responder->isVerified(['txn_id' => 1]));
   }
 
   public function testIsValid() {
@@ -146,7 +134,7 @@ class IpnResponderTest extends TestCase {
     $fproxy = m::mock('\App\Domain\FilePointerProxy');
     $responder = new IpnResponder($fproxy, $ipnDataStore);
 
-    $this->assertTrue($responder->isValid());
+    $this->assertTrue($responder->isValid(['txn_id' => 1]));
   }
 
   public function testHasBeenReceivedBefore() {
@@ -156,11 +144,7 @@ class IpnResponderTest extends TestCase {
     $fproxy = m::mock('\App\Domain\FilePointerProxy');
     $responder = new IpnResponder($fproxy, $ipnDataStore);
 
-    $responder->initialize(
-      ['txn_id' => 1]
-    );
-
-    $this->assertTrue($responder->hasBeenReceivedBefore());
+    $this->assertTrue($responder->hasBeenReceivedBefore(['txn_id' => 1]));
   }
 
   public function testPersist() {
@@ -170,11 +154,7 @@ class IpnResponderTest extends TestCase {
     $fproxy = m::mock('\App\Domain\FilePointerProxy');
     $responder = new IpnResponder($fproxy, $ipnDataStore);
 
-    $responder->initialize(
-      ['txn_id' => 1]
-    );
-
-    $this->assertTrue($responder->persist());
+    $this->assertTrue($responder->persist(['txn_id' => 1]));
   }
 
   public function testGet() {
@@ -182,11 +162,8 @@ class IpnResponderTest extends TestCase {
     $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
     $fproxy = m::mock('\App\Domain\FilePointerProxy');
     $responder = new IpnResponder($fproxy, $ipnDataStore);
-    $responder->initialize(
-      ['txn_id' => 1]
-    );
 
-    $this->assertEquals(1, $responder->get('txn_id'));
+    $this->assertEquals(1, $responder->get('txn_id', ['txn_id' => '1']));
   }
 
   public function testGetBuyersEmailAddress() {
@@ -198,7 +175,10 @@ class IpnResponderTest extends TestCase {
       ['payer_email' => 'buyer@example.com']
     );
 
-    $this->assertEquals('buyer@example.com', $responder->getBuyersEmailAddress());
+    $this->assertEquals(
+      'buyer@example.com',
+      $responder->getBuyersEmailAddress(['payer_email' => 'buyer@example.com'])
+    );
   }
 
   public function testGetBuyersEmailAddressWithNoEmailAddress() {
@@ -207,8 +187,8 @@ class IpnResponderTest extends TestCase {
     $fproxy = m::mock('\App\Domain\FilePointerProxy');
     $responder = new IpnResponder($fproxy, $ipnDataStore);
 
-    $this->assertNotNull($responder->getBuyersEmailAddress());
-    $this->assertEquals('', $responder->getBuyersEmailAddress());
+    $this->assertNotNull($responder->getBuyersEmailAddress(['payer_email' => '']));
+    $this->assertEquals('', $responder->getBuyersEmailAddress(['payer_email' => '']));
   }
 
   public function testGetItemsPurchased() {
@@ -216,11 +196,16 @@ class IpnResponderTest extends TestCase {
     $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
     $fproxy = m::mock('\App\Domain\FilePointerProxy');
     $responder = new IpnResponder($fproxy, $ipnDataStore);
-    $responder->initialize(
-      ['item_number_1' => 'technique201707', 'item_number_2' => 'technique201708']
-    );
 
-    $this->assertEquals(['technique201707', 'technique201708'], $responder->getItemsPurchased());
+    $this->assertEquals(
+      ['technique201707', 'technique201708'],
+      $responder->getItemsPurchased(
+        [
+          'item_number_1' => 'technique201707',
+          'item_number_2' => 'technique201708'
+        ]
+      )
+    );
   }
   
   public function testInitializeWithIpnConfig() {

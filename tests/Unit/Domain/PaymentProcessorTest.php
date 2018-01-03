@@ -29,17 +29,30 @@ class PaymentProcessorTest extends TestCase {
     $project->shouldReceive('find')->andReturn($projects);
     $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order, $project);
 
-    $ipnResponder->shouldReceive('initialize')->once()->with(
-      ['id' => '1']
-    );
-
-    $ipnResponder->shouldReceive('isVerified')->once()->andReturn(true);
-    $ipnResponder->shouldReceive('isValid')->once()->andReturn(true);
-    $ipnResponder->shouldReceive('hasBeenReceivedBefore')->once()->andReturn(false);
+    $ipnResponder->shouldReceive('isVerified')
+      ->once()
+      ->with(['id' => '1'])
+      ->andReturn(true);
+    $ipnResponder->shouldReceive('isValid')
+      ->once()
+      ->with(['id' => '1'])
+      ->andReturn(true);
+    $ipnResponder->shouldReceive('hasBeenReceivedBefore')
+      ->once()
+      ->with(['id' => '1'])
+      ->andReturn(false);
     $ipnResponder->shouldReceive('get')->withAnyArgs();
-    $ipnResponder->shouldReceive('persist')->once();
-    $ipnResponder->shouldReceive('getItemsPurchased')->once()->andReturn(['technique201708']);
-    $ipnResponder->shouldReceive('getBuyersEmailAddress')->once()->andReturn('d.kanen+flowerbugtest@gmail.com');
+    $ipnResponder->shouldReceive('persist')
+      ->once()
+      ->with(['id' => '1']);
+    $ipnResponder->shouldReceive('getItemsPurchased')
+      ->once()
+      ->with(['id' => '1'])
+      ->andReturn(['technique201708']);
+    $ipnResponder->shouldReceive('getBuyersEmailAddress')
+      ->once()
+      ->with(['id' => '1'])
+      ->andReturn('d.kanen+flowerbugtest@gmail.com');
 
     $order->shouldReceive('fulfill')->with($projects, 'd.kanen+flowerbugtest@gmail.com')->once();
 
@@ -53,9 +66,13 @@ class PaymentProcessorTest extends TestCase {
     $project = m::mock(\App\Domain\Project::class);
     $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order, $project);
 
-    $ipnResponder->shouldReceive('initialize');
-    $ipnResponder->shouldReceive('isVerified')->once()->andReturn(false);
-    $ipnResponder->shouldReceive('get');
+    $ipnResponder->shouldReceive('isVerified')
+      ->once()
+      ->with(['txn_id' => '1'])
+      ->andReturn(false);
+    $ipnResponder->shouldReceive('get')
+      ->once()
+      ->with('txn_id', ['txn_id' => '1']);
     $this->assertFalse($processor->process(['txn_id' => '1']));
   }
 
@@ -66,10 +83,17 @@ class PaymentProcessorTest extends TestCase {
     $project = m::mock(\App\Domain\Project::class);
     $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order, $project);
 
-    $ipnResponder->shouldReceive('initialize');
-    $ipnResponder->shouldReceive('isVerified')->once()->andReturn(true);
-    $ipnResponder->shouldReceive('isValid')->once()->andReturn(false);
-    $ipnResponder->shouldReceive('get');
+    $ipnResponder->shouldReceive('isVerified')
+      ->once()
+      ->with(['txn_id' => '1'])
+      ->andReturn(true);
+    $ipnResponder->shouldReceive('isValid')
+      ->once()
+      ->with(['txn_id' => '1'])
+      ->andReturn(false);
+    $ipnResponder->shouldReceive('get')
+      ->once()
+      ->with('txn_id', ['txn_id' => '1']);
     $this->assertFalse($processor->process(['txn_id' => '1']));
   }
 
@@ -78,13 +102,27 @@ class PaymentProcessorTest extends TestCase {
     $ipnResponder = m::mock(\App\Domain\IpnResponder::class);
     $order = m::mock(\App\Domain\OrderFullFiller::class);
     $project = m::mock(\App\Domain\Project::class);
-    $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order, $project);
+    $processor = new \App\Domain\PaymentProcessor(
+      $ipnResponder,
+      $order,
+      $project
+    );
 
-    $ipnResponder->shouldReceive('initialize');
-    $ipnResponder->shouldReceive('isVerified')->once()->andReturn(true);
-    $ipnResponder->shouldReceive('isValid')->once()->andReturn(true);
-    $ipnResponder->shouldReceive('hasBeenReceivedBefore')->once()->andReturn(true);
-    $ipnResponder->shouldReceive('get');
+    $ipnResponder->shouldReceive('isVerified')
+      ->once()
+      ->with(['txn_id' => '1'])
+      ->andReturn(true);
+    $ipnResponder->shouldReceive('isValid')
+      ->once()
+      ->with(['txn_id' => '1'])
+      ->andReturn(true);
+    $ipnResponder->shouldReceive('hasBeenReceivedBefore')
+      ->once()
+      ->with(['txn_id' => '1'])
+      ->andReturn(true);
+    $ipnResponder->shouldReceive('get')
+      ->once()
+      ->with('txn_id', ['txn_id' => '1']);
     $this->assertFalse($processor->process(['txn_id' => '1']));
   }
 }
