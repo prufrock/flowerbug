@@ -72,11 +72,6 @@ class IpnResponder {
     return false;
   }
 
-  public function isValid($ipnVars) {
-
-    return true;
-  }
-
   public function hasBeenReceivedBefore($ipnVars) {
 
     return $this->ipnDataStore->doesMessageExist($ipnVars);

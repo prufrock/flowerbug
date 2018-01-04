@@ -33,10 +33,6 @@ class PaymentProcessorTest extends TestCase {
       ->once()
       ->with(['id' => '1'])
       ->andReturn(true);
-    $ipnResponder->shouldReceive('isValid')
-      ->once()
-      ->with(['id' => '1'])
-      ->andReturn(true);
     $ipnResponder->shouldReceive('hasBeenReceivedBefore')
       ->once()
       ->with(['id' => '1'])
@@ -87,10 +83,10 @@ class PaymentProcessorTest extends TestCase {
       ->once()
       ->with(['txn_id' => '1'])
       ->andReturn(true);
-    $ipnResponder->shouldReceive('isValid')
+    $ipnResponder->shouldReceive('hasBeenReceivedBefore')
       ->once()
       ->with(['txn_id' => '1'])
-      ->andReturn(false);
+      ->andReturn(true);
     $ipnResponder->shouldReceive('get')
       ->once()
       ->with('txn_id', ['txn_id' => '1']);
@@ -109,10 +105,6 @@ class PaymentProcessorTest extends TestCase {
     );
 
     $ipnResponder->shouldReceive('isVerified')
-      ->once()
-      ->with(['txn_id' => '1'])
-      ->andReturn(true);
-    $ipnResponder->shouldReceive('isValid')
       ->once()
       ->with(['txn_id' => '1'])
       ->andReturn(true);

@@ -30,13 +30,6 @@ class PaymentProcessor {
       return false;
     }
 
-    if(!$this->responder->isValid($payment)){
-      $this->log(__METHOD__ . ":" . __LINE__ . ":"
-        . "an IPN message was received but couldn't be validated. The "
-        . " message is " . $this->responder->get('txn_id', $payment) . ".");
-      return false;
-    }
-
     if($this->responder->hasBeenReceivedBefore($payment)){
       $this->log(__METHOD__ . ":" . __LINE__ . ":"
         . "an IPN message has been received before. The "

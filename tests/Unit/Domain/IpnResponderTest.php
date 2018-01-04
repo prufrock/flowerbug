@@ -128,15 +128,6 @@ class IpnResponderTest extends TestCase {
     $this->assertFalse($responder->isVerified(['txn_id' => 1]));
   }
 
-  public function testIsValid() {
-
-    $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
-    $fproxy = m::mock('\App\Domain\FilePointerProxy');
-    $responder = new IpnResponder($fproxy, $ipnDataStore);
-
-    $this->assertTrue($responder->isValid(['txn_id' => 1]));
-  }
-
   public function testHasBeenReceivedBefore() {
 
     $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
