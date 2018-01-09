@@ -23,23 +23,15 @@ class PaymentProcessor {
 
   public function process($payment) {
 
-    if(!$this->responder->isVerified($payment)){
-      $this->log(__METHOD__ . ":" . __LINE__ . ":"
-        . "an IPN message was received but couldn't be verified. The "
-        . " message is " . $this->responder->get('txn_id', $payment) . ".");
+    if($this->isNotVerifiedWithPaypal($payment)){
       return false;
     }
 
-    if($this->responder->hasBeenReceivedBefore($payment)){
-      $this->log(__METHOD__ . ":" . __LINE__ . ":"
-        . "an IPN message has been received before. The "
-        . " message is " . $this->responder->get('txn_id', $payment) . ".");
+    if($this->paymentHasBeenReceivedBefore($payment)){
       return false;
     }
 
-    $this->log(__METHOD__ . ":" . __LINE__ . ":"
-      . "an IPN message was received successfully. The "
-      . " message is " . $this->responder->get('txn_id', $payment) . ".");
+    $this->log(__METHOD__ . ":" . __LINE__ . ": Verified IPN message {$this->responder->get('txn_id', $payment)}.");
 
     $this->responder->persist($payment);
     $itemsPurchased = $this->responder->getItemsPurchased($payment);
@@ -60,5 +52,33 @@ class PaymentProcessor {
   
   private function log($message) {
     Log::info($message);
+  }
+
+  private function isNotVerifiedWithPaypal($payment) {
+    
+    if(!$this->responder->isVerified($payment)) {
+      
+      $this->log(
+        __METHOD__ . ":" . __LINE__ . ": The IPN message couldn't be verified {$this->responder->get('txn_id', $payment)}."
+      );
+      
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  private function paymentHasBeenReceivedBefore($payment) {
+    
+    if ($this->responder->hasBeenReceivedBefore($payment)) {
+
+      $this->log(
+      __METHOD__ . ":" . __LINE__ . ": The IPN message has been received before {$this->responder->get('txn_id', $payment)}."
+    );
+
+      return true;
+    } else {
+      return false;
+    }
   }
 }
