@@ -42,7 +42,6 @@ class PaymentProcessorTest extends TestCase {
       ->once()
       ->with(['id' => '1']);
     $ipnResponder->shouldReceive('getItemsPurchased')
-      ->once()
       ->with(['id' => '1'])
       ->andReturn(['technique201708']);
     $ipnResponder->shouldReceive('getBuyersEmailAddress')

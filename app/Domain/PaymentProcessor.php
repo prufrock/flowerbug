@@ -22,28 +22,19 @@ class PaymentProcessor {
   }
 
   public function process($ipnMessage) {
-
-    if($this->isNotVerifiedWithPaypal($ipnMessage)){
+    
+    if (!$this->verifyIpnMessage($ipnMessage)) {
       return false;
     }
 
-    if($this->paymentHasBeenReceivedBefore($ipnMessage)){
-      return false;
-    }
-
-    $this->log(__METHOD__ . ":" . __LINE__ . ": Verified IPN message {$this->responder->get('txn_id', $ipnMessage)}.");
-
-    $this->responder->persist($ipnMessage);
-    $itemsPurchased = $this->responder->getItemsPurchased($ipnMessage);
-    if(empty($itemsPurchased)){
-      $this->log(__METHOD__ . ":" . __LINE__ . ":"
-        . "an IPN message was received successfully. The "
-        . " message is " . $this->responder->get('txn_id', $ipnMessage) . ": no items were purchased.");
-      return;
+    $this->saveIpnMessage($ipnMessage);
+    
+    if ($this->ipnMessageIsVerifiedButNoItemsWerePurchased($ipnMessage)){
+      return true;
     }
 
     $this->orderFullFiller->fulfill(
-      $this->project->find($itemsPurchased),
+      $this->project->find($this->getItemsPurchased($ipnMessage)),
       $this->responder->getBuyersEmailAddress($ipnMessage)
     );
 
@@ -53,8 +44,18 @@ class PaymentProcessor {
   private function log($message) {
     Log::info($message);
   }
+  
+  private function getItemsPurchased($ipnMessage) {
 
-  private function isNotVerifiedWithPaypal($ipnMessage) {
+    return $this->responder->getItemsPurchased($ipnMessage);
+  }
+  
+  private function saveIpnMessage($ipnMessage) {
+    
+    $this->responder->persist($ipnMessage);
+  }
+
+  private function ipnMessageisFromPaypal($ipnMessage) {
     
     if(!$this->responder->isVerified($ipnMessage)) {
       
@@ -68,17 +69,43 @@ class PaymentProcessor {
     }
   }
 
-  private function paymentHasBeenReceivedBefore($ipnMessage) {
+  private function ipnMessageHasBeenReceivedBefore($ipnMessage) {
     
     if ($this->responder->hasBeenReceivedBefore($ipnMessage)) {
 
       $this->log(
-      __METHOD__ . ":" . __LINE__ . ": The IPN message has been received before {$this->responder->get('txn_id', $ipnMessage)}."
-    );
+        __METHOD__ . ":" . __LINE__ . ": The IPN message has been received before {$this->responder->get('txn_id', $ipnMessage)}."
+      );
 
       return true;
     } else {
       return false;
     }
+  }
+
+  private function ipnMessageIsVerifiedButNoItemsWerePurchased($ipnMessage) {
+    
+    if (empty($this->getItemsPurchased($ipnMessage))) {
+      $this->log(__METHOD__ . ":" . __LINE__ . ":"
+        . "The IPN message was received successfully, but no items were purchased {$this->responder->get('txn_id', $ipnMessage)}.");
+      return true;
+    } else { 
+      return false;
+    }
+  }
+
+  private function verifyIpnMessage($ipnMessage) {
+
+    if($this->ipnMessageisFromPaypal($ipnMessage)){
+      return false;
+    }
+
+    if($this->ipnMessageHasBeenReceivedBefore($ipnMessage)){
+      return false;
+    }
+
+    $this->log(__METHOD__ . ":" . __LINE__ . ": Verified IPN message {$this->responder->get('txn_id', $ipnMessage)}.");
+    
+    return true;
   }
 }
