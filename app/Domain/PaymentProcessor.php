@@ -27,8 +27,6 @@ class PaymentProcessor {
       return false;
     }
 
-    $this->saveIpnMessage($ipnMessage);
-    
     if ($this->ipnMessageIsVerifiedButNoItemsWerePurchased($ipnMessage)){
       return true;
     }
@@ -104,6 +102,8 @@ class PaymentProcessor {
       return false;
     }
 
+    $this->saveIpnMessage($ipnMessage);
+    
     $this->log(__METHOD__ . ":" . __LINE__ . ": Verified IPN message {$this->responder->get('txn_id', $ipnMessage)}.");
     
     return true;
