@@ -162,9 +162,6 @@ class IpnResponderTest extends TestCase {
     $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
     $fproxy = m::mock('\App\Domain\FilePointerProxy');
     $responder = new IpnResponder($fproxy, $ipnDataStore);
-    $responder->initialize(
-      ['payer_email' => 'buyer@example.com']
-    );
 
     $this->assertEquals(
       'buyer@example.com',
@@ -199,20 +196,151 @@ class IpnResponderTest extends TestCase {
     );
   }
   
-  public function testInitializeWithIpnConfig() {
+  public function testVerifyValidIpnMessage() {
 
-    $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
-    $fproxy = m::mock('\App\Domain\FilePointerProxy');
-    $responder = new IpnResponder($fproxy, $ipnDataStore);
-    
-    try {
-      $responder->initialize(
-        ['item_number_1' => 'technique201707']
-      );
-    } catch(\Exception $e) {
-      $this->fail('InitializeWithIpnConfig didn\'t work with the parameters passed.');
+    $ipnVars = ['txn_id' => 1];
+    $validationCmd = 'cmd=_notify-validate';
+    $validationUrl = config('flowerbug.paypal.ipn_verify_url');
+    $validationPort = config('flowerbug.paypal.ipn_verify_port');
+    $validationTimeout = 30;
+    $errno = null;
+    $errstr = null;
+
+    $req = $validationCmd;
+    foreach ($ipnVars as $key => $value) {
+      $value = urlencode(stripslashes($value));
+      $req .= "&$key=$value";
     }
+
+    $header ="POST " . config('flowerbug.paypal.ipn_verify_resource') . " HTTP/1.1\r\n";
+    $header .="Content-Type: application/x-www-form-urlencoded\r\n";
+    $header .="Content-Length: " . strlen($req) . "\r\n";
+    $header .="Host: " . config('flowerbug.paypal.ipn_verify_host') . "\r\n";
+    $header .="Connection: close\r\n\r\n";
+    $header .= $req;
+
+    $fproxy = m::mock('\App\Domain\FilePointerProxy');
+    $fproxy->shouldReceive('fsockopen')
+      ->with(
+        $validationUrl,
+        $validationPort,
+        $errno,
+        $errstr,
+        $validationTimeout
+      )->andReturn(true)->once();
+    $fproxy->shouldReceive('fputs')->with(
+      true,
+      $header
+    )->once();
+    $response = tmpfile();
+    fwrite($response, 'VERIFIED');
+    fseek($response, 0);
+    $fproxy->shouldReceive('feof')->andReturn(false)->once();
+    $fproxy->shouldReceive('fgets')->with(true, 1024)->andReturn('VERIFIED')->once();
+    $fproxy->shouldReceive('fclose')->with($response)->once();
+    $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
+    $ipnDataStore->shouldReceive('storeMessage')->with(['txn_id' => 1])->andReturn(true);
+    $ipnDataStore->shouldReceive('doesMessageExist')->with(['txn_id' => 1])->andReturn(false)->once();
+    $responder = new IpnResponder($fproxy, $ipnDataStore); 
     
-    $this->assertTrue(true);
+    $this->assertTrue($responder->verifyIpnMessage($ipnVars));
+  }
+
+  public function testVerifyInvalidIpnMessage() {
+
+    $ipnVars = ['txn_id' => 1];
+    $validationCmd = 'cmd=_notify-validate';
+    $validationUrl = config('flowerbug.paypal.ipn_verify_url');
+    $validationPort = config('flowerbug.paypal.ipn_verify_port');
+    $validationTimeout = 30;
+    $errno = null;
+    $errstr = null;
+
+    $req = $validationCmd;
+    foreach ($ipnVars as $key => $value) {
+      $value = urlencode(stripslashes($value));
+      $req .= "&$key=$value";
+    }
+
+    $header ="POST " . config('flowerbug.paypal.ipn_verify_resource') . " HTTP/1.1\r\n";
+    $header .="Content-Type: application/x-www-form-urlencoded\r\n";
+    $header .="Content-Length: " . strlen($req) . "\r\n";
+    $header .="Host: " . config('flowerbug.paypal.ipn_verify_host') . "\r\n";
+    $header .="Connection: close\r\n\r\n";
+    $header .= $req;
+
+    $fproxy = m::mock('\App\Domain\FilePointerProxy');
+    $fproxy->shouldReceive('fsockopen')
+      ->with(
+        $validationUrl,
+        $validationPort,
+        $errno,
+        $errstr,
+        $validationTimeout
+      )->andReturn(true)->once();
+    $fproxy->shouldReceive('fputs')->with(
+      true,
+      $header
+    )->once();
+    $response = tmpfile();
+    fwrite($response, 'VERIFIED');
+    fseek($response, 0);
+    $fproxy->shouldReceive('feof')->andReturn(false)->once();
+    $fproxy->shouldReceive('fgets')->with(true, 1024)->andReturn('INVALID')->once();
+    $fproxy->shouldReceive('fclose')->with($response)->once();
+    $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
+    $responder = new IpnResponder($fproxy, $ipnDataStore);
+
+    $this->assertFalse($responder->verifyIpnMessage($ipnVars));
+  }
+
+  public function testVerifyValidIpnMessageThatHasBeenReceivedBefore() {
+
+    $ipnVars = ['txn_id' => 1];
+    $validationCmd = 'cmd=_notify-validate';
+    $validationUrl = config('flowerbug.paypal.ipn_verify_url');
+    $validationPort = config('flowerbug.paypal.ipn_verify_port');
+    $validationTimeout = 30;
+    $errno = null;
+    $errstr = null;
+
+    $req = $validationCmd;
+    foreach ($ipnVars as $key => $value) {
+      $value = urlencode(stripslashes($value));
+      $req .= "&$key=$value";
+    }
+
+    $header ="POST " . config('flowerbug.paypal.ipn_verify_resource') . " HTTP/1.1\r\n";
+    $header .="Content-Type: application/x-www-form-urlencoded\r\n";
+    $header .="Content-Length: " . strlen($req) . "\r\n";
+    $header .="Host: " . config('flowerbug.paypal.ipn_verify_host') . "\r\n";
+    $header .="Connection: close\r\n\r\n";
+    $header .= $req;
+
+    $fproxy = m::mock('\App\Domain\FilePointerProxy');
+    $fproxy->shouldReceive('fsockopen')
+      ->with(
+        $validationUrl,
+        $validationPort,
+        $errno,
+        $errstr,
+        $validationTimeout
+      )->andReturn(true)->once();
+    $fproxy->shouldReceive('fputs')->with(
+      true,
+      $header
+    )->once();
+    $response = tmpfile();
+    fwrite($response, 'VERIFIED');
+    fseek($response, 0);
+    $fproxy->shouldReceive('feof')->andReturn(false)->once();
+    $fproxy->shouldReceive('fgets')->with(true, 1024)->andReturn('VERIFIED')->once();
+    $fproxy->shouldReceive('fclose')->with($response)->once();
+    $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
+    $ipnDataStore->shouldReceive('storeMessage')->with(['txn_id' => 1])->andReturn(true);
+    $ipnDataStore->shouldReceive('doesMessageExist')->with(['txn_id' => 1])->andReturn(true)->once();
+    $responder = new IpnResponder($fproxy, $ipnDataStore);
+
+    $this->assertfalse($responder->verifyIpnMessage($ipnVars));
   }
 }

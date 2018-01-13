@@ -1,5 +1,7 @@
 <?php namespace App\Domain;
 
+use Illuminate\Support\Facades\Log;
+
 class IpnResponder {
 
   private $fproxy;
@@ -20,12 +22,7 @@ class IpnResponder {
     $this->ipnConfig = new IpnConfig();
   }
 
-  public function initialize($ipnVars) {
-    
-    $this->ipnVars = $ipnVars;
-  }
-
-  public function isVerified($ipnVars) {
+  public function isVerified($ipnMessage) {
 
     $errno = null;
     $errstr = null;
@@ -33,7 +30,7 @@ class IpnResponder {
     // read the post from PayPal system and add 'cmd'
     $req = $this->ipnConfig->getCmd();
 
-    foreach ($ipnVars as $key => $value) {
+    foreach ($ipnMessage as $key => $value) {
       $value = urlencode(stripslashes($value));
       $req .= "&$key=$value";
     }
@@ -72,30 +69,30 @@ class IpnResponder {
     return false;
   }
 
-  public function hasBeenReceivedBefore($ipnVars) {
+  public function hasBeenReceivedBefore($ipnMessage) {
 
-    return $this->ipnDataStore->doesMessageExist($ipnVars);
+    return $this->ipnDataStore->doesMessageExist($ipnMessage);
   }
 
-  public function persist($ipnVars) {
+  public function persist($ipnMessage) {
 
-    return $this->ipnDataStore->storeMessage($ipnVars);
+    return $this->ipnDataStore->storeMessage($ipnMessage);
   }
 
-  public function get($key, $ipnVars) {
+  public function get($key, $ipnMessage) {
 
-    return $ipnVars[$key];
+    return $ipnMessage[$key];
   }
 
-  public function getBuyersEmailAddress($ipnVars) {
+  public function getBuyersEmailAddress($ipnMessage) {
 
-    return array_get($ipnVars, 'payer_email', '');
+    return array_get($ipnMessage, 'payer_email', '');
   }
 
-  public function getItemsPurchased($ipnVars) {
+  public function getItemsPurchased($ipnMessage) {
 
     $items = array();
-    if(!is_array($ipnVars)){
+    if(!is_array($ipnMessage)){
       return $items;
     }
     $findItemKeys = function($key, $value) {
@@ -105,10 +102,60 @@ class IpnResponder {
     };
     $items = array_filter(
       array_map( $findItemKeys
-        , array_keys($ipnVars)
-        , array_values($ipnVars)
+        , array_keys($ipnMessage)
+        , array_values($ipnMessage)
       )
     );
     return $items;
+  }
+
+  private function ipnMessageIsNotFromPaypal($ipnMessage) {
+
+    if(!$this->isVerified($ipnMessage)) {
+
+      Log::info(
+        __METHOD__ . ":" . __LINE__ . ": The IPN message couldn't be verified {$this->get('txn_id', $ipnMessage)}."
+      );
+
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  private function ipnMessageHasBeenReceivedBefore($ipnMessage) {
+
+    if ($this->hasBeenReceivedBefore($ipnMessage)) {
+
+      Log::info(
+        __METHOD__ . ":" . __LINE__ . ": The IPN message has been received before {$this->get('txn_id', $ipnMessage)}."
+      );
+
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  private function saveIpnMessage($ipnMessage) {
+
+    $this->persist($ipnMessage);
+  }
+  
+  public function verifyIpnMessage($ipnMessage) {
+
+    if($this->ipnMessageisNotFromPaypal($ipnMessage)){
+      return false;
+    }
+
+    if($this->ipnMessageHasBeenReceivedBefore($ipnMessage)){
+      return false;
+    }
+
+    $this->saveIpnMessage($ipnMessage);
+
+    Log::info(__METHOD__ . ":" . __LINE__ . ": Verified IPN message {$this->get('txn_id', $ipnMessage)}.");
+    
+    return true;
   }
 }

@@ -48,39 +48,6 @@ class PaymentProcessor {
     return $this->responder->getItemsPurchased($ipnMessage);
   }
   
-  private function saveIpnMessage($ipnMessage) {
-    
-    $this->responder->persist($ipnMessage);
-  }
-
-  private function ipnMessageisFromPaypal($ipnMessage) {
-    
-    if(!$this->responder->isVerified($ipnMessage)) {
-      
-      $this->log(
-        __METHOD__ . ":" . __LINE__ . ": The IPN message couldn't be verified {$this->responder->get('txn_id', $ipnMessage)}."
-      );
-      
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  private function ipnMessageHasBeenReceivedBefore($ipnMessage) {
-    
-    if ($this->responder->hasBeenReceivedBefore($ipnMessage)) {
-
-      $this->log(
-        __METHOD__ . ":" . __LINE__ . ": The IPN message has been received before {$this->responder->get('txn_id', $ipnMessage)}."
-      );
-
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   private function ipnMessageIsVerifiedButNoItemsWerePurchased($ipnMessage) {
     
     if (empty($this->getItemsPurchased($ipnMessage))) {
@@ -93,19 +60,7 @@ class PaymentProcessor {
   }
 
   private function verifyIpnMessage($ipnMessage) {
-
-    if($this->ipnMessageisFromPaypal($ipnMessage)){
-      return false;
-    }
-
-    if($this->ipnMessageHasBeenReceivedBefore($ipnMessage)){
-      return false;
-    }
-
-    $this->saveIpnMessage($ipnMessage);
     
-    $this->log(__METHOD__ . ":" . __LINE__ . ": Verified IPN message {$this->responder->get('txn_id', $ipnMessage)}.");
-    
-    return true;
+    return $this->responder->verifyIpnMessage($ipnMessage);
   }
 }
