@@ -74,7 +74,7 @@ class IpnMessageVerifierTest extends TestCase {
     $verifierFactory = new IpnMessageVerifier();
     $responder = new \App\Domain\IpnResponder($fproxy, $ipnDataStore, $verifierFactory);
 
-    $verifier = $verifierFactory->create($responder);
+    $verifier = $verifierFactory->create($responder, $fproxy, new \App\Domain\IpnConfig());
     
     $this->assertTrue($verifier->compute(['txn_id' => 1]));
   }
@@ -125,7 +125,7 @@ class IpnMessageVerifierTest extends TestCase {
     $verifierFactory = new IpnMessageVerifier();
     $responder = new \App\Domain\IpnResponder($fproxy, $ipnDataStore, $verifierFactory);
 
-    $verifier = $verifierFactory->create($responder);
+    $verifier = $verifierFactory->create($responder, $fproxy, new \App\Domain\IpnConfig());
 
     $this->assertTrue($verifier->compute(['txn_id' => 1]));
   }
@@ -148,7 +148,8 @@ class IpnMessageVerifierTest extends TestCase {
 
     $verifierFactory = new IpnMessageVerifier();
     $responder = new \App\Domain\IpnResponder($fproxy, $ipnDataStore, $verifierFactory);
-    $verifier = $verifierFactory->create($responder);
+
+    $verifier = $verifierFactory->create($responder, $fproxy, new \App\Domain\IpnConfig());
 
     $this->assertFalse($verifier->compute(['txn_id' => 1]));
   }

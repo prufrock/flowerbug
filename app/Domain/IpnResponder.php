@@ -24,21 +24,16 @@ class IpnResponder {
     $this->verifierFactory = $verifierFactory;
   }
   
-  public function getFproxy() {
+  private function getFproxy() {
     
     return $this->fproxy;
   }
   
-  public function getIpnConfig() {
+  private function getIpnConfig() {
     
     return $this->ipnConfig;
   }
-
-  public function isVerified($ipnMessage) {
-
-    return $this->verifierFactory->create($this)->compute($ipnMessage);
-  }
-
+  
   public function hasBeenReceivedBefore($ipnMessage) {
 
     return $this->ipnDataStore->doesMessageExist($ipnMessage);
@@ -77,6 +72,15 @@ class IpnResponder {
       )
     );
     return $items;
+  }
+
+  private function isVerified($ipnMessage) {
+
+    return $this->verifierFactory->create(
+      $this,
+      $this->getFproxy(),
+      $this->getIpnConfig()
+    )->compute($ipnMessage);
   }
 
   private function ipnMessageIsNotFromPaypal($ipnMessage) {

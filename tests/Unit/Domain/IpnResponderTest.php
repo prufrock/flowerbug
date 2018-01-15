@@ -36,19 +36,6 @@ class IpnResponderTest extends TestCase {
     );
   }
 
-  public function testIsVerified() {
-
-    $fproxy = m::mock('\App\Domain\FilePointerProxy');
-    $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
-    $verifierFactory = m::mock(\App\Domain\IpnMessageVerifier::class);
-    $verifier = m::mock(\App\Domain\IpnMessageVerifier::class);
-    $verifier->shouldReceive('compute')->andReturn(true);
-    $verifierFactory->shouldReceive('create')->andReturn($verifier);
-    $responder = new IpnResponder($fproxy, $ipnDataStore, $verifierFactory);
-
-    $this->assertTrue($responder->isVerified(['txn_id' => 1]));
-  }
-
   public function testHasBeenReceivedBefore() {
 
     $ipnDataStore = m::mock('\App\Domain\IpnDataStore');

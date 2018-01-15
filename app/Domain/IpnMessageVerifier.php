@@ -4,14 +4,20 @@ class IpnMessageVerifier {
 
   private $responder;
 
-  public function __construct($responder = null) {
+  private $fproxy;
+
+  private $ipnConfig;
+
+  public function __construct($responder = null, $fproxy = null, $ipnConfig = null) {
 
     $this->responder = $responder;
+    $this->fproxy = $fproxy;
+    $this->ipnConfig = $ipnConfig;
   }
   
-  public static function create($responder) {
+  public function create($responder, $fproxy, $ipnConfig) {
     
-    return new IpnMessageVerifier($responder);
+    return new IpnMessageVerifier($responder, $fproxy, $ipnConfig);
   }
 
   public function compute($ipnMessage) {
@@ -62,10 +68,12 @@ class IpnMessageVerifier {
   }
   
   private function getIpnConfig() {
-    return $this->responder->getIpnConfig();
+    
+    return $this->ipnConfig;
   }
   
   private function getFproxy() {
-    return $this->responder->getFproxy();
+    
+    return $this->fproxy;
   }
 }
