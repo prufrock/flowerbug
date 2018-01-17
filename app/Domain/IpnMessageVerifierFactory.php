@@ -11,7 +11,11 @@ class IpnMessageVerifierFactory {
     $this->fproxy = $fproxy;
   }
 
-  public function create($responder) {
+  public function create(
+    $responder,
+    $fproxy=null,
+    $ipnConfig=null
+  ) {
 
     return new IpnMessageVerifier($responder, $this->fproxy, new IpnConfig());
   }

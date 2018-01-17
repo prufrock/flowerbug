@@ -15,13 +15,30 @@ class IpnResponder {
   public function __construct(
     \App\Domain\FilePointerProxy $fproxy,
     \App\Domain\IpnDataStore $ipnDataStore,
-    \App\Domain\IpnMessageVerifier $verifierFactory
+    \App\Domain\IpnMessageVerifierFactory $verifierFactory
   ) {
 
     $this->fproxy = $fproxy;
     $this->ipnDataStore = $ipnDataStore;
     $this->ipnConfig = new IpnConfig();
     $this->verifierFactory = $verifierFactory;
+  }
+
+  public function verifyIpnMessage($ipnMessage) {
+
+    if($this->ipnMessageisNotFromPaypal($ipnMessage)){
+      return false;
+    }
+
+    if($this->ipnMessageHasBeenReceivedBefore($ipnMessage)){
+      return false;
+    }
+
+    $this->saveIpnMessage($ipnMessage);
+
+    Log::info(__METHOD__ . ":" . __LINE__ . ": Verified IPN message {$this->get('txn_id', $ipnMessage)}.");
+
+    return true;
   }
   
   private function getFproxy() {
@@ -115,21 +132,5 @@ class IpnResponder {
 
     $this->persist($ipnMessage);
   }
-  
-  public function verifyIpnMessage($ipnMessage) {
 
-    if($this->ipnMessageisNotFromPaypal($ipnMessage)){
-      return false;
-    }
-
-    if($this->ipnMessageHasBeenReceivedBefore($ipnMessage)){
-      return false;
-    }
-
-    $this->saveIpnMessage($ipnMessage);
-
-    Log::info(__METHOD__ . ":" . __LINE__ . ": Verified IPN message {$this->get('txn_id', $ipnMessage)}.");
-    
-    return true;
-  }
 }
