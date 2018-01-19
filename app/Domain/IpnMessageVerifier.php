@@ -1,12 +1,12 @@
 <?php namespace App\Domain;
 
-class IpnMessageVerifier implements IpnMessageVerifierFactoryInterface {
+class IpnMessageVerifier {
 
   private $fproxy;
 
   private $ipnConfig;
 
-  public function __construct($fproxy = null) {
+  public function __construct(\App\Domain\FilePointerProxy $fproxy) {
 
     $this->fproxy = $fproxy;
     $this->ipnConfig = new IpnConfig();

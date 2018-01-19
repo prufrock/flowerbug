@@ -8,7 +8,7 @@ class IpnMessageVerifierTest extends TestCase {
   
   public function testComputeExists() {
 
-    $verifier = new IpnMessageVerifier();
+    $verifier = new IpnMessageVerifier(m::mock(\App\Domain\FilePointerProxy::class));
     
     $this->assertTrue(
       (new \ReflectionObject($verifier))->hasMethod('compute'),
@@ -18,7 +18,7 @@ class IpnMessageVerifierTest extends TestCase {
   
   public function testHasCreateMethod() {
 
-    $verifier = new IpnMessageVerifier();
+    $verifier = new IpnMessageVerifier(m::mock(\App\Domain\FilePointerProxy::class));
 
     $this->assertTrue(
       (new \ReflectionObject($verifier))->hasMethod('create'),

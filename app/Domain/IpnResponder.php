@@ -6,15 +6,15 @@ class IpnResponder {
 
   private $ipnDataStore;
 
-  private $verifierFactory;
+  private $verifier;
 
   public function __construct(
     \App\Domain\IpnDataStore $ipnDataStore,
-    \App\Domain\IpnMessageVerifierFactoryInterface $verifierFactory
+    \App\Domain\IpnMessageVerifier $verifier
   ) {
 
     $this->ipnDataStore = $ipnDataStore;
-    $this->verifierFactory = $verifierFactory;
+    $this->verifier = $verifier;
   }
 
   public function verifyIpnMessage($ipnMessage) {
@@ -76,7 +76,7 @@ class IpnResponder {
 
   private function isVerified($ipnMessage) {
 
-    return $this->verifierFactory->create($this)->compute($ipnMessage);
+    return $this->verifier->compute($ipnMessage);
   }
 
   private function ipnMessageIsNotFromPaypal($ipnMessage) {
