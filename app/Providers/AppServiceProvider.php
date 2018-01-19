@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Domain\IpnMessageVerifierFactory;
+use App\Domain\IpnMessageVerifierFactoryInterface;
 use App\Domain\IpnResponder;
 use App\Domain\PaymentProcessor;
 use App\Services\Locker;
@@ -31,7 +33,8 @@ class AppServiceProvider extends ServiceProvider {
         return new Locker($app->make(S3Client::class));
       }
     );
+    
+    $this->app->bind(IpnMessageVerifierFactoryInterface::class, IpnMessageVerifierFactory::class);
 
-    $this->app->when(PaymentProcessor::class)->needs('$responder')->give(IpnResponder::class);
   }
 }

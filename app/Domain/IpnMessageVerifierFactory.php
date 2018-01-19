@@ -1,6 +1,6 @@
 <?php namespace App\Domain;
 
-class IpnMessageVerifierFactory {
+class IpnMessageVerifierFactory implements IpnMessageVerifierFactoryInterface {
 
   private $fproxy;
 

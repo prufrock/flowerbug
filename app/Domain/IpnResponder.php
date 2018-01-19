@@ -6,17 +6,14 @@ class IpnResponder {
 
   private $ipnDataStore;
 
-  private $ipnConfig;
-
   private $verifierFactory;
 
   public function __construct(
     \App\Domain\IpnDataStore $ipnDataStore,
-    \App\Domain\IpnMessageVerifierFactory $verifierFactory
+    \App\Domain\IpnMessageVerifierFactoryInterface $verifierFactory
   ) {
 
     $this->ipnDataStore = $ipnDataStore;
-    $this->ipnConfig = new IpnConfig();
     $this->verifierFactory = $verifierFactory;
   }
 
