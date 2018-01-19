@@ -72,7 +72,7 @@ class IpnMessageVerifierTest extends TestCase {
     $fproxy->shouldReceive('fclose')->with($response)->once();
     $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
     $verifierFactory = new \App\Domain\IpnMessageVerifierFactory($fproxy);
-    $responder = new \App\Domain\IpnResponder($fproxy, $ipnDataStore, $verifierFactory);
+    $responder = new \App\Domain\IpnResponder(null, $ipnDataStore, $verifierFactory);
 
     $verifier = $verifierFactory->create($responder, $fproxy, new \App\Domain\IpnConfig());
     
@@ -123,7 +123,7 @@ class IpnMessageVerifierTest extends TestCase {
     $fproxy->shouldReceive('fclose')->with($response)->once();
     $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
     $verifierFactory = new \App\Domain\IpnMessageVerifierFactory($fproxy);
-    $responder = new \App\Domain\IpnResponder($fproxy, $ipnDataStore, $verifierFactory);
+    $responder = new \App\Domain\IpnResponder(null, $ipnDataStore, $verifierFactory);
 
     $verifier = $verifierFactory->create($responder, $fproxy, new \App\Domain\IpnConfig());
 
@@ -147,7 +147,7 @@ class IpnMessageVerifierTest extends TestCase {
     $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
 
     $verifierFactory = new \App\Domain\IpnMessageVerifierFactory($fproxy);
-    $responder = new \App\Domain\IpnResponder($fproxy, $ipnDataStore, $verifierFactory);
+    $responder = new \App\Domain\IpnResponder(null, $ipnDataStore, $verifierFactory);
 
     $verifier = $verifierFactory->create($responder, $fproxy, new \App\Domain\IpnConfig());
 

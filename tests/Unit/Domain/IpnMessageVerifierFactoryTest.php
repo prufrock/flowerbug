@@ -31,7 +31,7 @@ class IpnMessageVerifierFactoryTest extends TestCase {
     $ipnDataStore = app(\App\Domain\IpnDataStore::class);
     $factory = new IpnMessageVerifierFactory($fproxy);
     $responder = new \App\Domain\IpnResponder(
-      $fproxy,
+      null,
       $ipnDataStore,
       new IpnMessageVerifierFactory($fproxy)
     );

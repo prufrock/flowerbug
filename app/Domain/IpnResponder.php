@@ -13,7 +13,7 @@ class IpnResponder {
   private $verifierFactory;
 
   public function __construct(
-    \App\Domain\FilePointerProxy $fproxy,
+    $fproxy = null,
     \App\Domain\IpnDataStore $ipnDataStore,
     \App\Domain\IpnMessageVerifierFactory $verifierFactory
   ) {
