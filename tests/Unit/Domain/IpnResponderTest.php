@@ -16,32 +16,12 @@ class IpnResponderTest extends TestCase {
     );
   }
   
-  public function testGetFproxyExists() {
-    
-    $responder = $this->app->make(\App\Domain\IpnResponder::class);
-
-    $this->assertTrue(
-      (new \ReflectionObject($responder))->hasMethod('getFproxy'),
-      "IpnResponder doesn't have a getFproxy method."
-    );
-  }
-
-  public function testGetIpnConfigExists() {
-
-    $responder = $this->app->make(\App\Domain\IpnResponder::class);
-
-    $this->assertTrue(
-      (new \ReflectionObject($responder))->hasMethod('getIpnConfig'),
-      "IpnResponder doesn't have a getIpnConfig method."
-    );
-  }
-
   public function testHasBeenReceivedBefore() {
 
     $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
     $ipnDataStore->shouldReceive('doesMessageExist')->with(['txn_id' => 1])->andReturn(true)->once();
     $verifierFactory = m::mock(\App\Domain\IpnMessageVerifierFactory::class);
-    $responder = new IpnResponder(null, $ipnDataStore, $verifierFactory);
+    $responder = new IpnResponder($ipnDataStore, $verifierFactory);
 
     $this->assertTrue($responder->hasBeenReceivedBefore(['txn_id' => 1]));
   }
@@ -51,7 +31,7 @@ class IpnResponderTest extends TestCase {
     $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
     $ipnDataStore->shouldReceive('storeMessage')->with(['txn_id' => 1])->andReturn(true);
     $verifierFactory = m::mock(\App\Domain\IpnMessageVerifierFactory::class);
-    $responder = new IpnResponder(null, $ipnDataStore, $verifierFactory);
+    $responder = new IpnResponder($ipnDataStore, $verifierFactory);
 
     $this->assertTrue($responder->persist(['txn_id' => 1]));
   }
@@ -60,7 +40,7 @@ class IpnResponderTest extends TestCase {
 
     $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
     $verifierFactory = m::mock(\App\Domain\IpnMessageVerifierFactory::class);
-    $responder = new IpnResponder(null, $ipnDataStore, $verifierFactory);
+    $responder = new IpnResponder($ipnDataStore, $verifierFactory);
 
     $this->assertEquals(1, $responder->get('txn_id', ['txn_id' => '1']));
   }
@@ -69,7 +49,7 @@ class IpnResponderTest extends TestCase {
 
     $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
     $verifierFactory = m::mock(\App\Domain\IpnMessageVerifierFactory::class);
-    $responder = new IpnResponder(null, $ipnDataStore, $verifierFactory);
+    $responder = new IpnResponder($ipnDataStore, $verifierFactory);
 
     $this->assertEquals(
       'buyer@example.com',
@@ -81,7 +61,7 @@ class IpnResponderTest extends TestCase {
 
     $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
     $verifierFactory = m::mock(\App\Domain\IpnMessageVerifierFactory::class);
-    $responder = new IpnResponder(null, $ipnDataStore, $verifierFactory);
+    $responder = new IpnResponder($ipnDataStore, $verifierFactory);
 
     $this->assertNotNull($responder->getBuyersEmailAddress(['payer_email' => '']));
     $this->assertEquals('', $responder->getBuyersEmailAddress(['payer_email' => '']));
@@ -91,7 +71,7 @@ class IpnResponderTest extends TestCase {
 
     $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
     $verifierFactory = m::mock(\App\Domain\IpnMessageVerifierFactory::class);
-    $responder = new IpnResponder(null, $ipnDataStore, $verifierFactory);
+    $responder = new IpnResponder($ipnDataStore, $verifierFactory);
 
     $this->assertEquals(
       ['technique201707', 'technique201708'],
@@ -113,7 +93,7 @@ class IpnResponderTest extends TestCase {
     $verifier = m::mock(\App\Domain\IpnMessageVerifier::class);
     $verifier->shouldReceive('compute')->andReturn(true);
     $verifierFactory->shouldReceive('create')->andReturn($verifier);
-    $responder = new IpnResponder(null, $ipnDataStore, $verifierFactory);
+    $responder = new IpnResponder($ipnDataStore, $verifierFactory);
     
     $this->assertTrue($responder->verifyIpnMessage(['txn_id' => 1]));
   }
@@ -125,7 +105,7 @@ class IpnResponderTest extends TestCase {
     $verifier = m::mock(\App\Domain\IpnMessageVerifier::class);
     $verifier->shouldReceive('compute')->andReturn(false);
     $verifierFactory->shouldReceive('create')->andReturn($verifier);
-    $responder = new IpnResponder(null, $ipnDataStore, $verifierFactory);
+    $responder = new IpnResponder($ipnDataStore, $verifierFactory);
 
     $this->assertFalse($responder->verifyIpnMessage(['txn_id' => 1]));
   }
@@ -139,7 +119,7 @@ class IpnResponderTest extends TestCase {
     $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
     $ipnDataStore->shouldReceive('storeMessage')->with(['txn_id' => 1])->andReturn(true);
     $ipnDataStore->shouldReceive('doesMessageExist')->with(['txn_id' => 1])->andReturn(true)->once();
-    $responder = new IpnResponder(null, $ipnDataStore, $verifierFactory);
+    $responder = new IpnResponder($ipnDataStore, $verifierFactory);
 
     $this->assertFalse($responder->verifyIpnMessage(['txn_id' => 1]));
   }

@@ -1,6 +1,5 @@
 <?php namespace Tests\Unit\Domain;
 
-use App\Domain\IpnConfig;
 use App\Domain\IpnMessageVerifier;
 use Tests\TestCase;
 use Mockery as m;

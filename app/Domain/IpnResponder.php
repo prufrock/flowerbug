@@ -4,8 +4,6 @@ use Illuminate\Support\Facades\Log;
 
 class IpnResponder {
 
-  private $fproxy;
-
   private $ipnDataStore;
 
   private $ipnConfig;
@@ -13,12 +11,10 @@ class IpnResponder {
   private $verifierFactory;
 
   public function __construct(
-    $fproxy = null,
     \App\Domain\IpnDataStore $ipnDataStore,
     \App\Domain\IpnMessageVerifierFactory $verifierFactory
   ) {
 
-    $this->fproxy = $fproxy;
     $this->ipnDataStore = $ipnDataStore;
     $this->ipnConfig = new IpnConfig();
     $this->verifierFactory = $verifierFactory;
@@ -39,16 +35,6 @@ class IpnResponder {
     Log::info(__METHOD__ . ":" . __LINE__ . ": Verified IPN message {$this->get('txn_id', $ipnMessage)}.");
 
     return true;
-  }
-  
-  private function getFproxy() {
-    
-    return $this->fproxy;
-  }
-  
-  private function getIpnConfig() {
-    
-    return $this->ipnConfig;
   }
   
   public function hasBeenReceivedBefore($ipnMessage) {

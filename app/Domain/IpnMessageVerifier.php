@@ -6,20 +6,15 @@ class IpnMessageVerifier {
 
   private $ipnConfig;
 
-  public function __construct($fproxytemp = null, $fproxy = null) {
+  public function __construct($fproxy = null) {
 
-    if($fproxytemp) {
-      $this->fproxy = $fproxytemp;
-    } else if($fproxy) {
-      $this->fproxy = $fproxy;
-    }
-    
+    $this->fproxy = $fproxy;
     $this->ipnConfig = new IpnConfig();
   }
   
-  public function create($responder, $fproxy, $ipnConfig) {
+  public function create() {
     
-    return new IpnMessageVerifier($responder, $fproxy, $ipnConfig);
+    return new IpnMessageVerifier($this->fproxy);
   }
 
   public function compute($ipnMessage) {
