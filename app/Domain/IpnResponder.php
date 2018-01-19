@@ -93,11 +93,7 @@ class IpnResponder {
 
   private function isVerified($ipnMessage) {
 
-    return $this->verifierFactory->create(
-      $this,
-      $this->getFproxy(),
-      $this->getIpnConfig()
-    )->compute($ipnMessage);
+    return $this->verifierFactory->create($this)->compute($ipnMessage);
   }
 
   private function ipnMessageIsNotFromPaypal($ipnMessage) {

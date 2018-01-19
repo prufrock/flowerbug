@@ -27,15 +27,8 @@ class IpnMessageVerifierFactoryTest extends TestCase {
 
   public function testCreate() {
 
-    $fproxy = app(\App\Domain\FilePointerProxy::class);
-    $ipnDataStore = app(\App\Domain\IpnDataStore::class);
-    $factory = new IpnMessageVerifierFactory($fproxy);
-    $responder = new \App\Domain\IpnResponder(
-      null,
-      $ipnDataStore,
-      new IpnMessageVerifierFactory($fproxy)
-    );
+    $factory = new IpnMessageVerifierFactory(app(\App\Domain\FilePointerProxy::class));
     
-    $this->assertInstanceOf(\App\Domain\IpnMessageVerifier::class, $factory->create($responder));
+    $this->assertInstanceOf(\App\Domain\IpnMessageVerifier::class, $factory->create());
   }
 }

@@ -1,5 +1,6 @@
 <?php namespace Tests\Unit\Domain;
 
+use App\Domain\IpnConfig;
 use App\Domain\IpnMessageVerifier;
 use Tests\TestCase;
 use Mockery as m;
@@ -8,8 +9,7 @@ class IpnMessageVerifierTest extends TestCase {
   
   public function testComputeExists() {
 
-    $responder = m::mock(\App\Domain\IpnResponder::class); 
-    $verifier = new IpnMessageVerifier($responder);
+    $verifier = new IpnMessageVerifier();
     
     $this->assertTrue(
       (new \ReflectionObject($verifier))->hasMethod('compute'),
@@ -19,8 +19,7 @@ class IpnMessageVerifierTest extends TestCase {
   
   public function testHasCreateMethod() {
 
-    $responder = m::mock(\App\Domain\IpnResponder::class);
-    $verifier = new IpnMessageVerifier($responder);
+    $verifier = new IpnMessageVerifier();
 
     $this->assertTrue(
       (new \ReflectionObject($verifier))->hasMethod('create'),
@@ -70,11 +69,8 @@ class IpnMessageVerifierTest extends TestCase {
     $fproxy->shouldReceive('feof')->andReturn(false)->once();
     $fproxy->shouldReceive('fgets')->with(true, 1024)->andReturn('VERIFIED')->once();
     $fproxy->shouldReceive('fclose')->with($response)->once();
-    $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
-    $verifierFactory = new \App\Domain\IpnMessageVerifierFactory($fproxy);
-    $responder = new \App\Domain\IpnResponder(null, $ipnDataStore, $verifierFactory);
 
-    $verifier = $verifierFactory->create($responder, $fproxy, new \App\Domain\IpnConfig());
+    $verifier = new IpnMessageVerifier($fproxy);
     
     $this->assertTrue($verifier->compute(['txn_id' => 1]));
   }
@@ -121,11 +117,8 @@ class IpnMessageVerifierTest extends TestCase {
     $fproxy->shouldReceive('feof')->andReturn(false)->once();
     $fproxy->shouldReceive('fgets')->with(true, 1024)->andReturn('VERIFIED')->once();
     $fproxy->shouldReceive('fclose')->with($response)->once();
-    $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
-    $verifierFactory = new \App\Domain\IpnMessageVerifierFactory($fproxy);
-    $responder = new \App\Domain\IpnResponder(null, $ipnDataStore, $verifierFactory);
-
-    $verifier = $verifierFactory->create($responder, $fproxy, new \App\Domain\IpnConfig());
+    
+    $verifier = new IpnMessageVerifier($fproxy);
 
     $this->assertTrue($verifier->compute(['txn_id' => 1]));
   }
@@ -144,12 +137,8 @@ class IpnMessageVerifierTest extends TestCase {
         $errstr,
         30
       )->andReturn(false)->once();
-    $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
 
-    $verifierFactory = new \App\Domain\IpnMessageVerifierFactory($fproxy);
-    $responder = new \App\Domain\IpnResponder(null, $ipnDataStore, $verifierFactory);
-
-    $verifier = $verifierFactory->create($responder, $fproxy, new \App\Domain\IpnConfig());
+    $verifier = new IpnMessageVerifier($fproxy);
 
     $this->assertFalse($verifier->compute(['txn_id' => 1]));
   }
