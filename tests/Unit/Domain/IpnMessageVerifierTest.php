@@ -5,6 +5,14 @@ use Tests\TestCase;
 use Mockery as m;
 
 class IpnMessageVerifierTest extends TestCase {
+
+  public function testNew() {
+
+    $this->assertInstanceOf(
+      \App\Domain\IpnMessageVerifier::class,
+      $this->app->make(\App\Domain\IpnMessageVerifier::class)
+    );
+  }
   
   public function testComputeExists() {
 

@@ -28,7 +28,7 @@ class IpnResponder {
     }
 
     $this->saveIpnMessage($ipnMessage);
-
+    
     Log::info(__METHOD__ . ":" . __LINE__ . ": Verified IPN message {$this->get('txn_id', $ipnMessage)}.");
 
     return true;
@@ -45,8 +45,11 @@ class IpnResponder {
   }
 
   public function get($key, $ipnMessage) {
+    
+    $ipnMessageObject = new IpnMessage();
+    $ipnMessageObject->data = $ipnMessage;
 
-    return $ipnMessage[$key];
+    return $ipnMessageObject->data[$key];
   }
 
   public function getBuyersEmailAddress($ipnMessage) {
