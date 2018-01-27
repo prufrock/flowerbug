@@ -41,10 +41,7 @@ class IpnResponder {
 
   public function get($key, $ipnMessage) {
     
-    $ipnMessageObject = new IpnMessage();
-    $ipnMessageObject->data = $ipnMessage;
-
-    return $ipnMessageObject->data[$key];
+    return $ipnMessage[$key];
   }
 
   public function getBuyersEmailAddress($ipnMessage) {
