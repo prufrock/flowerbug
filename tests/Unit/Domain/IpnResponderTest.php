@@ -16,26 +16,6 @@ class IpnResponderTest extends TestCase {
     );
   }
   
-  public function testHasBeenReceivedBefore() {
-
-    $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
-    $ipnDataStore->shouldReceive('doesMessageExist')->with(['txn_id' => 1])->andReturn(true)->once();
-    $verifierFactory = m::mock(\App\Domain\IpnMessageVerifier::class);
-    $responder = new IpnResponder($ipnDataStore, $verifierFactory);
-
-    $this->assertTrue($responder->hasBeenReceivedBefore(['txn_id' => 1]));
-  }
-
-  public function testPersist() {
-
-    $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
-    $ipnDataStore->shouldReceive('storeMessage')->with(['txn_id' => 1])->andReturn(true);
-    $verifierFactory = m::mock(\App\Domain\IpnMessageVerifier::class);
-    $responder = new IpnResponder($ipnDataStore, $verifierFactory);
-
-    $this->assertTrue($responder->persist(['txn_id' => 1]));
-  }
-
   public function testGet() {
 
     $ipnDataStore = m::mock('\App\Domain\IpnDataStore');

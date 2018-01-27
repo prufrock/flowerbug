@@ -34,14 +34,9 @@ class IpnResponder {
     return true;
   }
   
-  public function hasBeenReceivedBefore($ipnMessage) {
+  private function hasBeenReceivedBefore($ipnMessage) {
 
     return $this->ipnDataStore->doesMessageExist($ipnMessage);
-  }
-
-  public function persist($ipnMessage) {
-
-    return $this->ipnDataStore->storeMessage($ipnMessage);
   }
 
   public function get($key, $ipnMessage) {
@@ -112,7 +107,7 @@ class IpnResponder {
 
   private function saveIpnMessage($ipnMessage) {
 
-    $this->persist($ipnMessage);
+    return $this->ipnDataStore->storeMessage($ipnMessage);
   }
 
 }
