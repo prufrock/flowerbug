@@ -25,28 +25,6 @@ class IpnResponderTest extends TestCase {
     $this->assertEquals(1, $responder->get('txn_id', ['txn_id' => '1']));
   }
 
-  public function testGetBuyersEmailAddress() {
-
-    $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
-    $verifierFactory = m::mock(\App\Domain\IpnMessageVerifier::class);
-    $responder = new IpnResponder($ipnDataStore, $verifierFactory);
-
-    $this->assertEquals(
-      'buyer@example.com',
-      $responder->getBuyersEmailAddress(['payer_email' => 'buyer@example.com'])
-    );
-  }
-
-  public function testGetBuyersEmailAddressWithNoEmailAddress() {
-
-    $ipnDataStore = m::mock('\App\Domain\IpnDataStore');
-    $verifierFactory = m::mock(\App\Domain\IpnMessageVerifier::class);
-    $responder = new IpnResponder($ipnDataStore, $verifierFactory);
-
-    $this->assertNotNull($responder->getBuyersEmailAddress(['payer_email' => '']));
-    $this->assertEquals('', $responder->getBuyersEmailAddress(['payer_email' => '']));
-  }
-
   public function testGetItemsPurchased() {
 
     $ipnDataStore = m::mock('\App\Domain\IpnDataStore');

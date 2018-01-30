@@ -24,25 +24,28 @@ class PaymentProcessorTest extends TestCase {
 
     $ipnResponder = m::mock(\App\Domain\IpnResponder::class);
     $order = m::mock(\App\Domain\OrderFullFiller::class);
-    $project = m::mock('\App\Domain\Project');
+    $project = m::mock(\App\Domain\Project::class);
     $projects = collect([$project]);
     $project->shouldReceive('find')->andReturn($projects);
     $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order, $project);
+    
+    $ipnMessage = m::mock(\App\Domain\IpnMessage::class);
+    $ipnMessage->data = ['txn_id' => '1', 'payer_email' => 'd.kanen+flowerbugtest@gmail.com'];
+    $ipnMessage->shouldReceive('getBuyersEmailAddress')
+      ->andReturn('d.kanen+flowerbugtest@gmail.com');
 
     $ipnResponder->shouldReceive('verifyIpnMessage')
-      ->with(['id' => '1'])
+      ->with(['txn_id' => '1', 'payer_email' => 'd.kanen+flowerbugtest@gmail.com'])
       ->andReturn(true);
     $ipnResponder->shouldReceive('getItemsPurchased')
-      ->with(['id' => '1'])
+      ->with(['txn_id' => '1', 'payer_email' => 'd.kanen+flowerbugtest@gmail.com'])
       ->andReturn(['technique201708']);
-    $ipnResponder->shouldReceive('getBuyersEmailAddress')
-      ->once()
-      ->with(['id' => '1'])
-      ->andReturn('d.kanen+flowerbugtest@gmail.com');
 
     $order->shouldReceive('fulfill')->with($projects, 'd.kanen+flowerbugtest@gmail.com')->once();
 
-    $this->assertTrue($processor->process(['id' => '1']));
+    $this->assertTrue($processor->process(
+      $ipnMessage
+    ));
   }
 
   public function testUnableToVerifyMessage() {
@@ -51,10 +54,15 @@ class PaymentProcessorTest extends TestCase {
     $order = m::mock(\App\Domain\OrderFullFiller::class);
     $project = m::mock(\App\Domain\Project::class);
     $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order, $project);
+    
+    $ipnMessage = m::mock(\App\Domain\IpnMessage::class);
+    $ipnMessage->data = ['txn_id' => '1', 'payer_email' => 'd.kanen+flowerbugtest@gmail.com'];
 
     $ipnResponder->shouldReceive('verifyIpnMessage')
-      ->with(['txn_id' => '1'])
+      ->with(['txn_id' => '1', 'payer_email' => 'd.kanen+flowerbugtest@gmail.com'])
       ->andReturn(false);
-    $this->assertFalse($processor->process(['txn_id' => '1']));
+    $this->assertFalse($processor->process(
+      $ipnMessage)
+    );
   }
 }

@@ -23,17 +23,19 @@ class PaymentProcessor {
 
   public function process($ipnMessage) {
     
-    if (!$this->verifyIpnMessage($ipnMessage)) {
+    $ipnMessageData = $ipnMessage->data;
+    
+    if (!$this->verifyIpnMessage($ipnMessageData)) {
       return false;
     }
 
-    if ($this->ipnMessageIsVerifiedButNoItemsWerePurchased($ipnMessage)){
+    if ($this->ipnMessageIsVerifiedButNoItemsWerePurchased($ipnMessageData)){
       return true;
     }
 
     $this->orderFullFiller->fulfill(
-      $this->project->find($this->getItemsPurchased($ipnMessage)),
-      $this->responder->getBuyersEmailAddress($ipnMessage)
+      $this->project->find($this->getItemsPurchased($ipnMessageData)),
+      $ipnMessage->getBuyersEmailAddress()
     );
 
     return true;

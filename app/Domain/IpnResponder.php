@@ -44,11 +44,6 @@ class IpnResponder {
     return $ipnMessage[$key];
   }
 
-  public function getBuyersEmailAddress($ipnMessage) {
-
-    return array_get($ipnMessage, 'payer_email', '');
-  }
-
   public function getItemsPurchased($ipnMessage) {
 
     $items = array();
