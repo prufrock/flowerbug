@@ -25,7 +25,7 @@ class PaymentProcessor {
     
     $ipnMessageData = $ipnMessage->data;
     
-    if (!$this->verifyIpnMessage($ipnMessageData)) {
+    if (!$ipnMessage->verifyIpnMessage()) {
       return false;
     }
 
@@ -59,10 +59,5 @@ class PaymentProcessor {
     } else { 
       return false;
     }
-  }
-
-  private function verifyIpnMessage($ipnMessage) {
-    
-    return $this->responder->verifyIpnMessage($ipnMessage);
   }
 }

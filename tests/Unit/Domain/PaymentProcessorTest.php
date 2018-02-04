@@ -28,18 +28,15 @@ class PaymentProcessorTest extends TestCase {
     $projects = collect([$project]);
     $project->shouldReceive('find')->andReturn($projects);
     $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order, $project);
-    
-    $ipnMessage = m::mock(\App\Domain\IpnMessage::class);
-    $ipnMessage->data = ['txn_id' => '1', 'payer_email' => 'd.kanen+flowerbugtest@gmail.com'];
-    $ipnMessage->shouldReceive('getBuyersEmailAddress')
-      ->andReturn('d.kanen+flowerbugtest@gmail.com');
 
-    $ipnResponder->shouldReceive('verifyIpnMessage')
-      ->with(['txn_id' => '1', 'payer_email' => 'd.kanen+flowerbugtest@gmail.com'])
-      ->andReturn(true);
     $ipnResponder->shouldReceive('getItemsPurchased')
       ->with(['txn_id' => '1', 'payer_email' => 'd.kanen+flowerbugtest@gmail.com'])
       ->andReturn(['technique201708']);
+
+    $ipnMessage = m::mock(\App\Domain\IpnMessage::class);
+    $ipnMessage->data = ['txn_id' => '1', 'payer_email' => 'd.kanen+flowerbugtest@gmail.com'];
+    $ipnMessage->shouldReceive('verifyIpnMessage')->andReturn(true);
+    $ipnMessage->shouldReceive('getBuyersEmailAddress')->andReturn('d.kanen+flowerbugtest@gmail.com');
 
     $order->shouldReceive('fulfill')->with($projects, 'd.kanen+flowerbugtest@gmail.com')->once();
 
@@ -56,13 +53,8 @@ class PaymentProcessorTest extends TestCase {
     $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order, $project);
     
     $ipnMessage = m::mock(\App\Domain\IpnMessage::class);
-    $ipnMessage->data = ['txn_id' => '1', 'payer_email' => 'd.kanen+flowerbugtest@gmail.com'];
+    $ipnMessage->shouldReceive('verifyIpnMessage')->andReturn(false);
 
-    $ipnResponder->shouldReceive('verifyIpnMessage')
-      ->with(['txn_id' => '1', 'payer_email' => 'd.kanen+flowerbugtest@gmail.com'])
-      ->andReturn(false);
-    $this->assertFalse($processor->process(
-      $ipnMessage)
-    );
+    $this->assertFalse($processor->process($ipnMessage));
   }
 }
