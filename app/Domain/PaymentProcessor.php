@@ -23,18 +23,16 @@ class PaymentProcessor {
 
   public function process($ipnMessage) {
     
-    $ipnMessageData = $ipnMessage->data;
-    
     if (!$ipnMessage->verifyIpnMessage()) {
       return false;
     }
 
-    if ($this->ipnMessageIsVerifiedButNoItemsWerePurchased($ipnMessageData)){
+    if ($this->ipnMessageIsVerifiedButNoItemsWerePurchased($ipnMessage)){
       return true;
     }
 
     $this->orderFullFiller->fulfill(
-      $this->project->find($this->getItemsPurchased($ipnMessageData)),
+      $this->project->find($this->getItemsPurchased($ipnMessage)),
       $ipnMessage->getBuyersEmailAddress()
     );
 
@@ -46,15 +44,15 @@ class PaymentProcessor {
   }
   
   private function getItemsPurchased($ipnMessage) {
-
-    return $this->responder->getItemsPurchased($ipnMessage);
+    
+    return $ipnMessage->getItemsPurchased();
   }
   
   private function ipnMessageIsVerifiedButNoItemsWerePurchased($ipnMessage) {
     
     if (empty($this->getItemsPurchased($ipnMessage))) {
       $this->log(__METHOD__ . ":" . __LINE__ . ":"
-        . "The IPN message was received successfully, but no items were purchased {$this->responder->get('txn_id', $ipnMessage)}.");
+        . "The IPN message was received successfully, but no items were purchased {$ipnMessage->get('txn_id')}.");
       return true;
     } else { 
       return false;

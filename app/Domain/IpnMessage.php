@@ -20,4 +20,14 @@ class IpnMessage {
 
     return $this->responder->verifyIpnMessage($this->data);
   }
+  
+  public function getItemsPurchased() {
+    
+    return $this->responder->getItemsPurchased($this->data);
+  }
+  
+  public function get($key) {
+    
+    return $this->data[$key];
+  }
 }
