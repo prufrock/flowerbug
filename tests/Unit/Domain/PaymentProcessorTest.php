@@ -22,12 +22,11 @@ class PaymentProcessorTest extends TestCase {
 
   public function testValidMessage() {
 
-    $ipnResponder = m::mock(\App\Domain\IpnResponder::class);
     $order = m::mock(\App\Domain\OrderFullFiller::class);
     $project = m::mock(\App\Domain\Project::class);
     $projects = collect([$project]);
     $project->shouldReceive('find')->andReturn($projects);
-    $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order, $project);
+    $processor = new \App\Domain\PaymentProcessor($order, $project);
 
     $ipnMessage = m::mock(\App\Domain\IpnMessage::class);
     $ipnMessage->data = ['txn_id' => '1', 'payer_email' => 'd.kanen+flowerbugtest@gmail.com'];
@@ -45,10 +44,9 @@ class PaymentProcessorTest extends TestCase {
 
   public function testUnableToVerifyMessage() {
 
-    $ipnResponder = m::mock(\App\Domain\IpnResponder::class);
     $order = m::mock(\App\Domain\OrderFullFiller::class);
     $project = m::mock(\App\Domain\Project::class);
-    $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order, $project);
+    $processor = new \App\Domain\PaymentProcessor($order, $project);
     
     $ipnMessage = m::mock(\App\Domain\IpnMessage::class);
     $ipnMessage->shouldReceive('verifyIpnMessage')->andReturn(false);
@@ -58,12 +56,11 @@ class PaymentProcessorTest extends TestCase {
 
   public function testVerifiedMessageButNoItemsWerePurchased() {
 
-    $ipnResponder = m::mock(\App\Domain\IpnResponder::class);
     $order = m::mock(\App\Domain\OrderFullFiller::class);
     $project = m::mock(\App\Domain\Project::class);
     $projects = collect([$project]);
     $project->shouldReceive('find')->andReturn($projects);
-    $processor = new \App\Domain\PaymentProcessor($ipnResponder, $order, $project);
+    $processor = new \App\Domain\PaymentProcessor($order, $project);
 
     $ipnMessage = m::mock(\App\Domain\IpnMessage::class);
     $ipnMessage->data = ['txn_id' => '1', 'payer_email' => 'd.kanen+flowerbugtest@gmail.com'];

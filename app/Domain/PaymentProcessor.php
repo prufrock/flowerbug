@@ -11,12 +11,10 @@ class PaymentProcessor {
   private $project;
 
   public function __construct(
-    \App\Domain\IpnResponder $responder,
     \App\Domain\OrderFullFiller $orderFullFiller,
     \App\Domain\Project $project
   ) {
 
-    $this->responder = $responder;
     $this->orderFullFiller = $orderFullFiller;
     $this->project = $project;
   }
