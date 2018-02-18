@@ -4,8 +4,6 @@ use Illuminate\Support\Facades\Log;
 
 class PaymentProcessor {
 
-  private $responder;
-
   private $orderFullFiller;
 
   private $project;
