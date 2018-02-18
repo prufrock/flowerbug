@@ -1,70 +1,69 @@
-<?php namespace Tests\Unit\Domain;
+<?php 
+
+namespace Tests\Unit\Domain;
 
 use App\Domain\IpnMessage;
 use Tests\TestCase;
 use Mockery as m;
 
-class IpnMessageTest extends TestCase {
+class IpnMessageTest extends TestCase
+{
+    public function testNew()
+    {
+        $this->assertInstanceOf(IpnMessage::class, new IpnMessage(m::mock(\App\Domain\IpnResponder::class)));
+    }
 
-  public function testNew() {
+    public function testGetASingleKey()
+    {
+        $ipnMessage = new IpnMessage(m::mock(\App\Domain\IpnResponder::class));
+        $ipnMessage->data = ['txn_id' => 1];
 
-    $this->assertInstanceOf(
-      IpnMessage::class,
-      new IpnMessage(m::mock(\App\Domain\IpnResponder::class))
-    );
-  }
+        $this->assertEquals(1, $ipnMessage->data['txn_id']);
+    }
 
-  public function testGetASingleKey() {
+    public function testGetTheWholeMessageAsAnArray()
+    {
+        $ipnMessage = new IpnMessage(m::mock(\App\Domain\IpnResponder::class));
+        $ipnMessage->data = ['txn_id' => 1];
 
-    $ipnMessage = new IpnMessage(m::mock(\App\Domain\IpnResponder::class));
-    $ipnMessage->data = ['txn_id' => 1];
-    
-    $this->assertEquals(1, $ipnMessage->data['txn_id']);
-  }
+        $this->assertEquals(['txn_id' => 1], $ipnMessage->data);
+    }
 
-  public function testGetTheWholeMessageAsAnArray() {
+    public function testGetBuyersEmailAddress()
+    {
+        $ipnMessage = new IpnMessage(m::mock(\App\Domain\IpnResponder::class));
+        $ipnMessage->data = ['payer_email' => 'buyer@example.com'];
 
-    $ipnMessage = new IpnMessage(m::mock(\App\Domain\IpnResponder::class));
-    $ipnMessage->data = ['txn_id' => 1];
+        $this->assertEquals('buyer@example.com', $ipnMessage->getBuyersEmailAddress());
+    }
 
-    $this->assertEquals(['txn_id' => 1], $ipnMessage->data);
-  }
-  
-  public function testGetBuyersEmailAddress() {
+    public function testGetEmptyBuyersEmailAddress()
+    {
+        $ipnMessage = new IpnMessage(m::mock(\App\Domain\IpnResponder::class));
+        $ipnMessage->data = [];
 
-    $ipnMessage = new IpnMessage(m::mock(\App\Domain\IpnResponder::class));
-    $ipnMessage->data = ['payer_email' => 'buyer@example.com'];
+        $this->assertEquals('', $ipnMessage->getBuyersEmailAddress());
+    }
 
-    $this->assertEquals('buyer@example.com', $ipnMessage->getBuyersEmailAddress());
-  }
+    public function testGetItemsPurchasedReturnsItems()
+    {
+        $responder = m::mock(\App\Domain\IpnResponder::class);
+        $responder->shouldReceive('getItemsPurchased')->andReturn(['technique201707', 'technique201708']);
 
-  public function testGetEmptyBuyersEmailAddress() {
+        $ipnMessage = new IpnMessage($responder);
+        $ipnMessage->data = [
+            'item_number_1' => 'technique201707',
+            'item_number_2' => 'technique201708',
+        ];
 
-    $ipnMessage = new IpnMessage(m::mock(\App\Domain\IpnResponder::class));
-    $ipnMessage->data = [];
+        $this->assertEquals(['technique201707', 'technique201708'], $ipnMessage->getItemsPurchased());
+    }
 
-    $this->assertEquals('', $ipnMessage->getBuyersEmailAddress());
-  }
-  
-  public function testGetItemsPurchasedReturnsItems() {
+    public function testGetTxnId()
+    {
+        $ipnMessage = new IpnMessage(m::mock(\App\Domain\IpnResponder::class));
+        $ipnMessage->data = ['txn_id' => 1];
 
-    $responder = m::mock(\App\Domain\IpnResponder::class);
-    $responder->shouldReceive('getItemsPurchased')->andReturn(['technique201707', 'technique201708']);
-    
-    $ipnMessage = new IpnMessage($responder);
-    $ipnMessage->data = [
-      'item_number_1' => 'technique201707',
-      'item_number_2' => 'technique201708'
-    ];
-
-    $this->assertEquals(['technique201707', 'technique201708'], $ipnMessage->getItemsPurchased());
-  }
-  
-  public function testGetTxnId() {
-
-    $ipnMessage = new IpnMessage(m::mock(\App\Domain\IpnResponder::class));
-    $ipnMessage->data = ['txn_id' => 1];
-
-    $this->assertEquals(1, $ipnMessage->get('txn_id')); 
-  }
+        $this->assertEquals(1, $ipnMessage->get('txn_id'));
+    }
 }

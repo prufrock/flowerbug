@@ -1,44 +1,45 @@
-<?php namespace App\Domain;
+<?php 
 
-class OrderFullFiller {
+namespace App\Domain;
 
-  private $transmitter;
+class OrderFullFiller
+{
+    private $transmitter;
 
-  private $projects;
+    private $projects;
 
-  private $buyersEmailAddress;
+    private $buyersEmailAddress;
 
-  private $saleNotifier;
+    private $saleNotifier;
 
-  public function __construct(
-    \App\Domain\Transmitter $transmitter,
-    \App\Domain\SaleNotifier $saleNotifier
-  ) {
+    public function __construct(
+        \App\Domain\Transmitter $transmitter,
+        \App\Domain\SaleNotifier $saleNotifier
+    ) {
+        $this->transmitter = $transmitter;
+        $this->saleNotifier = $saleNotifier;
+    }
 
-    $this->transmitter = $transmitter;
-    $this->saleNotifier = $saleNotifier;
-  }
+    public function fulfill($projects, $buyersEmailAddress)
+    {
+        $this->projects = $projects;
+        $this->buyersEmailAddress = $buyersEmailAddress;
 
-  public function fulfill($projects, $buyersEmailAddress) {
+        return $this->saleNotifier->notify($this);
+    }
 
-    $this->projects = $projects;
-    $this->buyersEmailAddress = $buyersEmailAddress;
+    public function getProjects()
+    {
+        return $this->projects;
+    }
 
-    return $this->saleNotifier->notify($this);
-  }
+    public function getBuyersEmailAddress()
+    {
+        return $this->buyersEmailAddress;
+    }
 
-  public function getProjects() {
-
-    return $this->projects;
-  }
-
-  public function getBuyersEmailAddress() {
-
-    return $this->buyersEmailAddress;
-  }
-
-  public function transmit($output) {
-
-    return $this->transmitter->transmit($this->buyersEmailAddress, $output);
-  }
+    public function transmit($output)
+    {
+        return $this->transmitter->transmit($this->buyersEmailAddress, $output);
+    }
 }

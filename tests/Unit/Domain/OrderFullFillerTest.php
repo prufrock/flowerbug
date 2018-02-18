@@ -1,45 +1,44 @@
-<?php namespace Tests\Unit\Domain;
+<?php
+
+namespace Tests\Unit\Domain;
 
 use Tests\TestCase;
 use Mockery as m;
 
-class OrderFullFillerTest extends TestCase {
+class OrderFullFillerTest extends TestCase
+{
+    public function testTransmit()
+    {
+        $transmitter = m::mock(\App\Domain\Transmitter::class);
+        $transmitter->shouldReceive('transmit')->andReturn(true);
+        $saleNotifier = m::mock(\App\Domain\SaleNotifier::class);
+        $orderFullFiller = new \App\Domain\OrderFullFiller($transmitter, $saleNotifier);
 
-  public function testTransmit() {
+        $this->assertTrue($orderFullFiller->transmit(''));
+    }
 
-    $transmitter = m::mock(\App\Domain\Transmitter::class);
-    $transmitter->shouldReceive('transmit')->andReturn(true);
-    $saleNotifier = m::mock(\App\Domain\SaleNotifier::class);
-    $orderFullFiller = new \App\Domain\OrderFullFiller($transmitter, $saleNotifier);
+    public function testNew()
+    {
+        $transmitter = m::mock(\App\Domain\Transmitter::class);
+        $saleNotifier = m::mock(\App\Domain\SaleNotifier::class);
 
-    $this->assertTrue($orderFullFiller->transmit(''));
-  }
+        $this->assertInstanceOf(\App\Domain\OrderFullFiller::class, new \App\Domain\OrderFullFiller($transmitter, $saleNotifier));
+    }
 
-  public function testNew() {
+    public function testFulfillingAnOrder()
+    {
+        $transmitter = m::mock(\App\Domain\Transmitter::class);
+        $saleNotifier = m::mock(\App\Domain\SaleNotifier::class);
+        $orderFullFiller = new \App\Domain\OrderFullFiller($transmitter, $saleNotifier);
 
-    $transmitter = m::mock(\App\Domain\Transmitter::class);
-    $saleNotifier = m::mock(\App\Domain\SaleNotifier::class);
+        $saleNotifier->shouldReceive('notify')->with($orderFullFiller)->andReturn(true)->once();
 
-    $this->assertInstanceOf(
-      \App\Domain\OrderFullFiller::class,
-      new \App\Domain\OrderFullFiller($transmitter, $saleNotifier)
-    );
-  }
+        $project = collect(m::mock(\App\Domain\Project::class));
+        $buyersEmailAddress = 'buyer@example.com';
 
-  public function testFulfillingAnOrder() {
-
-    $transmitter = m::mock(\App\Domain\Transmitter::class);
-    $saleNotifier = m::mock(\App\Domain\SaleNotifier::class);
-    $orderFullFiller = new \App\Domain\OrderFullFiller($transmitter, $saleNotifier);
-
-    $saleNotifier->shouldReceive('notify')->with($orderFullFiller)->andReturn(true)->once();
-
-    $project = collect(m::mock(\App\Domain\Project::class));
-    $buyersEmailAddress = 'buyer@example.com';
-
-    $this->assertTrue($orderFullFiller->fulfill($project, $buyersEmailAddress));
-    $this->assertEquals('buyer@example.com', $orderFullFiller->getBuyersEmailAddress());
-    $this->assertEquals($project, $orderFullFiller->getProjects());
-  }
+        $this->assertTrue($orderFullFiller->fulfill($project, $buyersEmailAddress));
+        $this->assertEquals('buyer@example.com', $orderFullFiller->getBuyersEmailAddress());
+        $this->assertEquals($project, $orderFullFiller->getProjects());
+    }
 }
 

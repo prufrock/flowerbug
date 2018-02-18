@@ -19,18 +19,18 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-      AwsSimpleDbFlowerbugProjectsPut::class,
-      AwsSimpleDbListDomains::class,
-      AwsSimpleDbListDomainContents::class,
-      AwsSimpleDbGetItem::class,
-      S3Upload::class,
-      TestSimpleDB::class
+        AwsSimpleDbFlowerbugProjectsPut::class,
+        AwsSimpleDbListDomains::class,
+        AwsSimpleDbListDomainContents::class,
+        AwsSimpleDbGetItem::class,
+        S3Upload::class,
+        TestSimpleDB::class,
     ];
 
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param  \Illuminate\Console\Scheduling\Schedule $schedule
      * @return void
      */
     protected function schedule(Schedule $schedule)

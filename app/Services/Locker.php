@@ -1,30 +1,35 @@
-<?php namespace App\Services;
+<?php 
+
+namespace App\Services;
 
 use Aws\S3\Exception\S3Exception;
 
-class Locker {
+class Locker
+{
+    private $storesObjects;
 
-  private $storesObjects;
+    private $message;
 
-  private $message;
-
-  public function __construct($storesObjects) {
-    $this->storesObjects = $storesObjects;
-  }
-
-  public function store($canBeStored) {
-
-    try {
-      $this->storesObjects->putObject($canBeStored->getFileDescription());
-    } catch (S3Exception $e) {
-      $this->message = $e->getMessage();
-      return false;
+    public function __construct($storesObjects)
+    {
+        $this->storesObjects = $storesObjects;
     }
 
-    return true;
-  }
+    public function store($canBeStored)
+    {
+        try {
+            $this->storesObjects->putObject($canBeStored->getFileDescription());
+        } catch (S3Exception $e) {
+            $this->message = $e->getMessage();
 
-  public function getMessage() {
-    return $this->message;
-  }
+            return false;
+        }
+
+        return true;
+    }
+
+    public function getMessage()
+    {
+        return $this->message;
+    }
 }

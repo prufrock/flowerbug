@@ -38,14 +38,14 @@ class AwsSimpleDbListDomains extends Command
      */
     public function handle()
     {
-      $client = SimpleDbClient::factory(array(
-        'region'  => 'us-east-1'
-      ));
+        $client = SimpleDbClient::factory([
+            'region' => 'us-east-1',
+        ]);
 
-      $domains = $client->getIterator('ListDomains')->toArray();
+        $domains = $client->getIterator('ListDomains')->toArray();
 
-      foreach($domains as $domain) {
-        $this->line($domain);
-      }
+        foreach ($domains as $domain) {
+            $this->line($domain);
+        }
     }
 }

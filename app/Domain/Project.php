@@ -2,79 +2,76 @@
 
 use Aws\SimpleDb\SimpleDbClient;
 
-class Project {
+class Project
+{
+    private $attributes;
 
-  private $attributes;
+    private $guideGateway;
 
-  private $guideGateway;
+    private $simpleDb;
 
-  private $simpleDb;
-
-  public function __construct(SimpleDbClient $simpleDb, Guide $guideGateway) {
-
-    $this->simpleDb = $simpleDb;
-    $this->guideGateway = $guideGateway;
-  }
-
-  public function create($attributes = []) {
-
-    $project = new self($this->simpleDb, $this->guideGateway);
-    $project->setAttributes($attributes);
-
-    return $project;
-  }
-
-  public function getTitle() {
-
-    return $this->attributes['title'];
-  }
-
-  public function getId() {
-
-    return $this->attributes['id'];
-  }
-
-  public function find($ids = null) {
-
-    $predicateClauses = collect($ids)->map(function($id) {
-      return "id = '$id'";
+    public function __construct(SimpleDbClient $simpleDb, Guide $guideGateway)
+    {
+        $this->simpleDb = $simpleDb;
+        $this->guideGateway = $guideGateway;
     }
-    );
 
-    $predicate = $predicateClauses->implode(' or ');
+    public function create($attributes = [])
+    {
+        $project = new self($this->simpleDb, $this->guideGateway);
+        $project->setAttributes($attributes);
 
-    $result = $this->simpleDb->select(
-      [
-        'SelectExpression' => 'select * from ' . config('flowerbug.simpledb.projects_domain') . ' where ' . $predicate,
-        'ConsistentRead' => true
-      ]
-    );
+        return $project;
+    }
 
-    return collect(collect($result['Items'])->map(function($item) {
-      $title = '';
-      foreach($item['Attributes'] as $attribute) {
-        if($attribute['Name'] == 'name') {
-          $title = $attribute['Value'];
+    public function getTitle()
+    {
+        return $this->attributes['title'];
+    }
+
+    public function getId()
+    {
+        return $this->attributes['id'];
+    }
+
+    public function find($ids = null)
+    {
+        $predicateClauses = collect($ids)->map(function ($id) {
+            return "id = '$id'";
+        });
+
+        $predicate = $predicateClauses->implode(' or ');
+
+        $result = $this->simpleDb->select([
+                'SelectExpression' => 'select * from '.config('flowerbug.simpledb.projects_domain').' where '.$predicate,
+                'ConsistentRead' => true,
+            ]);
+
+        return collect(collect($result['Items'])->map(function ($item) {
+            $title = '';
+            foreach ($item['Attributes'] as $attribute) {
+                if ($attribute['Name'] == 'name') {
+                    $title = $attribute['Value'];
+                }
+            }
+
+            return $this->create(['id' => $item['Name'], 'title' => $title]);
+        }));
+    }
+
+    public function getGuides($type = null)
+    {
+        if ($type) {
+            return $this->guideGateway->find($this->getId())->filter(function ($guide) use ($type) {
+                return $guide->getFileType() == $type;
+            });
+        } else {
+            return $this->guideGateway->find($this->getId());
         }
-      }
-      return $this->create(['id' => $item['Name'], 'title' => $title]);
     }
-    ));
-  }
 
-  public function getGuides($type = null) {
-    
-    if ($type) {
-      return $this->guideGateway->find($this->getId())->filter(function($guide) use ($type) {
-        return $guide->getFileType() == $type;
-      });
-    } else {
-      return $this->guideGateway->find($this->getId());
+    private function setAttributes($attributes)
+    {
+        $this->attributes = $attributes;
     }
-  }
-
-  private function setAttributes($attributes) {
-
-    $this->attributes = $attributes;
-  }
 }
