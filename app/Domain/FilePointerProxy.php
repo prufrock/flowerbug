@@ -11,7 +11,6 @@ class FilePointerProxy
 
     public function fputs($handle, $string, $length = null)
     {
-
         //watch out if you pass null as the third argument fputs won't write data. 
         if ($length) {
             return fputs($handle, $string, $length);
