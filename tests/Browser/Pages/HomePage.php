@@ -19,12 +19,12 @@ class HomePage extends Page
     /**
      * Assert that the browser is on the page.
      *
-     * @param  Browser  $browser
+     * @param  Browser $browser
      * @return void
      */
     public function assert(Browser $browser)
     {
-        //
+        
     }
 
     /**
@@ -35,7 +35,9 @@ class HomePage extends Page
     public function elements()
     {
         return [
-            '@element' => '#selector',
+            '@banner' => '#banner',
+            '@buttons' => '#buttons',
+            '@first-project' => 'div.project:nth-child(2)'
         ];
     }
 }

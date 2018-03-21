@@ -2720,16 +2720,16 @@
         },
         {
             "name": "laravel/dusk",
-            "version": "v3.0.1",
+            "version": "v3.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/dusk.git",
-                "reference": "1e99d4a8478e67274f401c68ef990ce5832079ad"
+                "reference": "df287183e521d761141352b59ec106a45a87f1b0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/dusk/zipball/1e99d4a8478e67274f401c68ef990ce5832079ad",
-                "reference": "1e99d4a8478e67274f401c68ef990ce5832079ad",
+                "url": "https://api.github.com/repos/laravel/dusk/zipball/df287183e521d761141352b59ec106a45a87f1b0",
+                "reference": "df287183e521d761141352b59ec106a45a87f1b0",
                 "shasum": ""
             },
             "require": {
@@ -2777,7 +2777,7 @@
                 "testing",
                 "webdriver"
             ],
-            "time": "2018-02-12T18:19:58+00:00"
+            "time": "2018-03-07T16:24:19+00:00"
         },
         {
             "name": "laravel/homestead",
