@@ -37,7 +37,7 @@ class HomePage extends Page
         return [
             '@banner' => '#banner',
             '@buttons' => '#buttons',
-            '@first-project' => 'div.project:nth-child(2)'
+            '@first-project' => 'div.project:nth-child(1)',
         ];
     }
 }
