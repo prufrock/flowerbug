@@ -1,6 +1,7 @@
 <?php namespace App\Domain;
 
 use Aws\SimpleDb\SimpleDbClient;
+use Illuminate\Support\Facades\Storage;
 
 class Project
 {
@@ -68,6 +69,16 @@ class Project
         } else {
             return $this->guideGateway->find($this->getId());
         }
+    }
+
+    public function all()
+    {
+        $projects = json_decode(Storage::disk('local')->get('projects.json'), true);
+        $collection = collect();
+        foreach ($projects as $project) {
+            $collection->push($this->create($project));
+        }
+        return $collection;
     }
 
     private function setAttributes($attributes)

@@ -111,4 +111,16 @@ class ProjectTest extends TestCase
         $this->assertEquals(1, $guides->count());
         $this->assertInstanceOf(\App\Domain\Guide::class, $guides->first());
     }
+    
+    public function testGetAllProjectsReturnsACollection() 
+    {
+        $project = resolve(\App\Domain\Project::class);
+        $this->assertInstanceOf(\Illuminate\Support\Collection::class, $project->all());
+    }
+    
+    public function testGetAllProjectsReturnsACollectionWithProjectsInIt() 
+    {
+        $project = resolve(\App\Domain\Project::class);
+        $this->assertInstanceOf(\App\Domain\Project::class, $project->all()->first());
+    }
 }
