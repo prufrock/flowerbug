@@ -35,6 +35,31 @@ class Project
         return $this->attributes['id'];
     }
 
+    public function getThumb()
+    {
+        return $this->attributes['thumb'];
+    }
+
+    public function getUrl()
+    {
+        return $this->attributes['url'];
+    }
+
+    public function getName()
+    {
+        return $this->attributes['name'];
+    }
+
+    public function getCost()
+    {
+        return $this->attributes['cost'];
+    }
+
+    public function getDescription()
+    {
+        return $this->attributes['description'];
+    }
+
     public function find($ids = null)
     {
         $predicateClauses = collect($ids)->map(function ($id) {
@@ -44,9 +69,9 @@ class Project
         $predicate = $predicateClauses->implode(' or ');
 
         $result = $this->simpleDb->select([
-                'SelectExpression' => 'select * from '.config('flowerbug.simpledb.projects_domain').' where '.$predicate,
-                'ConsistentRead' => true,
-            ]);
+            'SelectExpression' => 'select * from '.config('flowerbug.simpledb.projects_domain').' where '.$predicate,
+            'ConsistentRead' => true,
+        ]);
 
         return collect(collect($result['Items'])->map(function ($item) {
             $title = '';
@@ -74,18 +99,21 @@ class Project
     public function all()
     {
         $result = $this->simpleDb->select([
-                'SelectExpression' => 'select * from '.config('flowerbug.simpledb.projects_domain'),
-                'ConsistentRead' => true,
-            ]);
+            'SelectExpression' => 'select * from '.config('flowerbug.simpledb.projects_domain'),
+            'ConsistentRead' => true,
+        ]);
+
         return collect(collect($result['Items'])->map(function ($item) {
             $title = '';
+            $project = [];
             foreach ($item['Attributes'] as $attribute) {
                 if ($attribute['Name'] == 'name') {
                     $title = $attribute['Value'];
                 }
+                $project[$attribute['Name']] = $attribute['Value'];
             }
 
-            return $this->create(['id' => $item['Name'], 'title' => $title]);
+            return $this->create(array_merge(['id' => $item['Name'], 'title' => $title], $project));
         }));
     }
 

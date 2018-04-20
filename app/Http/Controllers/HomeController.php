@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Project;
 use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        $projects = json_decode(Storage::disk('local')->get('projects.json'), true);
-        return view('home', $projects);
+        $projects = (resolve(Project::class))->all();
+        return view('home', ["projects" => $projects]);
     }
 }
