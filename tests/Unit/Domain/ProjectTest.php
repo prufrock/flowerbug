@@ -104,7 +104,19 @@ class ProjectTest extends TestCase
 
     public function testGetAllProjectsReturnsACollection()
     {
-        $project = resolve(\App\Domain\Project::class);
+        $simpleDbClient = m::mock(\Aws\SimpleDb\SimpleDbClient::class);
+        $simpleDbClient->shouldReceive('select')->andReturn([
+            'Items' => [
+                [
+                    'Name' => 'technique201702',
+                    'Attributes' => [
+                        ['Name' => 'name', 'Value' => 'February 2017 Technique Class'],
+                    ],
+
+                ],
+            ],
+        ]);
+        $project = new \App\Domain\Project($simpleDbClient, resolve(\App\Domain\Guide::class));
         $this->assertInstanceOf(\Illuminate\Support\Collection::class, $project->all());
     }
 
