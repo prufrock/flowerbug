@@ -73,12 +73,20 @@ class Project
 
     public function all()
     {
-        $projects = json_decode(Storage::disk('local')->get('projects.json'), true);
-        $collection = collect();
-        foreach ($projects as $project) {
-            $collection->push($this->create($project));
-        }
-        return $collection;
+        $result = $this->simpleDb->select([
+                'SelectExpression' => 'select * from '.config('flowerbug.simpledb.projects_domain'),
+                'ConsistentRead' => true,
+            ]);
+        return collect(collect($result['Items'])->map(function ($item) {
+            $title = '';
+            foreach ($item['Attributes'] as $attribute) {
+                if ($attribute['Name'] == 'name') {
+                    $title = $attribute['Value'];
+                }
+            }
+
+            return $this->create(['id' => $item['Name'], 'title' => $title]);
+        }));
     }
 
     private function setAttributes($attributes)

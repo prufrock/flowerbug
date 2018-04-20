@@ -25,7 +25,7 @@ class ProjectTest extends TestCase
     public function testFindReturnsACollection()
     {
         $simpleDbClient = m::mock(\Aws\SimpleDb\SimpleDbClient::class);
-        $simpleDbClient->shouldReceive('select')->withAnyArgs()->andReturn([
+        $simpleDbClient->shouldReceive('select')->andReturn([
             'Items' => [],
         ]);
         $guideGateway = m::mock(\App\Domain\Guide::class);
@@ -38,7 +38,7 @@ class ProjectTest extends TestCase
     public function testFindReturnsACollectionOfProjects()
     {
         $simpleDbClient = m::mock(\Aws\SimpleDb\SimpleDbClient::class);
-        $simpleDbClient->shouldReceive('select')->withAnyArgs()->andReturn([
+        $simpleDbClient->shouldReceive('select')->andReturn([
             'Items' => [
                 [
                     'Name' => 'technique201702',
@@ -60,7 +60,7 @@ class ProjectTest extends TestCase
         $guideGateway = m::mock(\App\Domain\Guide::class);
         $guideGateway->shouldReceive('find')->with('technique201702')->andReturn(collect([$guideGateway]));
         $simpleDbClient = m::mock(\Aws\SimpleDb\SimpleDbClient::class);
-        $simpleDbClient->shouldReceive('select')->withAnyArgs()->andReturn([
+        $simpleDbClient->shouldReceive('select')->andReturn([
             'Items' => [
                 [
                     'Name' => 'technique201702',
@@ -84,7 +84,7 @@ class ProjectTest extends TestCase
         $guideGateway->shouldReceive('find')->with('technique201702')->andReturn(collect([$guideGateway]));
         $guideGateway->shouldReceive('getFileType')->andReturn('pdf')->once();
         $simpleDbClient = m::mock(\Aws\SimpleDb\SimpleDbClient::class);
-        $simpleDbClient->shouldReceive('select')->withAnyArgs()->andReturn([
+        $simpleDbClient->shouldReceive('select')->andReturn([
             'Items' => [
                 [
                     'Name' => 'technique201702',
@@ -110,7 +110,19 @@ class ProjectTest extends TestCase
 
     public function testGetAllProjectsReturnsACollectionWithProjectsInIt()
     {
-        $project = resolve(\App\Domain\Project::class);
+        $simpleDbClient = m::mock(\Aws\SimpleDb\SimpleDbClient::class);
+        $simpleDbClient->shouldReceive('select')->andReturn([
+            'Items' => [
+                [
+                    'Name' => 'technique201702',
+                    'Attributes' => [
+                        ['Name' => 'name', 'Value' => 'February 2017 Technique Class'],
+                    ],
+
+                ],
+            ],
+        ]);
+        $project = new \App\Domain\Project($simpleDbClient, resolve(\App\Domain\Guide::class));
         $this->assertInstanceOf(\App\Domain\Project::class, $project->all()->first());
     }
 }
